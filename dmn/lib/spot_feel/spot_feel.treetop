@@ -1,0 +1,481 @@
+grammar SpotFeel
+
+  rule start
+    expression_or_tests
+  end
+
+  rule expression_or_tests
+    simple_expression /
+    simple_unary_tests
+  end
+
+  # 1.
+  rule expression
+    simple_expression
+  end
+
+  #
+  # 4. arithmetic expression =
+  # 4.a addition | subtraction |
+  # 4.b multiplication | division |
+  # 4.c exponentiation |
+  # 4.d arithmetic negation ;
+  #
+  rule arithmetic_expression
+    addition /
+    subtraction /
+    multiplication /
+    division /
+    exponentiation /
+    arithmetic_negation /
+    brakened_arithmetic_expression
+  end
+
+  rule brakened_arithmetic_expression
+    "(" __ arithmetic_expression __ ")" {
+      def eval(context={})
+        arithmetic_expression.eval(context)
+      end
+    }
+  end
+
+  #
+  # 5. simple expression = arithmetic expression | simple value ;
+  #
+  # Note: added boxed_expression here to support list and context
+  #
+  rule simple_expression
+    arithmetic_expression /
+    comparison /
+    simple_value /
+    boxed_expression
+  end
+
+  #
+  # 6. simple expressions = simple expression , { "," , simple expression } ;
+  #
+  rule simple_expressions
+    expr:simple_expression more_exprs:(__ "," __ simple_expression)* <SimpleExpressions>
+  end
+
+  #
+  # 7. simple positive unary test =
+  # 7.a [ "<" | "<=" | ">" | ">=" ] , endpoint |
+  # 7.b interval ;
+  #
+  rule simple_positive_unary_test
+    head:(unary_operator __)? tail:endpoint <SimplePositiveUnaryTest> /
+    interval
+  end
+
+  rule unary_operator
+    "<=" /
+    ">=" /
+    "<" /
+    ">" <UnaryOperator>
+  end
+
+  #
+  # 8. interval = ( open interval start | closed interval start ) , endpoint , ".." , endpoint , ( open interval end | closed interval end ) ;
+  #
+  rule interval
+    start_token:("(" / "]") __ first:endpoint __ ".." __ second:endpoint __ end_token:(")" / "[") <Interval> /
+    start_token:"[" __ first:endpoint __ ".." __ second:endpoint __ end_token:"]" <Interval>
+  end
+
+  #
+  # 9. open interval start = "(" | "]" ;
+  #
+  rule open_interval_start
+    "(" <OpenIntervalStart> /
+    "]" <OpenIntervalStart>
+  end
+
+  #
+  # 10. closed interval start = "[" ;
+  #
+  rule closed_interval_start
+    "[" <ClosedIntervalStart>
+  end
+
+  #
+  # 11. open interval end = ")" | "[" ;
+  #
+  rule open_interval_end
+    ")" <OpenIntervalEnd> /
+    "[" <OpenIntervalEnd>
+  end
+
+  #
+  # 12. closed interval end = "]" ;
+  #
+  rule closed_interval_end
+    "]" <ClosedIntervalEnd>
+  end
+
+  # 13.
+  rule simple_positive_unary_tests
+    test:simple_positive_unary_test more_tests:(__ "," __simple_positive_unary_test)* <SimplePositiveUnaryTests>
+  end
+
+  # 14.
+  rule simple_unary_tests
+    expr:simple_positive_unary_tests <SimpleUnaryTests> /
+    negate:("not" __)? "(" __ expr:simple_positive_unary_tests __ ")" <SimpleUnaryTests> /
+    "-" <SimpleUnaryTests>
+  end
+
+  # 18.
+  rule endpoint
+    simple_value
+  end
+
+  #
+  # 19. simple value = qualified name | simple literal ;
+  #
+  # Note: dmn-eval = simple literal | qualified name | function invocation
+  #
+  rule simple_value
+    literal /
+    qualified_name #/
+    #function_invocation
+  end
+
+  #
+  # 20. qualified name = name , { "." , name } ;
+  #
+  rule qualified_name
+    head:name tail:(__ "." __ name)* <QualifiedName>
+  end
+
+  #
+  # 21. addition = expression , "+" , expression ;
+  #
+  rule addition
+    head:non_recursive_simple_expression_for_arithmetic_expression __ "+" __ tail:expression <Addition>
+  end
+
+  rule non_recursive_simple_expression_for_arithmetic_expression
+    brakened_arithmetic_expression /
+    simple_value
+  end
+
+  rule non_recursive_simple_expression_for_comparison
+    arithmetic_expression /
+    simple_value
+  end
+
+  #
+  # 22. subtraction = expression , "-" , expression ;
+  #
+  rule subtraction
+    head:non_recursive_simple_expression_for_arithmetic_expression __ "-" __ tail:expression <Subtraction>
+  end
+
+  #
+  # 23. multiplication = expression , "\*" , expression ;
+  #
+  rule multiplication
+    head:non_recursive_simple_expression_for_arithmetic_expression __ "*" __ tail:expression <Multiplication>
+  end
+
+  #
+  # 24. division = expression , "/" , expression ;
+  #
+  rule division
+    head:non_recursive_simple_expression_for_arithmetic_expression __ "/" __ tail:expression <Division>
+  end
+
+  #
+  # 25. exponentiation = expression, "\*\*", expression ;
+  #
+  rule exponentiation
+    head:non_recursive_simple_expression_for_arithmetic_expression __ "**" __ tail:expression <Exponentiation>
+  end
+
+  #
+  # 26. arithmetic negation = "-" , expression ;
+  #
+  rule arithmetic_negation
+    "not(" __ expr:expression __ ")" {
+      def eval(context={})
+        -expr.eval(context)
+      end
+    }
+  end
+
+  #
+  # 27. name = name start , { name part | additional name symbols } ;
+  #
+  rule name
+    head:name_start tail:(__ name_part)* <Name>
+  end
+
+  rule reserved_word
+    keyword /
+    date_time_keyword /
+    null_literal /
+    boolean_literal
+  end
+
+  #
+  # 28. name start = name start char, { name part char } ; 
+  #
+  rule name_start
+    head:name_start_char tail:(name_part_char)* {
+      def eval(context={})
+        head + tail.map{|t| t[1]}.join("")
+      end
+    }
+  end
+
+  #
+  # 29. name part = name part char , { name part char } ;
+  #
+  rule name_part
+    head:name_part_char tail:(__ name_part_char)* {
+      def eval(context={})
+        head + tail.map{|t| t[1]}.join("")
+      end
+    }
+  end
+
+  #
+  # 30. name start char = "?" | [A-Z] | "\_" | [a-z] | [\uC0-\uD6] | [\uD8-\uF6] | [\uF8-\u2FF] | [\u370-\u37D] | [\u37F-\u1FFF] | [\u200C-\u200D] | [\u2070-\u218F] | [\u2C00-\u2FEF] | [\u3001-\uD7FF] | [\uF900-\uFDCF] | [\uFDF0-\uFFFD] | [\u10000-\uEFFFF] ;
+  # 
+  rule name_start_char
+    [A-Z] / [a-z] / "_" / name_start_unicode_char
+  end
+
+  rule name_start_unicode_char
+    [\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C-\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD]
+  end
+
+  #
+  # 31. name part char = name start char | digit | \uB7 | [\u0300-\u036F] | [\u203F-\u2040] ;
+  #
+  rule name_part_char
+    name_start_char /
+    digit /
+    name_part_unicode_char /
+    "'"
+  end
+
+  rule name_part_unicode_char
+    [\u0B70\u0300-\u036F\u203F-\u2040]
+  end
+
+  #
+  # 33. literal = simple literal | "null" ;
+  #
+  rule literal
+    simple_literal /
+    null_literal
+  end
+
+  #
+  # 34. simple literal = numeric literal | string literal | boolean literal | date time literal ;
+  #
+  rule simple_literal
+    numeric_literal /
+    string_literal /
+    boolean_literal /
+    date_time_literal
+  end
+
+  #
+  # 35. string literal = '"' , { character – ('"' | vertical space) }, '"' ;
+  #
+  rule string_literal
+    '"' chars:double_string_character* '"' <StringLiteral> /
+    "'" chars:single_string_character* "'" <StringLiteral>
+  end
+
+  rule double_string_character
+    !('"' / "\\" / line_terminator) source_character /
+    "\\" escape_sequence /
+    line_continuation
+  end
+
+  rule single_string_character
+    !("'" / "\\" / line_terminator) source_character /
+    "\\" escape_sequence /
+    line_continuation
+  end
+
+  rule source_character
+    .
+  end
+
+  rule line_continuation
+    "\\" __ line_terminator_sequence __
+  end
+
+  rule escape_sequence
+    character_escape_sequence
+  end
+
+  rule character_escape_sequence
+    single_escape_character
+  end
+
+  rule single_escape_character
+    "'" / '"' / "\\"
+  end
+
+  rule line_terminator
+    line_terminator_sequence
+  end
+
+  rule line_terminator_sequence
+    "\n" / "\r" / "\r\n"
+  end
+
+  #
+  # 36. Boolean literal = "true" | "false" ;
+  #
+  rule boolean_literal
+    "true" <BooleanLiteral> / 
+    "false" <BooleanLiteral>
+  end
+
+  #
+  # 37. numeric literal = [ "-" ] , ( digits , [ ".", digits ] | "." , digits ) ;
+  #
+  rule numeric_literal
+    '-'? digits ('.' digits)? <NumericLiteral>
+  end
+
+  rule null_literal
+    "null" <NullLiteral>
+  end
+
+  #
+  # 38. digit = [0-9] ;
+  #
+  rule digit
+    [0-9]
+  end
+
+  #
+  # 39. digits = digit , {digit} ;
+  #
+  rule digits
+    digit+
+  end
+
+  #
+  # 40. function invocation = expression , parameters ;
+  #
+  rule function_invocation
+    fn_name:(!reserved_word qualified_name) __ "(" __ positional_parameters __ ")" <FunctionInvocation>
+  end
+
+  #
+  # 41. parameters = "(" , ( named parameters | positional parameters ) , ")" ;
+  #
+
+  #
+  # 42. named parameters = parameter name , ":" , expression , { "," , parameter name , ":" , expression } ;
+  #
+
+  #
+  # 43. parameter name = name ;
+  #
+
+  #
+  # 44. positional parameters = [ expression , { "," , expression } ] ;
+  #
+  rule positional_parameters
+    expression __ more_expressions:(__ "," __ expression)* <PositionalParameters>
+  end
+
+  #
+  # 51. comparison =
+  # 51.a expression , ( "=" | "!=" | "<" | "<=" | ">" | ">=" ) , expression |
+  # 51.b expression , "between" , expression , "and" , expression |
+  # 51.c expression , "in" , positive unary test ;
+  # 51.d expression , "in" , " (", positive unary tests, ")" ;
+  #
+  rule comparison
+    left:non_recursive_simple_expression_for_comparison __ operator:comparision_operator __ right:expression <Comparison>
+  end
+
+  rule non_recursive_simple_expression_for_comparison
+    arithmetic_expression /
+    simple_value
+  end
+
+  rule comparision_operator
+    "=" / "!=" / "<=" / ">=" / "<" / ">"
+  end
+
+  #
+  # 55. boxed expression = list | function definition | context ;
+  #
+  # Note: function definition not supported yet
+  #
+  rule boxed_expression
+    list /
+    context
+  end
+
+  #
+  # 56. list = "[" [ expression , { "," , expression } ] , "]" ;
+  #
+  rule list
+    '[' __ list_entries __ ']' <List>
+    /
+    '[]' <List>
+  end
+
+  rule list_entries
+    expression more_expressions:(__ ',' __ expression)* <ListEntries>
+  end
+
+  #
+  # 59. context = "{" , [context entry , { "," , context entry } ] , "}" ;
+  #
+  rule context
+    '{' __ context_entry_list __ '}' <Context>
+    /
+    '{}' <Context>
+  end
+
+  rule context_entry_list
+    context_entry tail:(__ ',' __ context_entry)* ','? <ContextEntryList>
+  end
+
+  #
+  # 60. context entry = key , ":" , expression ;
+  #
+  rule context_entry
+    context_key:expression __ ':' __ context_value:expression <ContextEntry>
+  end
+
+  #
+  # 61. key = name | string literal ;
+  #
+
+  #
+  # 62. date time literal = ( "date" | "time" | "date and time" | "duration" ) , "(" , string literal , ")" ;
+  #
+  rule date_time_literal
+    keyword:date_time_keyword __ "(" __ str_val:expression __ ")" <DateTimeLiteral>
+  end
+
+  rule date_time_keyword
+    "date and time" /
+    "time" /
+    "date" /
+    "duration"
+  end
+
+  rule __
+    white_space*
+  end
+
+  rule white_space
+    " " / "\t" / "\n" / "\r"
+  end
+end

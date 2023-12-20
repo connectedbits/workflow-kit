@@ -1,0 +1,14 @@
+/.bundle/
+/doc/
+*.log
+/pkg/
+/tmp/
+.byebug_history
+
+.DS_Store
+node_modules
+
+Gemfile.lock
+package-lock.json
+yarn.lock
+coverage

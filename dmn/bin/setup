@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -e
+cd "$(dirname "$0")/.."
+
+bundle install
+
+type yarn && yarn install || npm install
+
+echo "Ready!"
