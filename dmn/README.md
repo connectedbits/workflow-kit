@@ -58,9 +58,19 @@ SpotFeel.decide(decisions, id: 'fine', context: { type: "speed", actual_speed: 1
 - [x] Arithmetic
 - [x] Comparison
 - [x] Qualified Name
+- [x] Boxed Expression
 - [x] Function Invocation
+- [x] Positional Parameters
 - [x] If Expression
 - [ ] For Expression
+- [ ] Quantified Expression
+- [ ] Instance Of
+- [ ] Path Expression
+- [ ] Filter Expression
+- [ ] Named Parameters
+- [ ] Function Definition
+- [ ] Conjuction
+- [ ] Disjunction
 
 ### Unary Tests
 
