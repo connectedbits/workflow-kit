@@ -19,10 +19,6 @@ module SpotFeel
       _(SpotFeel.test(2, '3')).must_equal false
     end
 
-    it "should support multiple tests" do
-      #_(SpotFeel.test(3, '1,2,3')).must_equal true
-    end
-
     describe :interval do
       it "should support open intervals" do
         _(SpotFeel.test(3, '(2..4)')).must_equal true

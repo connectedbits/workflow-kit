@@ -45,6 +45,7 @@ grammar SpotFeel
   # Note: added boxed_expression here to support list and context
   #
   rule simple_expression
+    if_expression /
     arithmetic_expression /
     comparison /
     simple_value /
@@ -136,9 +137,9 @@ grammar SpotFeel
   # Note: dmn-eval = simple literal | qualified name | function invocation
   #
   rule simple_value
+    function_invocation /
     literal /
-    qualified_name #/
-    #function_invocation
+    qualified_name
   end
 
   #
@@ -391,6 +392,13 @@ grammar SpotFeel
   end
 
   #
+  # 47. if expression = "if" , expression , "then" , expression , "else" expression ;
+  #
+  rule if_expression
+    "if" __ condition:expression __ "then" __ true_case:expression __ "else" __ false_case:expression <IfExpression>
+  end
+
+  #
   # 51. comparison =
   # 51.a expression , ( "=" | "!=" | "<" | "<=" | ">" | ">=" ) , expression |
   # 51.b expression , "between" , expression , "and" , expression |
@@ -469,6 +477,29 @@ grammar SpotFeel
     "time" /
     "date" /
     "duration"
+  end
+
+  rule keyword
+    true_token /
+    false_token /
+    null_token /
+    not_token
+  end
+
+  rule not_token 
+    "not"
+  end
+
+  rule true_token
+    "true" / "TRUE" / "True" !name_part_char
+  end
+
+  rule false_token
+    "false" / "FALSE" / "False" !name_part_char
+  end
+
+  rule null_token
+    "null" !name_part_char
   end
 
   rule __

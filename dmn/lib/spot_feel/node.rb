@@ -117,6 +117,16 @@ module SpotFeel
     end
   end
 
+  class IfExpression < Node
+    def eval(context = {})
+      if condition.eval(context)
+        true_case.eval(context)
+      else
+        false_case.eval(context)
+      end
+    end
+  end
+
   class Interval < Node
     def eval(context = {})
       start = start_token.text_value
@@ -166,8 +176,6 @@ module SpotFeel
   class Name < Node
     def eval(_context = {})
       #head + tail.map{|t| t[1]}.join("")
-      puts "Name?"
-      puts text_value.strip
       text_value.strip
     end
   end

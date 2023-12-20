@@ -89,27 +89,27 @@ module SpotFeel
     end
 
     describe :function_invocation do
-      # it "should invoke a function" do
-      #   _(SpotFeel.eval('reverse("Hello World")', context: { reverse: proc { |str| str.reverse } })).must_equal "dlroW olleH"
-      # end
+      it "should invoke a function" do
+        _(SpotFeel.eval('reverse("Hello World")', context: { reverse: proc { |str| str.reverse } })).must_equal "dlroW olleH"
+      end
 
-      # it "should parse single parameter" do
-      #   _(SpotFeel.eval('reverse("Hello World")', context: { reverse: proc { |str| str.reverse } })).must_equal "dlroW olleH"
-      # end
+      it "should parse single parameter" do
+        _(SpotFeel.eval('reverse("Hello World")', context: { reverse: proc { |str| str.reverse } })).must_equal "dlroW olleH"
+      end
 
-      # it "should parse multiple parameters" do
-      #   _(SpotFeel.eval('plus(1, 2)', context: { plus: proc { |x, y| x + y } })).must_equal 3
-      # end
+      it "should parse multiple parameters" do
+        _(SpotFeel.eval('plus(1, 2)', context: { plus: proc { |x, y| x + y } })).must_equal 3
+      end
     end
 
     describe :if_expression do
       it "should parse if expressions" do
-        #_(SpotFeel.eval('if (actual_speed - speed_limit) >= 5 then "violation" else "no ticket"')).must_equal "violation"
+        _(SpotFeel.eval('if true then "yes" else "no"')).must_equal "yes"
       end
 
       it "should return else when evaluating null" do
         # NOTE: If the condition c doesn't evaluate to a boolean value (e.g. null), it executes the expression b
-        #_(SpotFeel.eval('if null then "low" else "high"')).must_equal "high"
+        _(SpotFeel.eval('if null then "low" else "high"')).must_equal "high"
       end
     end
   end

@@ -1,5 +1,7 @@
 /.bundle/
 /doc/
+/docs/boneyard/
+/test/spot_feel/sandbox_test.rb
 *.log
 /pkg/
 /tmp/
