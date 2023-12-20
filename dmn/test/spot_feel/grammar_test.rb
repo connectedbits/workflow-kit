@@ -40,6 +40,10 @@ module SpotFeel
       it "should handle unicode strings" do
         _(SpotFeel.eval('"横綱"')).must_equal("横綱")
       end
+
+      it "should handle string concatenation" do
+        _(SpotFeel.eval('"hello" + "world"')).must_equal("helloworld")
+      end
     end
 
     describe :boolean do
@@ -276,23 +280,6 @@ module SpotFeel
         # can be accessed using the `?` symbol.
         #_(SpotFeel.test('foo.xml', 'ends with(?, ".xml")')).must_equal true
       end
-    end
-  end
-
-  #
-  # Built-in Functions
-  #
-  describe :built_in_functions do
-    describe :string do
-
-    end
-
-    describe :list do
-
-    end
-
-    describe :temporal do
-
     end
   end
 end

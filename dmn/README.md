@@ -18,26 +18,28 @@ This project was inspired by these excellent libraries:
 To evaluate an expression:
 
 ```ruby
-SpotFeel.eval('"Paul" in ["John", "Paul", "George", "Ringo"]')
-# => true
+SpotFeel.eval('if age >= 18 then "adult" else "minor"', context: { age: 21 })
+# => "adult"
+```
 
-SpotFeel.eval('if (actual_speed - speed_limit) > 5 then "violation" else "no ticket"', context: { actual_speed: 85, speed_limit: 65 })
+```ruby
+SpotFeel.eval('if actual_speed >= 75 then "violation" else "no ticket"', context: { actual_speed: 85, speed_limit: 65 })
 # => "violation"
 ```
 
 To evaluate a unary test:
 
 ```ruby
-SpotFeel.test(21, '>= 18, <= 65')
+SpotFeel.test(21, '>= 18')
 # => true
 ```
 
 To evaluate a DMN document:
 
 ```ruby
-decisions = SpotFeel.decisions_from_xml(File.read('dinner.xml'))
-SpotFeel.decide(decisions, id: 'beverages', context: { season: 'Fall', guests: 4, children: true })
-# => { beverages: ['Bourbon', 'Apple Juice'] }
+decisions = SpotFeel.decisions_from_xml(File.read('fine.xml'))
+SpotFeel.decide(decisions, id: 'fine', context: { type: "speed", actual_speed: 100, speed_limit: 65 } })
+# => { "amount" => 1000, "points" => 7 }
 ```
 
 ## Supported Features
@@ -53,9 +55,99 @@ SpotFeel.decide(decisions, id: 'beverages', context: { season: 'Fall', guests: 4
 
 ### Expressions
 
+- [x] Arithmetic
+- [x] Comparison
+- [x] Qualified Name
+- [x] Function Invocation
+- [x] If Expression
+- [ ] For Expression
+
 ### Unary Tests
 
+- [x] Comparison
+- [x] Interval/Range (inclusive and exclusive)
+- [ ] Disjunction
+- [ ] Negation
+- [ ] Expression
+
 ### Built-in Functions
+
+- Conversion
+  - [x] string
+  - [x] number
+- Boolean
+  - [ ] not
+  - [x] is defined
+  - [x] get or else
+- String
+  - [x] substring
+  - [x] substring before
+  - [x] substring after
+  - [x] string length
+  - [x] upper case
+  - [x] lower case
+  - [x] contains
+  - [x] starts with
+  - [x] ends with
+  - [x] matches
+  - [x] replace
+  - [x] split
+- Numeric
+  - [x] decimal
+  - [x] floor
+  - [x] ceiling
+  - [x] round up
+  - [x] round down
+  - [x] abs
+  - [x] modulo
+  - [x] sqrt
+  - [x] log
+  - [x] exp
+  - [x] odd
+  - [x] even
+  - [x] random
+- List
+  - [x] list contains
+  - [x] count
+  - [x] min
+  - [x] max
+  - [x] sum
+  - [x] product
+  - [x] mean
+  - [x] median
+  - [ ] stddev
+  - [x] mode
+  - [x] all
+  - [x] any
+  - [x] sublist
+  - [x] append
+  - [x] concatenate
+  - [x] insert before
+  - [x] remove
+  - [x] reverse
+  - [x] index of
+  - [x] union
+  - [x] distinct values
+  - [x] duplicate values
+  - [x] flatten
+  - [x] sort
+  - [x] string join
+- Context
+  - [x] get value
+  - [ ] context put
+  - [x] context merge
+- Temporal
+  - [ ] now
+  - [ ] today
+  - [x] day of week
+  - [x] day of year
+  - [x] week of year
+  - [x] month of year
+
+### DMN
+
+- [x] Parse DMN XML
+- [x] Evaluate DMN Decision Tables
 
 ## Installation
 

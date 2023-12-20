@@ -5,7 +5,7 @@ module SpotFeel
     {
       # Conversion functions
       "string": ->(from) { from.to_s },
-      "number": ->(from) { from.contains?(".") ? from.to_f : from.to_i },
+      "number": ->(from) { from.include?(".") ? from.to_f : from.to_i },
       # Boolean functions
       "not": ->(value) { !value },
       "is defined": ->(value) { !value.nil? },

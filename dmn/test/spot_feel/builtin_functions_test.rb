@@ -10,6 +10,13 @@ module SpotFeel
   #
   describe :builtin_functions do
     describe :conversion do
+      it "should eval string" do
+        _(SpotFeel.eval('string(123)')).must_equal "123"
+      end
+
+      it "should eval number" do
+        _(SpotFeel.eval('number("123")')).must_equal 123
+      end
     end
 
     describe :boolean do
