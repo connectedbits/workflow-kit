@@ -13,6 +13,7 @@ require "active_support/core_ext/object/json"
 require "treetop"
 
 require "spot_feel/node"
+require "spot_feel/builtin_functions"
 require "spot_feel/dmn"
 
 module SpotFeel
@@ -34,7 +35,7 @@ module SpotFeel
   end
 
   def self.eval(expression, context: {})
-    parse(expression).eval(context)
+    parse(expression).eval(context.merge(SpotFeel.builtin_functions))
   end
 
   def self.test(input, expression, context: {})

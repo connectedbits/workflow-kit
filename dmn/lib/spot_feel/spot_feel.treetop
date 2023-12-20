@@ -28,10 +28,18 @@ grammar SpotFeel
     division /
     exponentiation /
     arithmetic_negation /
-    brakened_arithmetic_expression
+    bracketed_arithmetic_expression
   end
 
-  rule brakened_arithmetic_expression
+  rule bracketed_expression
+    "(" __ expression __ ")" {
+      def eval(context={})
+        expression.eval(context)
+      end
+    }
+  end
+
+  rule bracketed_arithmetic_expression
     "(" __ arithmetic_expression __ ")" {
       def eval(context={})
         arithmetic_expression.eval(context)
@@ -49,7 +57,8 @@ grammar SpotFeel
     arithmetic_expression /
     comparison /
     simple_value /
-    boxed_expression
+    boxed_expression /
+    bracketed_expression
   end
 
   #
@@ -157,7 +166,7 @@ grammar SpotFeel
   end
 
   rule non_recursive_simple_expression_for_arithmetic_expression
-    brakened_arithmetic_expression /
+    bracketed_arithmetic_expression /
     simple_value
   end
 
