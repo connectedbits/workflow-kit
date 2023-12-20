@@ -18,11 +18,6 @@ This project was inspired by these excellent libraries:
 To evaluate an expression:
 
 ```ruby
-SpotFeel.eval('if age >= 18 then "adult" else "minor"', context: { age: 21 })
-# => "adult"
-```
-
-```ruby
 SpotFeel.eval('if actual_speed >= 75 then "violation" else "no ticket"', context: { actual_speed: 85, speed_limit: 65 })
 # => "violation"
 ```
