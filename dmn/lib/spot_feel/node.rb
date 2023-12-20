@@ -222,17 +222,6 @@ module SpotFeel
     end
   end
 
-  class QualifiedNameNode < Node
-    def eval(_context = {})
-      name_parts = []
-      name_parts << head.text_value
-      tail.elements.each do |element|
-        name_parts << element.name.text_value
-      end
-      name_parts.join('.')
-    end
-  end
-
   class SimpleExpressions < Node
     def eval(context = {})
       [expr.eval(context)] + more_exprs.elements.map { |element| element.eval(context) }
