@@ -86,7 +86,9 @@ module SpotFeel
             decision_table.outputs.each_with_index do |output, index|
               output_value[output.name] = SpotFeel.eval(rule.output_entries[index].expression, context: context)
             end
+
             return output_value if decision_table.hit_policy == :first || decision_table.hit_policy == :unique
+
             output_values << output_value
           end
         end

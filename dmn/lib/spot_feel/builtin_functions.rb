@@ -77,6 +77,17 @@ module SpotFeel
       "day of year": ->(date) { date.yday },
       "week of year": ->(date) { date.cweek },
       "month of year": ->(date) { date.month },
+      "season of year": ->(date) {
+        date = Date.today if date.nil?
+        day_hash = date.month * 100 + date.mday
+        case day_hash
+          when 101..300 then "winter"
+          when 301..531 then "spring"
+          when 601..831 then "summer"
+          when 901..1130 then "fall"
+          when 1201..1231 then "winter"
+        end
+      },
     }
   end
 end

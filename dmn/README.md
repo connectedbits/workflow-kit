@@ -192,6 +192,9 @@ Spot Feel implements the following built-in functions (custom functions can be a
 - [x] day of year
 - [x] week of year
 - [x] month of year
+- [x] season of year\*
+
+* Extension to the specification
 
 ### DMN
 

@@ -280,6 +280,10 @@ module SpotFeel
       it "should eval month of year" do
         _(SpotFeel.eval('month of year(date("1963-1-1"))')).must_equal 1
       end
+
+      it "should eval season" do
+        _(SpotFeel.eval('season of year(date("1963-12-23"))')).must_equal "winter"
+      end
     end
 
     describe :misc do
