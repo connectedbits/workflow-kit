@@ -39,7 +39,7 @@ SpotFeel.eval('sum([1, 2, 3])')
 Calling a user-defined function:
 
 ```ruby
-SpotFeel.eval('reverse("Hello World!")', context: { reverse: ->(s) { s.reverse } })
+SpotFeel.eval('reverse("Hello World!")', context: { "reverse": ->(s) { s.reverse } })
 # => "!dlroW olleH"
 ```
 
