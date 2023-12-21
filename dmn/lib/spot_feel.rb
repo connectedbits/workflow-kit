@@ -39,7 +39,9 @@ module SpotFeel
   end
 
   def self.test(input, expression, context: {})
-    parse_test(expression).eval(context).call(input)
+    # Replace ? with input, but not when ? is inside a string literal
+    #expression = expression.gsub(/(?<=\()?\?(?=\,)/) { |match| "\"#{input}\"" }
+    parse_test(expression).eval(context.merge(SpotFeel.builtin_functions)).call(input)
   end
 
   def self.decisions_from_xml(xml)

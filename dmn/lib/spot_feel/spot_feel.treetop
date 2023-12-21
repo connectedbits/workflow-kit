@@ -74,7 +74,7 @@ grammar SpotFeel
   # 7.b interval ;
   #
   rule simple_positive_unary_test
-    head:(unary_operator __)? tail:endpoint <SimplePositiveUnaryTest> /
+    head:((unary_operator / "not") __)? tail:endpoint <SimplePositiveUnaryTest> /
     interval
   end
 
@@ -82,7 +82,7 @@ grammar SpotFeel
     "<=" /
     ">=" /
     "<" /
-    ">" <UnaryOperator>
+    ">"
   end
 
   #
@@ -123,15 +123,22 @@ grammar SpotFeel
     "]" <ClosedIntervalEnd>
   end
 
-  # 13.
+  #
+  # 13. simple positive unary tests = simple positive unary test , { "," , simple positive unary test } ;
+  #
   rule simple_positive_unary_tests
-    test:simple_positive_unary_test more_tests:(__ "," __simple_positive_unary_test)* <SimplePositiveUnaryTests>
+    test:simple_positive_unary_test more_tests:(__ "," __ simple_positive_unary_test)* <SimplePositiveUnaryTests>
   end
 
-  # 14.
+  #
+  # 14. simple unary tests =
+  # 14.a simple positive unary tests |
+  # 14.b "not", "(", simple positive unary tests, ")" |
+  # 14.c "-";
+  #
   rule simple_unary_tests
     expr:simple_positive_unary_tests <SimpleUnaryTests> /
-    negate:("not" __)? "(" __ expr:simple_positive_unary_tests __ ")" <SimpleUnaryTests> /
+    negate:"not" __ "(" __ expr:simple_positive_unary_tests __ ")" <SimpleUnaryTests> /
     "-" <SimpleUnaryTests>
   end
 
@@ -207,7 +214,7 @@ grammar SpotFeel
   # 26. arithmetic negation = "-" , expression ;
   #
   rule arithmetic_negation
-    "not(" __ expr:expression __ ")" {
+    "not" __ "(" __ expr:expression __ ")" {
       def eval(context={})
         -expr.eval(context)
       end

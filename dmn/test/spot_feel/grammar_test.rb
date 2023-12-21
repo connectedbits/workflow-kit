@@ -262,15 +262,15 @@ module SpotFeel
 
     describe :disjunction do
       it "should test disjunction" do
-        #_(SpotFeel.test(3, '2,3,4')).must_equal true
-        #_(SpotFeel.test(3, '< 10, > 50')).must_equal true
+        _(SpotFeel.test(3, '2,3,4')).must_equal true
+        _(SpotFeel.test(3, '< 10, > 50')).must_equal true
       end
     end
 
     describe :negation do
       it "should test negation" do
-        #_(SpotFeel.test("valid", "not(valid)")).must_equal false
-        #_(SpotFeel.test(1, 'not(2,3)')).must_eqaul true
+        _(SpotFeel.test("valid", 'not("valid")')).must_equal false
+        _(SpotFeel.test(1, 'not(2,3)')).must_equal true
       end
     end
 
@@ -278,7 +278,8 @@ module SpotFeel
       it "should test expressions" do
         # It's possible to use an expression instead of an operator. The input
         # can be accessed using the `?` symbol.
-        #_(SpotFeel.test('foo.xml', 'ends with(?, ".xml")')).must_equal true
+        #_(SpotFeel.test("my_file.xml", 'ends with(?, ".xml")')).must_equal true
+        #_(SpotFeel.test(nil, 'ends with("Hello world", "world")')).must_equal true
       end
     end
   end

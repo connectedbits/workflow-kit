@@ -185,6 +185,11 @@ module SpotFeel
     end
   end
 
+  #
+  # 7. simple positive unary test =
+  # 7.a [ "<" | "<=" | ">" | ">=" ] , endpoint |
+  # 7.b interval ;
+  #
   class SimplePositiveUnaryTest < Node
     def eval(context = {})
       operator = head.text_value.strip
@@ -204,16 +209,24 @@ module SpotFeel
     end
   end
 
+  #
+  # 13. simple positive unary tests = simple positive unary test , { "," , simple positive unary test } ;
+  #
   class SimplePositiveUnaryTests < Node
     def eval(context = {})
-      tests.inject([]) { |arr, exp| arr << exp.eval(context) }
-    end
-
-    def tests
-      [test] + more_tests.elements.map { |e| e.expression }
+      tests = [test.eval(context)]
+      more_tests.elements.each do |more_test|
+        tests << more_test.simple_positive_unary_test.eval(context)
+      end
+      tests
     end
   end
 
+  #
+  # 14. simple unary tests =
+  # 14.a simple positive unary tests |
+  # 14.b "not", "(", simple positive unary tests, ")" |
+  # 14.c "-";
   class SimpleUnaryTests < Node
     def eval(context = {})
       if defined?(expr) && expr.present?
