@@ -46,34 +46,6 @@ module SpotFeel
     end
   end
 
-  class Context < Node
-    def eval(context = {})
-      if context_entry_list.present?
-        context_entry_list.eval(context)
-      else
-        {}
-      end
-    end
-  end
-
-  class ContextEntryList < Node
-    def eval(context = {})
-      context_entries.inject({}) do |hash, entry|
-        hash.merge(entry.eval(context))
-      end
-    end
-
-    def context_entries
-      [context_entry] + tail.elements.map { |e| e.context_entry }
-    end
-  end
-
-  class ContextEntry < Node
-    def eval(context = {})
-      { context_key.eval(context) => context_value.eval(context) }
-    end
-  end
-
   class DateTimeLiteral < Node
     def eval(_context = {})
       val = str_val.text_value.strip.delete_prefix('"').delete_suffix('"')
@@ -102,20 +74,7 @@ module SpotFeel
     end
   end
 
-  class FunctionInvocation < Node
-    def eval(context = {})
-      fn = context[fn_name.text_value.to_sym]
-      raise "Undefined function: #{fn_name.text_value}" unless fn
 
-      params = if positional_parameters.present?
-        positional_parameters.eval(context)
-      else
-        []
-      end
-
-      fn.call(*params)
-    end
-  end
 
   class IfExpression < Node
     def eval(context = {})
@@ -208,16 +167,6 @@ module SpotFeel
     end
   end
 
-  class PositionalParameters < Node
-    def eval(context = {})
-      expressions.inject([]) { |arr, exp| arr << exp.eval(context) }
-    end
-
-    def expressions
-      [expression] + more_expressions.elements.map { |e| e.expression }
-    end
-  end
-
   class QualifiedName < Node
     def eval(context = {})
       if tail.empty?
@@ -295,6 +244,67 @@ module SpotFeel
   class UnaryOperator < Treetop::Runtime::SyntaxNode
     def eval(_context = {})
       text_value.strip
+    end
+  end
+
+  #
+  # 40. function invocation = expression , parameters ;
+  #
+  class FunctionInvocation < Node
+    def eval(context = {})
+      fn = context[fn_name.text_value.to_sym]
+      raise "Undefined function: #{fn_name.text_value}" unless fn
+
+      args = params.present? ? params.eval(context) : []
+
+      fn.call(*args)
+    end
+  end
+
+  #
+  # 44. positional parameters = [ expression , { "," , expression } ] ;
+  #
+  class PositionalParameters < Node
+    def eval(context = {})
+      expressions.inject([]) { |arr, exp| arr << exp.eval(context) }
+    end
+
+    def expressions
+      [expression] + more_expressions.elements.map { |e| e.expression }
+    end
+  end
+
+  #
+  # 59. context = "{" , [context entry , { "," , context entry } ] , "}" ;
+  #
+  class Context < Node
+    def eval(context = {})
+      if entries&.present?
+        entries.eval(context)
+      else
+        {}
+      end
+    end
+  end
+
+  class ContextEntryList < Node
+    def eval(context = {})
+      context_entries.inject({}) do |hash, entry|
+        hash.merge(entry.eval(context))
+      end
+    end
+
+    def context_entries
+      [context_entry] + tail.elements.map { |e| e.context_entry }
+    end
+  end
+
+  #
+  # 60. context entry = key , ":" , expression ;
+  #
+  class ContextEntry < Node
+    def eval(context = {})
+      { context_key.eval(context) => context_value.eval(context) }
     end
   end
 end

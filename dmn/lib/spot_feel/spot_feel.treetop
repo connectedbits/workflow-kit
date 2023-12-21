@@ -378,7 +378,7 @@ grammar SpotFeel
   # 40. function invocation = expression , parameters ;
   #
   rule function_invocation
-    fn_name:(!reserved_word qualified_name) __ "(" __ positional_parameters __ ")" <FunctionInvocation>
+    fn_name:(!reserved_word qualified_name) __ "(" __ params:(positional_parameters)? __ ")" <FunctionInvocation>
   end
 
   #
@@ -454,7 +454,7 @@ grammar SpotFeel
   # 59. context = "{" , [context entry , { "," , context entry } ] , "}" ;
   #
   rule context
-    '{' __ context_entry_list __ '}' <Context>
+    '{' __ entries:(context_entry_list)? __ '}' <Context>
     /
     '{}' <Context>
   end

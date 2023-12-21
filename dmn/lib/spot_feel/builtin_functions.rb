@@ -7,7 +7,7 @@ module SpotFeel
       "string": ->(from) { from.to_s },
       "number": ->(from) { from.include?(".") ? from.to_f : from.to_i },
       # Boolean functions
-      "not": ->(value) { !value },
+      # "not": ->(value) { value == true ? false : true },
       "is defined": ->(value) { !value.nil? },
       "get or else": ->(value, default) { value.nil? ? default : value },
       # String functions
@@ -46,7 +46,10 @@ module SpotFeel
       "product": ->(list) { list.inject(:*) },
       "mean": ->(list) { list.sum / list.length },
       "median": ->(list) { list.sort[list.length / 2] },
-      "stddev": ->(list) { Math.sqrt(list.map { |n| (n - list.sum / list.length)**2 }.sum / list.length) },
+      "stddev": ->(list) { 
+        mean = list.sum / list.length.to_f
+        Math.sqrt(list.map { |n| (n - mean)**2 }.sum / list.length) 
+      },
       "mode": ->(list) { list.group_by(&:itself).values.max_by(&:size).first },
       "all": ->(list) { list.all? },
       "any": ->(list) { list.any? },
@@ -65,7 +68,7 @@ module SpotFeel
       "string join": ->(list, separator) { list.join(separator) },
       # Context functions
       "get value": ->(context, name) { context[name] },
-      "context put": ->(context, name, value) { context[name] = value },
+      "context put": ->(context, name, value) { context[name] = value; context },
       "context merge": ->(context1, context2) { context1.merge(context2) },
       # Temporal functions
       "now": ->() { Time.now },

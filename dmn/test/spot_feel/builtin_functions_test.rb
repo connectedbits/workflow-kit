@@ -20,11 +20,6 @@ module SpotFeel
     end
 
     describe :boolean do
-      it "should eval not" do
-        # BUG: this is returning undefined method `-@' for true:TrueClass
-        #_(SpotFeel.eval('not(true)')).must_equal false
-      end
-
       it "should eval is defined" do
         _(SpotFeel.eval('is defined("Hello world")')).must_equal true
         _(SpotFeel.eval('is defined(null)')).must_equal false
@@ -176,7 +171,7 @@ module SpotFeel
       end
 
       it "should eval stddev" do
-        #_(SpotFeel.eval('stddev([1, 2, 3])')).must_equal 0.816496580927726
+        _(SpotFeel.eval('stddev([1, 2, 3])')).must_equal 0.816496580927726
       end
 
       it "should eval mode" do
@@ -252,8 +247,8 @@ module SpotFeel
       end
 
       it "should eval context put" do
-        # BUG:
-        #_(SpotFeel.eval('context put({}, "foo", "bar")')).must_equal({ "foo" => "bar" })
+        _(SpotFeel.eval('context put({"foo": "baz"}, "foo", "bar")')).must_equal({ "foo" => "bar" })
+        _(SpotFeel.eval('context put({}, "foo", "bar")')).must_equal({ "foo" => "bar" })
       end
 
       it "should eval context merge" do
@@ -263,12 +258,11 @@ module SpotFeel
 
     describe :temporal do
       it "should eval now" do
-        # BUG: not recoginizing now() as a function (no args?)
-        #_(SpotFeel.eval('now()')).must_be_kind_of Time
+        _(SpotFeel.eval('now()')).must_be_kind_of Time
       end
 
       it "should eval today" do
-        #_(SpotFeel.eval('today()')).must_be_kind_of Date
+        _(SpotFeel.eval('today()')).must_be_kind_of Date
       end
 
       it "should eval day of week" do
