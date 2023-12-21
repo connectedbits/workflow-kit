@@ -14,41 +14,33 @@ require "treetop"
 
 require "spot_feel/node"
 require "spot_feel/builtin_functions"
+require "spot_feel/parser"
 require "spot_feel/dmn"
 
 module SpotFeel
-
-  Treetop.load(File.expand_path(File.join(File.dirname(__FILE__), 'spot_feel/spot_feel.treetop')))
-
   class SyntaxError < StandardError; end
 
   def self.parse(expression)
-    SpotFeelParser.new.parse(expression).tap do |ast|
-      raise SyntaxError, "Invalid expression" unless ast
-    end
+    Parser.parse(expression)
   end
 
   def self.parse_test(expression)
-    SpotFeelParser.new.parse(expression, root: :simple_unary_tests).tap do |ast|
-      raise SyntaxError, "Invalid expression" unless ast
-    end
+    Parser.parse_test(expression)
   end
 
   def self.eval(expression, context: {})
-    parse(expression).eval(context.merge(SpotFeel.builtin_functions))
+    Parser.eval(expression, context:)
   end
 
   def self.test(input, expression, context: {})
-    # Replace ? with input, but not when ? is inside a string literal
-    #expression = expression.gsub(/(?<=\()?\?(?=\,)/) { |match| "\"#{input}\"" }
-    parse_test(expression).eval(context.merge(SpotFeel.builtin_functions)).call(input)
+    Parser.test(input, expression, context:)
   end
 
   def self.decisions_from_xml(xml)
-    SpotFeel::Dmn::Decision.decisions_from_xml(xml)
+    Dmn::Decision.decisions_from_xml(xml)
   end
 
   def self.decide(decision_id, decisions:, context: {})
-    SpotFeel::Dmn::Decision.decide(decision_id, decisions:, context:)
+    Dmn::Decision.decide(decision_id, decisions:, context:)
   end
 end
