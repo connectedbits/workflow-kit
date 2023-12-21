@@ -18,18 +18,28 @@ This project was inspired by these excellent libraries:
 To evaluate an expression:
 
 ```ruby
-SpotFeel.eval('if actual_speed >= 75 then "violation" else "no ticket"', context: { actual_speed: 85, speed_limit: 65 })
-# => "violation"
+SpotFeel.eval('if person.age >= 18 then "adult" else "minor"', context: { person: { name: "Eric", age: 59 } })
+# => "adult"
 ```
 
-To evaluate a unary test:
+```ruby
+SpotFeel.eval('"👋 Hello " + name', context: { name: 'Eric' })
+# => "👋 Hello Eric"
+```
+
+To evaluate a unary tests:
 
 ```ruby
-SpotFeel.test(21, '>= 18')
+SpotFeel.test(3, '<= 10, > 50'))
 # => true
 ```
 
-To evaluate a DMN document:
+```ruby
+SpotFeel.test("Eric", '"Bob", "Holly", "Eric"')
+# => true
+```
+
+To evaluate a DMN decision table:
 
 ```ruby
 decisions = SpotFeel.decisions_from_xml(File.read('fine.xml'))
