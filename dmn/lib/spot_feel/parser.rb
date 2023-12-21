@@ -30,7 +30,41 @@ module SpotFeel
       parse_test(expression).eval(context.merge(SpotFeel.builtin_functions)).call(input)
     end
 
-    private
+    def valid_expression?(expression)
+      @@parser.parse(expression).present?
+    end
+
+    def valid_unary_test?(expression)
+      @@parser.parse_test(expression).present?
+    end
+
+    def self.named_variables(expression)
+      # Parse the expression
+      tree = parse(expression)
+      return [] if tree.nil?
+
+      # Initialize a set to hold the qualified names
+      qualified_names = Set.new
+
+      # Define a lambda for the recursive function
+      walk_tree = lambda do |node|
+        # If the node is a qualified name, add it to the set
+        if node.is_a?(SpotFeel::QualifiedName)
+          qualified_names << node.text_value
+        end
+
+        # Recursively walk the child nodes
+        node.elements&.each do |child|
+          walk_tree.call(child)
+        end
+      end
+
+      # Start walking the tree from the root
+      walk_tree.call(tree)
+
+      # Return the array of qualified names
+      qualified_names.to_a
+    end
   
     def self.clean_tree(root_node)
       return if(root_node.elements.nil?)

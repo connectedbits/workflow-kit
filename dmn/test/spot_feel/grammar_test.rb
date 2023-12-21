@@ -283,4 +283,11 @@ module SpotFeel
       end
     end
   end
+
+  describe :qualified_names do
+    it "should return an array variables used in an expression" do
+      _(SpotFeel.named_variables("a + b")).must_equal %w[a b]
+      _(SpotFeel.named_variables("person.income * person.age")).must_equal %w[person.income person.age]
+    end
+  end
 end

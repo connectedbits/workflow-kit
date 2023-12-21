@@ -73,76 +73,91 @@ SpotFeel.decide(decisions, id: 'fine', context: { type: "speed", actual_speed: 1
 
 ### Built-in Functions
 
-- Conversion
-  - [x] string
-  - [x] number
-- Boolean
-  - [x] is defined
-  - [x] get or else
-- String
-  - [x] substring
-  - [x] substring before
-  - [x] substring after
-  - [x] string length
-  - [x] upper case
-  - [x] lower case
-  - [x] contains
-  - [x] starts with
-  - [x] ends with
-  - [x] matches
-  - [x] replace
-  - [x] split
-- Numeric
-  - [x] decimal
-  - [x] floor
-  - [x] ceiling
-  - [x] round up
-  - [x] round down
-  - [x] abs
-  - [x] modulo
-  - [x] sqrt
-  - [x] log
-  - [x] exp
-  - [x] odd
-  - [x] even
-  - [x] random
-- List
-  - [x] list contains
-  - [x] count
-  - [x] min
-  - [x] max
-  - [x] sum
-  - [x] product
-  - [x] mean
-  - [x] median
-  - [x] stddev
-  - [x] mode
-  - [x] all
-  - [x] any
-  - [x] sublist
-  - [x] append
-  - [x] concatenate
-  - [x] insert before
-  - [x] remove
-  - [x] reverse
-  - [x] index of
-  - [x] union
-  - [x] distinct values
-  - [x] duplicate values
-  - [x] flatten
-  - [x] sort
-  - [x] string join
-- Context
-  - [x] get value
-  - [x] context put
-  - [x] context merge
-- Temporal
-  - [x] now
-  - [x] today
-  - [x] day of week
-  - [x] day of year
-  - [x] week of year
-  - [x] month of year
+Spot Feel implements the following built-in functions (custom functions can be added to the context)
+
+#### Conversion
+
+- [x] string
+- [x] number
+
+#### Boolean
+
+- [x] is defined
+- [x] get or else
+
+#### String
+
+- [x] substring
+- [x] substring before
+- [x] substring after
+- [x] string length
+- [x] upper case
+- [x] lower case
+- [x] contains
+- [x] starts with
+- [x] ends with
+- [x] matches
+- [x] replace
+- [x] split
+
+#### Numeric
+
+- [x] decimal
+- [x] floor
+- [x] ceiling
+- [x] round up
+- [x] round down
+- [x] abs
+- [x] modulo
+- [x] sqrt
+- [x] log
+- [x] exp
+- [x] odd
+- [x] even
+- [x] random
+
+#### List
+
+- [x] list contains
+- [x] count
+- [x] min
+- [x] max
+- [x] sum
+- [x] product
+- [x] mean
+- [x] median
+- [x] stddev
+- [x] mode
+- [x] all
+- [x] any
+- [x] sublist
+- [x] append
+- [x] concatenate
+- [x] insert before
+- [x] remove
+- [x] reverse
+- [x] index of
+- [x] union
+- [x] distinct values
+- [x] duplicate values
+- [x] flatten
+- [x] sort
+- [x] string join
+
+#### Context
+
+- [x] get value
+- [x] context put
+- [x] context merge
+
+#### Temporal
+
+- [x] now
+- [x] today
+- [x] day of week
+- [x] day of year
+- [x] week of year
+- [x] month of year
 
 ### DMN
 

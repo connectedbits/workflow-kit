@@ -43,4 +43,8 @@ module SpotFeel
   def self.decide(decision_id, decisions:, context: {})
     Dmn::Decision.decide(decision_id, decisions:, context:)
   end
+
+  def self.named_variables(expression)
+    Parser.named_variables(expression)
+  end
 end
