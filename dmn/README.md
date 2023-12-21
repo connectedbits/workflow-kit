@@ -18,13 +18,29 @@ This project was inspired by these excellent libraries:
 To evaluate an expression:
 
 ```ruby
+SpotFeel.eval('"👋 Hello " + name', context: { name: 'World' })
+# => "👋 Hello World"
+```
+
+A slightly more complex example:
+
+```ruby
 SpotFeel.eval('if person.age >= 18 then "adult" else "minor"', context: { person: { name: "Eric", age: 59 } })
 # => "adult"
 ```
 
+Calling a built-in function:
+
 ```ruby
-SpotFeel.eval('"👋 Hello " + name', context: { name: 'Eric' })
-# => "👋 Hello Eric"
+SpotFeel.eval('sum([1, 2, 3])')
+# => 6
+```
+
+Calling a user-defined function:
+
+```ruby
+SpotFeel.eval('reverse("Hello World!")', context: { reverse: ->(s) { s.reverse } })
+# => "!dlroW olleH"
 ```
 
 To evaluate a unary tests:
@@ -45,6 +61,14 @@ To evaluate a DMN decision table:
 decisions = SpotFeel.decisions_from_xml(File.read('fine.xml'))
 SpotFeel.decide(decisions, id: 'fine', context: { type: "speed", actual_speed: 100, speed_limit: 65 } })
 # => { "amount" => 1000, "points" => 7 }
+```
+
+To evaluate a DMN decision table with dependent decisions:
+
+```ruby
+decisions = SpotFeel.decisions_from_xml(File.read('dinner.xml'))
+SpotFeel.decide(decisions, id: 'beverages', context: { guest_count: 6, season: "Fall", children: true } })
+# => { "dish" => "Spareribs", "beverages" => ["Bourbon", "Apple Juice"] }
 ```
 
 ## Supported Features
