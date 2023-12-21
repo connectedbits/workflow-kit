@@ -6,7 +6,7 @@ This gem implements a subset of FEEL (Friendly Enough Expression Language) as de
 
 FEEL expressions are parsed into an abstract syntax tree (AST) and then evaluated in a context. The context is a hash of variables that are available to the expression. Expressions can also invoke built-in and user-defined functions.
 
-Expressions are safe, side-effect free, and deterministic. They are ideal for capturing business logic for storage in a database or embedded in DMN or BPMN documents for execution in a workflow engine like [SpotFlow](https://github.com/connectedbits/spot_flow).
+Expressions are safe, side-effect free, and deterministic. They are ideal for capturing business logic for storage in a database or embedded in DMN or BPMN documents for execution in a workflow engine like [spot-flow](https://github.com/connectedbits/spot_flow).
 
 This project was inspired by these excellent libraries:
 
@@ -81,7 +81,6 @@ SpotFeel.decide(decisions, id: 'fine', context: { type: "speed", actual_speed: 1
   - [x] string
   - [x] number
 - Boolean
-  - [ ] not
   - [x] is defined
   - [x] get or else
 - String
@@ -120,7 +119,7 @@ SpotFeel.decide(decisions, id: 'fine', context: { type: "speed", actual_speed: 1
   - [x] product
   - [x] mean
   - [x] median
-  - [ ] stddev
+  - [x] stddev
   - [x] mode
   - [x] all
   - [x] any
@@ -139,11 +138,11 @@ SpotFeel.decide(decisions, id: 'fine', context: { type: "speed", actual_speed: 1
   - [x] string join
 - Context
   - [x] get value
-  - [ ] context put
+  - [x] context put
   - [x] context merge
 - Temporal
-  - [ ] now
-  - [ ] today
+  - [x] now
+  - [x] today
   - [x] day of week
   - [x] day of year
   - [x] week of year
