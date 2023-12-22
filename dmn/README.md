@@ -116,8 +116,6 @@ result = SpotFeel::Dmn::Decision.decide('fine_decision', decisions:, context:)
 
 ### Built-in Functions
 
-Spot Feel implements the following built-in functions (custom functions can be added to the context)
-
 - [x] Conversion: `string`, `number`
 - [x] Boolean: `is defined`. `get or else`
 - [x] String: `substring`, `substring before`, `substring after`, `string length`, `upper case`, `lower case`, `contains`, `starts with`, `ends with`, `matches`, `replace`, `split`, `strip`, `extract`
@@ -128,9 +126,9 @@ Spot Feel implements the following built-in functions (custom functions can be a
 
 ### DMN
 
-- [x] Parse DMN XML
+- [x] Parse DMN XML documents
 - [x] Evaluate DMN Decision Tables
-- [ ] Evaluate Dependent DMN Decision Tables
+- [ ] Evaluate dependent DMN Decision Tables
 - [ ] Evaluate Expression Decisions
 
 ## Installation
