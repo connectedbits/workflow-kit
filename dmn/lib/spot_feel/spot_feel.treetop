@@ -18,6 +18,14 @@ grammar SpotFeel
     simple_expression
   end
 
+  rule bracketed_expression
+    "(" __ expression __ ")" {
+      def eval(context={})
+        expression.eval(context)
+      end
+    }
+  end
+
   #
   # 2. textual expression =
   # 2.a function definition | for expression | if expression | quantified expression |
@@ -30,10 +38,39 @@ grammar SpotFeel
   # 2.h filter expression | function invocation |
   # 2.i literal | simple positive unary test | name | "(" , textual expression , ")" ;
   #
+  rule textual_expression
+    function_definition /
+    for_expression /
+    if_expression /
+    quantified_expression /
+    disjunction /
+    conjunction /
+    comparison /
+    arithmetic_expression /
+    instance_of /
+    path_expression /
+    filter_expression /
+    function_invocation /
+    literal /
+    simple_positive_unary_test /
+    name /
+    bracketed_textual_expression
+  end
+
+  rule bracketed_textual_expression
+    "(" __ textual_expression __ ")" {
+      def eval(context={})
+        textual_expression.eval(context)
+      end
+    }
+  end
 
   #
   # 3. textual expressions = textual expression , { "," , textual expression } ;
   #
+  rule textual_expressions 
+    expr:textual_expression more_exprs:(__ "," __ textual_expression)* <TextualExpressions>
+  end
 
   #
   # 4. arithmetic expression =
@@ -52,14 +89,6 @@ grammar SpotFeel
     bracketed_arithmetic_expression
   end
 
-  rule bracketed_expression
-    "(" __ expression __ ")" {
-      def eval(context={})
-        expression.eval(context)
-      end
-    }
-  end
-
   rule bracketed_arithmetic_expression
     "(" __ arithmetic_expression __ ")" {
       def eval(context={})
@@ -74,12 +103,26 @@ grammar SpotFeel
   # Note: added boxed_expression here to support list and context
   #
   rule simple_expression
-    if_expression /
+    expanded_simple_expression /
     arithmetic_expression /
-    comparison /
     simple_value /
-    boxed_expression /
     bracketed_expression
+  end
+
+  #
+  # NOTE: these are expressions that I'm testing until I support full feel
+  #
+  rule expanded_simple_expression
+    #disjunction /
+    #conjunction /
+    for_expression /
+    if_expression /
+    quantified_expression /
+    comparison /
+    #filter_expression /
+    #instance_of /
+    function_definition /
+    boxed_expression
   end
 
   #

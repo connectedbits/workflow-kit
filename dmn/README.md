@@ -97,14 +97,16 @@ result = SpotFeel::Dmn::Decision.decide('fine_decision', decisions:, context:)
 - [x] Path
 - [x] Arithmetic
 - [x] Comparison
-- [ ] Conjuction & Disjunction
 - [x] Function Invocation
 - [x] Positional Parameters
 - [x] If Expression
 - [ ] For Expression
 - [ ] Quantified Expression
 - [ ] Filter Expression
+- [ ] Disjunction
+- [ ] Conjuction
 - [ ] Instance Of
+- [ ] Function Definition
 
 ### Unary Tests
 
