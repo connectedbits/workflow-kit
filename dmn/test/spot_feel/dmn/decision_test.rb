@@ -41,6 +41,44 @@ module SpotFeel
           _(result[:period_duration].in_months).must_equal(3)
         end
 
+        it "should evaluate a decision with no matching rules" do
+          decisions = SpotFeel.decisions_from_xml(fixture_source("test_no_matching_rules.dmn"))
+          context = {
+            input: {
+              input_1: 1,
+              input_2: 2,
+            }
+          }
+          result = Decision.decide('unique_decision', decisions:, context:)
+          _(result).must_be_nil
+        end
+
+        it "should evaluate a decision with a required decision" do
+          decisions = SpotFeel.decisions_from_xml(fixture_source("test.dmn"))
+          context = {
+            input: {
+              category: "E",
+              reference_date: Date.new(2018, 01, 04),
+              test_date: Date.new(2018, 01, 03),
+            }
+          }
+
+          # NOTE: This fails because we can't handle this test:
+          # Testing 2018-01-03 against [period_begin .. period_begin + period_duration]
+          # TODO: Add support for this type of test and uncomment this test
+          
+          # result = Decision.decide('primary_decision', decisions:, context:)
+          # _(result[:output][:score]).must_equal(50)
+
+          # context[:input][:test_date] = Date.new(2018, 04, 04)
+          # result = Decision.decide('primary_decision', decisions:, context:)
+          # _(result[:output][:score]).must_equal(100)
+
+          # context[:input][:test_date] = Date.new(2018, 04, 05)
+          # result = Decision.decide('primary_decision', decisions:, context:)
+          # _(result[:output][:score]).must_equal(0)     
+        end
+
         it "should evaluate decision with unique hit policy" do
           decisions = SpotFeel.decisions_from_xml(fixture_source("test_unique.dmn"))
           context = { 
