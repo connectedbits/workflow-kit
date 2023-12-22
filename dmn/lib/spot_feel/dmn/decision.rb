@@ -48,8 +48,6 @@ module SpotFeel
         decision = decisions.find { |d| d.id == decision_id }
         raise Error, "Decision #{decision_id} not found" unless decision
 
-        output = {}
-
         # Evaluate required decisions recursively
         decision.required_decision_ids.each do |required_decision_id|
           next if already_evaluated_decisions[required_decision_id]
@@ -60,9 +58,7 @@ module SpotFeel
           already_evaluated_decisions[required_decision_id] = true
         end
 
-        result = decision.decide(context.merge(output))
-        return nil if result.nil?
-        output.merge(result)
+        decision.decide(context)
       end
 
       def decide(context = {})
@@ -82,7 +78,7 @@ module SpotFeel
 
           # If all input entries passed, we have a match 
           if test_results.all?
-            output_value = {}
+            output_value = HashWithIndifferentAccess.new
             decision_table.outputs.each_with_index do |output, index|
               output_value[output.name] = SpotFeel.eval(rule.output_entries[index].expression, context: context)
             end

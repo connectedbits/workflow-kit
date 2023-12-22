@@ -47,8 +47,10 @@ module SpotFeel
   end
 
   class DateTimeLiteral < Node
-    def eval(_context = {})
-      val = str_val.text_value.strip.delete_prefix('"').delete_suffix('"')
+    def eval(context = {})
+      val = head.eval(context)
+      return val if val.is_a?(ActiveSupport::Duration) || val.is_a?(DateTime) || val.is_a?(Date) || val.is_a?(Time)
+      
       case keyword.text_value
       when "date and time"
         DateTime.parse(val)

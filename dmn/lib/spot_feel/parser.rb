@@ -21,13 +21,15 @@ module SpotFeel
     end
   
     def self.eval(expression, context: {})
-      parse(expression).eval(context.merge(SpotFeel.builtin_functions))
+      ctx = ActiveSupport::HashWithIndifferentAccess.new(context.merge(SpotFeel.builtin_functions))
+      parse(expression).eval(ctx)
     end
   
     def self.test(input, expression, context: {})
       # Replace ? with input, but not when ? is inside a string literal
       #expression = expression.gsub(/(?<=\()?\?(?=\,)/) { |match| "\"#{input}\"" }
-      parse_test(expression).eval(context.merge(SpotFeel.builtin_functions)).call(input)
+      ctx = ActiveSupport::HashWithIndifferentAccess.new(context.merge(SpotFeel.builtin_functions))
+      parse_test(expression).eval(ctx).call(input)
     end
 
     def valid_expression?(expression)

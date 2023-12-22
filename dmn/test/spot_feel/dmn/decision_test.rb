@@ -5,74 +5,67 @@ require "test_helper"
 module SpotFeel
   module Dmn
     describe Decision do
-      describe :simple do
-        let(:decisions) { SpotFeel.decisions_from_xml(fixture_source("fine.dmn")) }
 
-        describe :decide do
-          it "should match on the correct rules" do
-            # Rule 1
-            result = SpotFeel.decide('fine', decisions: decisions, context: { violation: { type: "speed", actual_speed: 75, speed_limit: 65 } })
-            _(result).must_equal({ "amount" => 500, "points" => 3 })
+      describe :decisions_from_xml do
+        let(:decisions) { SpotFeel.decisions_from_xml(fixture_source("test.dmn")) }
+        let(:primary_decision) { decisions.find { |d| d.id == "primary_decision" } }
+        let(:dependent_decision) { decisions.find { |d| d.id == "dependent_decision" } }
 
-            # # Rule 2
-            result = SpotFeel.decide('fine', decisions: decisions, context: { violation: { type: "speed", actual_speed: 100, speed_limit: 65 } })
-            _(result).must_equal({ "amount" => 1000, "points" => 7 })
-
-            # Rule 3
-            result = SpotFeel.decide('fine', decisions: decisions, context: { violation: { type: "parking", actual_speed: 0, speed_limit: 0 } })
-            _(result).must_equal({ "amount" => 100, "points" => 1 })
-
-            # Rule 4
-            result = SpotFeel.decide('fine', decisions: decisions, context: { violation: { type: "driving under the influence", actual_speed: 0, speed_limit: 0 } })
-            _(result).must_equal({ "amount" => 1000, "points" => 5 })
-
-            # No Match
-            result = SpotFeel.decide('fine', decisions: decisions, context: { violation: { type: "no match", actual_speed: 0, speed_limit: 0 } })
-            _(result).must_be_nil
-          end
+        it "returns an array of decisions" do
+          _(decisions.size).must_equal(2)
+          _(primary_decision).wont_be_nil
+          _(dependent_decision).wont_be_nil
         end
 
-        describe :decisions_from_xml do
-          let(:decision) { decisions.first }
-
-          it "returns an array of decisions" do
-            _(decisions.size).must_equal(1)
-          end
-
-          it "must parse decision attributes" do
-            _(decision.id).must_equal("fine")
-            _(decision.name).must_equal("Fine")
-            _(decision.decision_table).wont_be_nil
-          end
+        it "must parse decision attributes" do
+            _(primary_decision.name).must_equal("Primary Decision")
+            _(primary_decision.decision_table).wont_be_nil
+            _(dependent_decision.name).must_equal("Dependent Decision")
+            _(dependent_decision.decision_table).wont_be_nil
         end
       end
 
-      describe :dependent do
-        let(:decisions) { SpotFeel.decisions_from_xml(fixture_source("dinner.dmn")) }
-
-        describe :decide do
+      describe :decide do
+        it "should evaluate decisons" do
+          decisions = SpotFeel.decisions_from_xml(fixture_source("test.dmn"))
+          context = {
+            input: {
+              category: "E",
+              reference_date: Date.new(2018, 01, 04)
+            }
+          }
+          result = Decision.decide('dependent_decision', decisions:, context:)
+          _(result[:period_begin]).must_be_kind_of(Date)
+          _(result[:period_begin]).must_equal(Date.new(2018, 01, 04))
+          _(result[:period_duration]).must_be_kind_of(ActiveSupport::Duration)
+          _(result[:period_duration].in_months).must_equal(3)
         end
 
-        describe :decisions_from_xml do
-          let(:decisions) { SpotFeel.decisions_from_xml(fixture_source("dinner.dmn")) }
-          let(:dish_decision) { decisions.find { |d| d.id == "dish" } }
-          let(:beverages_decision) { decisions.find { |d| d.id == "beverages" } }
+        it "should evaluate decision with unique hit policy" do
+          decisions = SpotFeel.decisions_from_xml(fixture_source("test_unique.dmn"))
+          context = { 
+            input: { 
+              category: "B" 
+            } 
+          }
+          result = Decision.decide('unique_decision', decisions:, context:)
+          _(result).must_equal({ "message" => "Message 2" })
+        end
 
-          it "returns an array of decisions" do
-            _(decisions.size).must_equal(2)
-          end
-
-          it "must parse decision attributes" do
-            _(dish_decision.id).must_equal("dish")
-            _(dish_decision.name).must_equal("Dish")
-            _(dish_decision.decision_table).wont_be_nil
-
-            _(beverages_decision.id).must_equal("beverages")
-            _(beverages_decision.name).must_equal("Beverages")
-            _(beverages_decision.decision_table).wont_be_nil
-
-            _(beverages_decision.required_decision_ids).must_equal(["dish"])
-          end
+        it "should evaluate rule order hit policy" do
+          decisions = SpotFeel.decisions_from_xml(fixture_source("test_rule_order.dmn"))
+          context = { 
+            input: { 
+              category: "A" 
+            } 
+          }
+          result = Decision.decide('rule_order_decision', decisions:, context:)
+          _(result).must_equal([
+            { "message" => "Message 1" },
+            { "message" => "Message 3" },
+            { "message" => "Message 4" },
+            { "message" => "Message 5" },
+          ])
         end
       end
     end
