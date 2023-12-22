@@ -23,7 +23,11 @@ module SpotFeel
         _(SpotFeel.eval('3.14')).must_equal 3.14
       end
 
-      it "should eval negative numerics" do
+      it "should eval negative integers" do
+        _(SpotFeel.eval('-314')).must_equal(-314)
+      end
+
+      it "should eval negative floats" do
         _(SpotFeel.eval('-3.14')).must_equal(-3.14)
       end
     end
@@ -87,6 +91,13 @@ module SpotFeel
         value = SpotFeel.eval('duration("PT6H")')
         _(value.class).must_equal ActiveSupport::Duration
         _(value.in_hours).must_equal 6
+      end
+
+      it "should eval date properties" do
+        # _(SpotFeel.eval('date("1963-12-23").year')).must_equal 1963
+        # _(SpotFeel.eval('date("1963-12-23").month')).must_equal 12
+        # _(SpotFeel.eval('date("1963-12-23").day')).must_equal 23
+        # _(SpotFeel.eval('date("1963-12-23").weekday')).must_equal 1
       end
     end
 
@@ -213,11 +224,50 @@ module SpotFeel
     describe :if_expression do
       it "should parse if expressions" do
         _(SpotFeel.eval('if true then "yes" else "no"')).must_equal "yes"
+        #_(SpotFeel.eval('if (20 - (10 * 2)) > 0 then "Yes" else "No"')).must_equal "No"
       end
 
       it "should return else when evaluating null" do
         # NOTE: If the condition c doesn't evaluate to a boolean value (e.g. null), it executes the expression b
         _(SpotFeel.eval('if null then "low" else "high"')).must_equal "high"
+      end
+    end
+
+    describe :for_expression do
+      # for i in [1, 2, 3] return i * i   //➔ [1, 4, 9]
+      # for i in 1..3 return i * i   //➔ [1, 4, 9]
+      # for i in [1,2,3], j in [1,2,3] return i*j   //➔ [1, 2, 3, 2, 4, 6, 3, 6, 9]
+    end
+
+    describe :quantified_expression do
+      # some i in [1, 2, 3] satisfies i > 2   //➔ true
+      # some i in [1, 2, 3] satisfies i > 4   //➔ false
+      # every i in [1, 2, 3] satisfies i > 1   //➔ false
+      # every i in [1, 2, 3] satisfies i > 0   //➔ true
+    end
+
+    describe :in_expression do
+      # 1 in [1..10]   //➔ true
+      # 1 in (1..10]   //➔ false
+      # 10 in [1..10]   //➔ true
+      # 10 in [1..10)   //➔ false
+    end
+
+    describe :conjunction_disjunction do
+      # true and true   //➔ true
+      # true and false and null   //➔ false
+      # true and null and true   //➔ null
+      # true or false or null   //➔ true
+      # false or false   //➔ false
+      # false or null or false  //➔ null
+      # true or false and false   //➔ true
+      # (true or false) and false   //➔ false
+    end
+
+    describe :string_concatenation do
+      it "should eval string concatenation" do
+        _(SpotFeel.eval('"Hello " + "World"')).must_equal "Hello World"
+        _(SpotFeel.eval('"Very" + "Long" + "Word"')).must_equal "VeryLongWord"
       end
     end
   end
