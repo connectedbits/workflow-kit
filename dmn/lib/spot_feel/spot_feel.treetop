@@ -38,39 +38,10 @@ grammar SpotFeel
   # 2.h filter expression | function invocation |
   # 2.i literal | simple positive unary test | name | "(" , textual expression , ")" ;
   #
-  rule textual_expression
-    function_definition /
-    for_expression /
-    if_expression /
-    quantified_expression /
-    disjunction /
-    conjunction /
-    comparison /
-    arithmetic_expression /
-    instance_of /
-    path_expression /
-    filter_expression /
-    function_invocation /
-    literal /
-    simple_positive_unary_test /
-    name /
-    bracketed_textual_expression
-  end
-
-  rule bracketed_textual_expression
-    "(" __ textual_expression __ ")" {
-      def eval(context={})
-        textual_expression.eval(context)
-      end
-    }
-  end
 
   #
   # 3. textual expressions = textual expression , { "," , textual expression } ;
   #
-  rule textual_expressions 
-    expr:textual_expression more_exprs:(__ "," __ textual_expression)* <TextualExpressions>
-  end
 
   #
   # 4. arithmetic expression =
@@ -105,23 +76,17 @@ grammar SpotFeel
   rule simple_expression
     expanded_simple_expression /
     arithmetic_expression /
+    comparison /
     simple_value /
     bracketed_expression
   end
 
   #
-  # NOTE: these are expressions that I'm testing until I support full feel
+  # NOTE: these rules go beyond S-FEEL spec
   #
   rule expanded_simple_expression
-    #disjunction /
-    #conjunction /
-    for_expression /
     if_expression /
-    quantified_expression /
     comparison /
-    #filter_expression /
-    #instance_of /
-    function_definition /
     boxed_expression
   end
 
@@ -241,8 +206,8 @@ grammar SpotFeel
   # Note: dmn-eval = simple literal | qualified name | function invocation
   #
   rule simple_value
-    function_invocation /
     literal /
+    function_invocation /
     qualified_name
   end
 

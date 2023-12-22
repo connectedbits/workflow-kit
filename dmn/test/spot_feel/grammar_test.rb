@@ -93,6 +93,10 @@ module SpotFeel
         _(value.in_hours).must_equal 6
       end
 
+      it "should support date math" do
+        _(SpotFeel.eval('date("2019-01-01") + duration("P1D")')).must_equal Date.parse("2019-01-02")
+      end
+
       it "should eval date properties" do
         # _(SpotFeel.eval('date("1963-12-23").year')).must_equal 1963
         # _(SpotFeel.eval('date("1963-12-23").month')).must_equal 12
@@ -103,6 +107,7 @@ module SpotFeel
 
     describe :list do
       it "should eval list literals (arrays)" do
+        #skip "Requires full-FEEL support"
         _(SpotFeel.eval('[ 2, 3, 4, 5 ]')).must_equal [2, 3, 4, 5]
         _(SpotFeel.eval('["John", "Paul", "George", "Ringo"]')).must_equal ["John", "Paul", "George", "Ringo"]
       end
@@ -110,6 +115,7 @@ module SpotFeel
 
     describe :context do
       it "should eval context literals (hashes)" do
+        #skip "Requires full-FEEL support"
         _(SpotFeel.eval('{ "a": 1, "b": 2 }')).must_equal({ "a" => 1, "b" => 2 })
       end
     end
@@ -223,11 +229,13 @@ module SpotFeel
 
     describe :if_expression do
       it "should parse if expressions" do
+        #skip "Requires full-FEEL support"
         _(SpotFeel.eval('if true then "yes" else "no"')).must_equal "yes"
         #_(SpotFeel.eval('if (20 - (10 * 2)) > 0 then "Yes" else "No"')).must_equal "No"
       end
 
       it "should return else when evaluating null" do
+        #skip "Requires full-FEEL support"
         # NOTE: If the condition c doesn't evaluate to a boolean value (e.g. null), it executes the expression b
         _(SpotFeel.eval('if null then "low" else "high"')).must_equal "high"
       end

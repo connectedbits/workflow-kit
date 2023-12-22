@@ -8,8 +8,8 @@ module SpotFeel
     Treetop.load(File.expand_path(File.join(File.dirname(__FILE__), 'spot_feel.treetop')))
     @@parser = SpotFeelParser.new
 
-    def self.parse(expression)
-      @@parser.parse(expression).tap do |ast|
+    def self.parse(expression, root: nil)
+      @@parser.parse(expression, root:).tap do |ast|
         raise SyntaxError, "Invalid expression" unless ast
       end
     end

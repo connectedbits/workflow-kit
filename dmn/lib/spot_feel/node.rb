@@ -57,6 +57,7 @@ module SpotFeel
     def eval(context = {})
       operator = head.text_value.strip
       endpoint = tail.eval(context)
+
       case operator
       when "<"
         ->(input) { input < endpoint }
@@ -464,6 +465,12 @@ module SpotFeel
       when '!=' then left.eval(context) != right.eval(context)
       when '=' then left.eval(context) == right.eval(context)
       end
+    end
+  end
+
+  class ComparisonOperator < Node
+    def eval(_context = {})
+      text_value.strip
     end
   end
 

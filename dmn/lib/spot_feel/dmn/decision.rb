@@ -53,7 +53,6 @@ module SpotFeel
           next if already_evaluated_decisions[required_decision_id]
           next if decisions.find { |d| d.id == required_decision_id }.nil?
 
-          puts context.inspect
           result = decide(required_decision_id, decisions: decisions, context: context)
 
           context[:output] ||= {}

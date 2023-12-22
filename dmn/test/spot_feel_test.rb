@@ -94,23 +94,22 @@ describe SpotFeel do
       end
 
       it "should match input entry 'f(a)' to same value as the function evaluated with the property (function and property must be given in the context)" do
-        # TODO: Function invocation needs to handle variable arguments correctly
-        #_(SpotFeel.test(42, 'f(a)', context: { f: ->(a) { a == 42 }, a: 42 })).must_equal true
+        _(SpotFeel.test(true, 'f(a)', context: { "f": ->(a) { a == 42 }, a: 42 })).must_equal true
       end
 
       it "should match input entry 'limit - 10' to the same value as the limit minus 10" do
-        # TODO: Need to evaluate named variables in the context when doing arithmetic
+        # BUG: arithmetic not matching in simple unary tests
         #_(SpotFeel.test(42, 'limit - 10', context: { limit: 52 })).must_equal true
       end
 
       it "should match input entry 'limit * 2' to the same value as the limit times 2" do
-        # TODO: Need to evaluate named variables in the context when doing arithmetic
+        # BUG: arithmetic not matching in simple unary tests
         #_(SpotFeel.test(42, 'limit * 2', context: { limit: 21 })).must_equal true
       end
 
       it "should match input entry '[limit.upper, limit.lower]' to a value between the value of two given properties of object limit" do
-        # TODO: Need to evaluate named variables in the context when doing range comparisons
-        # _(SpotFeel.test(42, '[limit.upper, limit.lower]', context: { limit: { upper: 50, lower: 40 } })).must_equal true
+        # BUG: range matching not working in simple unary tests
+        #_(SpotFeel.test(42, '[limit.upper, limit.lower]', context: { limit: { upper: 50, lower: 40 } })).must_equal true
       end
 
       it "should match input entry 'date(\"1963-12-23\")' to the date value 1963-12-23" do
@@ -131,22 +130,22 @@ describe SpotFeel do
       end
 
       it "should match input entry 'duration(d) * 2' to twice the duration" do
-        # TODO: Need to support duration arithmetic
+        # BUG: arithmetic not matching in simple unary tests
         #_(SpotFeel.test(6.days, 'duration("P3D") * 2')).must_equal true
       end
 
       it "should match input entry 'duration(begin, end)' to the duration between the specified begin and end date" do
-        # TODO: Need to support duration ranges
+        # BUG: range matching not working in simple unary tests
         #_(SpotFeel.test(3.days, 'duration("1963-12-23", "1963-12-26")')).must_equal true
       end
 
       it "should match input entry 'date(begin) + duration(d)' to the date that results by adding the given duration to the given date" do
-        # TODO: Need to support duration arithmetic
+        # BUG: arithmetic not matching in simple unary tests
         #_(SpotFeel.test(Date.new(1963, 12, 23), 'date("1963-12-23") + duration("P3D")')).must_equal true
       end
 
       it "should match input entry '< date(begin) + duration(d)' to any date before the date that results by adding the given duration to the given date" do
-        # TODO: Need to support duration arithmetic and comparison
+        # BUG: arithmetic not matching in simple unary tests
         #_(SpotFeel.test(Date.new(1963, 12, 22), '< date("1963-12-23") + duration("P3D")')).must_equal true
       end
     end
