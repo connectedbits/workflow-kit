@@ -18,14 +18,21 @@ This project was inspired by these excellent libraries:
 To evaluate an expression:
 
 ```ruby
-SpotFeel.eval('"👋 Hello " + name', context: { name: 'World' })
+context = { name: "World" }
+SpotFeel.eval('"👋 Hello " + name', context:)
 # => "👋 Hello World"
 ```
 
 A slightly more complex example:
 
 ```ruby
-SpotFeel.eval('if person.age >= 18 then "adult" else "minor"', context: { person: { name: "Eric", age: 59 } })
+context = {
+  person: {
+    name: "Eric",
+    age: 59,
+  }
+}
+SpotFeel.eval('if person.age >= 18 then "adult" else "minor"', context:)
 # => "adult"
 ```
 
@@ -39,7 +46,10 @@ SpotFeel.eval('sum([1, 2, 3])')
 Calling a user-defined function:
 
 ```ruby
-SpotFeel.eval('reverse("Hello World!")', context: { "reverse": ->(s) { s.reverse } })
+context = {
+  "reverse": ->(s) { s.reverse }
+}
+SpotFeel.eval('reverse("Hello World!")', context:)
 # => "!dlroW olleH"
 ```
 
