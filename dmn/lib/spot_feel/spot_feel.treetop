@@ -9,10 +9,31 @@ grammar SpotFeel
     simple_unary_tests
   end
 
-  # 1.
+  #
+  # 1. expression =
+  # 1.a textual expression |
+  # 1.b boxed expression ;
+  #
   rule expression
     simple_expression
   end
+
+  #
+  # 2. textual expression =
+  # 2.a function definition | for expression | if expression | quantified expression |
+  # 2.b disjunction |
+  # 2.c conjunction |
+  # 2.d comparison |
+  # 2.e arithmetic expression |
+  # 2.f instance of |
+  # 2.g path expression |
+  # 2.h filter expression | function invocation |
+  # 2.i literal | simple positive unary test | name | "(" , textual expression , ")" ;
+  #
+
+  #
+  # 3. textual expressions = textual expression , { "," , textual expression } ;
+  #
 
   #
   # 4. arithmetic expression =
@@ -142,7 +163,31 @@ grammar SpotFeel
     "-" <SimpleUnaryTests>
   end
 
-  # 18.
+  #
+  # 15. positive unary test = simple positive unary test | "null" ;
+  #
+  rule positive_unary_test
+    simple_positive_unary_test /
+    null_literal
+  end
+
+  #
+  # 16. positive unary tests = positive unary test , { "," , positive unary test } ;
+  #
+  rule positive_unary_tests
+    test:positive_unary_test more_tests:(__ "," __ positive_unary_test)* <PositiveUnaryTests>
+  end
+
+  #
+  # 17. unary tests =
+  # 17.a positive unary tests |
+  # 17.b "not", " (", positive unary tests, ")" |
+  # 17.c "-"
+  #
+
+  #
+  # 18. endpoint = simple value ;
+  #
   rule endpoint
     simple_value
   end
@@ -283,6 +328,13 @@ grammar SpotFeel
   end
 
   #
+  # 32. additional name symbols = "." | "/" | "-" | "’" | "+" | "\*" ;
+  #
+  rule additional_name_symbols
+    "." / "/" / "-" / "'" / "+" / "*"
+  end
+
+  #
   # 33. literal = simple literal | "null" ;
   #
   rule literal
@@ -408,10 +460,45 @@ grammar SpotFeel
   end
 
   #
+  # 45. path expression = expression , "." , name ;
+  #
+  rule path_expression
+    expression __ "." __ name:name <PathExpression>
+  end
+
+  #
+  # 46. for expression = "for" , name , "in" , expression { "," , name , "in" , expression } , "return" , expression ;
+  #
+  rule for_expression
+    "for" __ name:name __ "in" __ expression __ more_for_expressions:(__ "," __ name:name __ "in" __ expression)* __ "return" __ return_expression:expression <ForExpression>
+  end
+
+  #
   # 47. if expression = "if" , expression , "then" , expression , "else" expression ;
   #
   rule if_expression
     "if" __ condition:expression __ "then" __ true_case:expression __ "else" __ false_case:expression <IfExpression>
+  end
+
+  #
+  # 48. quantified expression = ("some" | "every") , name , "in" , expression , { name , "in" , expression } , "satisfies" , expression ;
+  #
+  rule quantified_expression
+    quantifier:("some" / "every") __ name:name __ "in" __ expression __ more_quantifiers:(__ name:name __ "in" __ expression)* __ "satisfies" __ satisfies:expression <QuantifiedExpression>
+  end
+
+  #
+  # 49. disjunction = expression , "or" , expression ;
+  #
+  rule disjunction
+    head:expression tail:(__ "or" __ expression)+ <Disjunction>
+  end
+
+  #
+  # 50. conjunction = expression , "and" , expression ;
+  #
+  rule conjunction
+    head:expression tail:(__ "and" __ expression)+ <Conjunction>
   end
 
   #
@@ -430,8 +517,29 @@ grammar SpotFeel
     simple_value
   end
 
+  #
+  # 52. filter expression = expression , "[" , expression , "]" ;
+  #
+  rule filter_expression
+    expression __ "[" __ filter:expression __ "]" <FilterExpression>
+  end
+
   rule comparision_operator
     "=" / "!=" / "<=" / ">=" / "<" / ">"
+  end
+
+  #
+  # 53. instance of = expression , "instance" , "of" , type ;
+  #
+  rule instance_of
+    expression __ "instance" __ "of" __ type <InstanceOf>
+  end
+
+  #
+  # 54. type = qualified name ;
+  #
+  rule type
+    qualified_name
   end
 
   #
@@ -455,6 +563,20 @@ grammar SpotFeel
 
   rule list_entries
     expression more_expressions:(__ ',' __ expression)* <ListEntries>
+  end
+
+  #
+  # 57. function definition = "function" , "(" , [ formal parameter { "," , formal parameter } ] , ")" , [ "external" ] , expression ;
+  #
+  rule function_definition
+    "function" __ "(" __ formal_parameters:(formal_parameter_list)? __ ")" __ external:(__ "external")? __ expression <FunctionDefinition>
+  end
+
+  #
+  # 58. formal parameter = parameter name ;
+  #
+  rule formal_parameter
+    parameter_name:name <FormalParameter>
   end
 
   #
