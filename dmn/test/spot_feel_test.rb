@@ -9,133 +9,171 @@ describe SpotFeel do
 
   describe :smoke_tests do
     describe :expressions do
-      it "should parse a simple expression" do
-        _(SpotFeel.parse('42')).must_be_kind_of(SpotFeel::NumericLiteral)
+      it "should eval a simple expression" do
+        _(SpotFeel.eval('"👋 Hello " + name', context: { name: 'World' })).must_equal "👋 Hello World"
+      end
+
+      it "should eval slightly more complex expressions" do
+        _(SpotFeel.eval('if person.age >= 18 then "adult" else "minor"', context: { person: { name: "Eric", age: 59 } })).must_equal "adult"
+      end
+
+      it "should eval built-in functions" do
+         _(SpotFeel.eval('sum([1, 2, 3])')).must_equal 6
+      end
+
+      it "should eval user defined functions" do
+        _(SpotFeel.eval('reverse("Hello World!")', context: { "reverse": ->(s) { s.reverse } })).must_equal "!dlroW olleH"
       end
     end
 
     describe :unary_tests do
-      it "input entry '42' should match the numeric value 42" do
+      it "should match input entry '42' to the numeric value 42" do
         _(SpotFeel.test(42, '42')).must_equal true
         _(SpotFeel.test(41, '42')).must_equal false
       end
 
-      it "input entry '< 42' should match a value less than 42" do
+      it "should match input entry '< 42' to a value less than 42" do
         _(SpotFeel.test(41, '< 42')).must_equal true
         _(SpotFeel.test(42, '< 42')).must_equal false
       end
 
-      it "input entry '[41 .. 50]' should match a value between 41 and 50 (inclusive)" do
+      it "should match input entry '[41 .. 50]' to a value between 41 and 50 (inclusive)" do
         _(SpotFeel.test(41, '[41 .. 50]')).must_equal true
         _(SpotFeel.test(40, '[41 .. 50]')).must_equal false
       end
 
-      it "input entry '<10, >20' should match a value less than 10 or greater than 20" do
+      it "should match input entry '<10, >20' to a value less than 10 or greater than 20" do
         _(SpotFeel.test(21, '<10, >20')).must_equal true
         _(SpotFeel.test(15, '<10, >20')).must_equal false
       end
 
-      it "input entry '\"A\"' should match the string value \"A\"" do
+      it "should match input entry '\"A\"' to the string value \"A\"" do
         _(SpotFeel.test("A", '"A"')).must_equal true
         _(SpotFeel.test("B", '"A"')).must_equal false
       end
 
-      it "input entry: '\"A\"', '\"B\"' matches the string value \"A\" or \"B\"" do
+      it "should match input entry: '\"A\"', '\"B\"' to the string value \"A\" or \"B\"" do
         _(SpotFeel.test("B", '"A", "B"')).must_equal true
         _(SpotFeel.test("A", '"A", "B"')).must_equal true
         _(SpotFeel.test("C", '"A", "B"')).must_equal false
       end
 
-      it "input entry 'true' should match the boolean value true" do
+      it "should match input entry 'true' to the boolean value true" do
         _(SpotFeel.test(true, 'true')).must_equal true
         _(SpotFeel.test(false, 'true')).must_equal false
         _(SpotFeel.test(3, 'true')).must_equal false
       end
 
-      it "input entry '-' should match anything" do
+      it "should match input entry '-' to anything" do
         _(SpotFeel.test("ANYTHING", '-')).must_equal true
         _(SpotFeel.test(3, '-')).must_equal true
         _(SpotFeel.test(false, '-')).must_equal true
       end
 
-      it "a nil input entry should match anything" do
+      it "should match input entry nil to anything" do
         # BUG: Nil input entries are not handled correctly
         #_(SpotFeel.test(33, nil)).must_equal true
       end
   
-      it "input entry 'null' should match the nil value" do
+      it "should match input entry 'null' to nil" do
         _(SpotFeel.test(nil, 'null')).must_equal true
         _(SpotFeel.test(3, 'null')).must_equal false
       end
 
-      it "input entry 'not(null)' should match any value other than nil" do
+      it "should match input entry 'not(null)' to any value other than nil" do
         _(SpotFeel.test("ANYTHING", 'not(null)')).must_equal true
         _(SpotFeel.test(nil, 'not(null)')).must_equal false
       end
 
-      it "input entry 'property' should match the same value as the property (must be given in the context)" do
+      it "should match input entry 'property' to the same value as the property (must be given in the context)" do
         _(SpotFeel.test(42, 'property', context: { property: 42 })).must_equal true
       end
 
-      it "input entry 'object.property' should match the same value as the property of the object" do
+      it "should match input entry 'object.property' to the same value as the property of the object" do
         _(SpotFeel.test(42, 'object.property', context: { object: { property: 42 } })).must_equal true
       end
 
-      it "input entry 'f(a)' should match the same value as the function evaluated with the property (function and property must be given in the context)" do
+      it "should match input entry 'f(a)' to same value as the function evaluated with the property (function and property must be given in the context)" do
         # TODO: Function invocation needs to handle variable arguments correctly
         #_(SpotFeel.test(42, 'f(a)', context: { f: ->(a) { a == 42 }, a: 42 })).must_equal true
       end
 
-      it "input entry 'limit - 10' should match the same value as the limit minus 10" do
+      it "should match input entry 'limit - 10' to the same value as the limit minus 10" do
         # TODO: Need to evaluate named variables in the context when doing arithmetic
         #_(SpotFeel.test(42, 'limit - 10', context: { limit: 52 })).must_equal true
       end
 
-      it "input entry 'limit * 2' should match the same value as the limit times 2" do
+      it "should match input entry 'limit * 2' to the same value as the limit times 2" do
         # TODO: Need to evaluate named variables in the context when doing arithmetic
         #_(SpotFeel.test(42, 'limit * 2', context: { limit: 21 })).must_equal true
       end
 
-      it "input entry '[limit.upper, limit.lower]' should match a value between the value of two given properties of object limit" do
+      it "should match input entry '[limit.upper, limit.lower]' to a value between the value of two given properties of object limit" do
         # TODO: Need to evaluate named variables in the context when doing range comparisons
         # _(SpotFeel.test(42, '[limit.upper, limit.lower]', context: { limit: { upper: 50, lower: 40 } })).must_equal true
       end
 
-      it "input entry 'date(\"1963-12-23\")' should match the date value 1963-12-23" do
+      it "should match input entry 'date(\"1963-12-23\")' to the date value 1963-12-23" do
         _(SpotFeel.test(Date.new(1963, 12, 23), 'date("1963-12-23")')).must_equal true
         _(SpotFeel.test(Date.new(1963, 12, 24), 'date("1963-12-23")')).must_equal false
       end
 
-      it "input entry 'date(property)' should match the date which is defined by the value of the given property, the time if cropped to 00:00:00" do
+      it "should match input entry 'date(property)' to the date which is defined by the value of the given property, the time if cropped to 00:00:00" do
         _(SpotFeel.test(Date.new(1963, 12, 23), 'date(property)', context: { property: Date.new(1963, 12, 23) })).must_equal true
       end
 
-      it "input entry 'date and time(property)' should match the date and time which is defined by the value of the given property" do
+      it "should match input entry 'date and time(property)' to the date and time which is defined by the value of the given property" do
         _(SpotFeel.test(DateTime.new(1963, 12, 23, 12, 34, 56), 'date and time(property)', context: { property: DateTime.new(1963, 12, 23, 12, 34, 56) })).must_equal true
       end
 
-      it "input entry 'duration(d)' should match the duration specified by d, an ISO 8601 duration string like P3D for three days (duration is built-in either)" do
+      it "should match input entry 'duration(d)' to the duration specified by d, an ISO 8601 duration string like P3D for three days (duration is built-in either)" do
         _(SpotFeel.test(3.days, 'duration("P3D")')).must_equal true
       end
 
-      it "input entry 'duration(d) * 2' should match twice the duration" do
+      it "should match input entry 'duration(d) * 2' to twice the duration" do
         # TODO: Need to support duration arithmetic
         #_(SpotFeel.test(6.days, 'duration("P3D") * 2')).must_equal true
       end
 
-      it "input entry 'duration(begin, end)' should match the duration between the specified begin and end date" do
+      it "should match input entry 'duration(begin, end)' to the duration between the specified begin and end date" do
         # TODO: Need to support duration ranges
         #_(SpotFeel.test(3.days, 'duration("1963-12-23", "1963-12-26")')).must_equal true
       end
 
-      it "input entry 'date(begin) + duration(d)' should match the date that results by adding the given duration to the given date" do
+      it "should match input entry 'date(begin) + duration(d)' to the date that results by adding the given duration to the given date" do
         # TODO: Need to support duration arithmetic
         #_(SpotFeel.test(Date.new(1963, 12, 23), 'date("1963-12-23") + duration("P3D")')).must_equal true
       end
 
-      it "input entry '< date(begin) + duration(d)' should match any date before the date that results by adding the given duration to the given date" do
+      it "should match input entry '< date(begin) + duration(d)' to any date before the date that results by adding the given duration to the given date" do
         # TODO: Need to support duration arithmetic and comparison
         #_(SpotFeel.test(Date.new(1963, 12, 22), '< date("1963-12-23") + duration("P3D")')).must_equal true
+      end
+    end
+
+    describe :decisions do
+      it "should evaluate a simple decision table" do
+        decisions = SpotFeel.decisions_from_xml(fixture_source("fine.dmn"))
+        context = { 
+          violation: {
+            type: "speed", 
+            actual_speed: 100, 
+            speed_limit: 65, 
+          }
+        } 
+        result = SpotFeel::Dmn::Decision.decide('fine_decision', decisions:, context:)
+        _(result).must_equal({ "amount" => 1000, "points" => 7 })
+      end
+
+      it "should evaluate dependent decisions" do
+        # decisions = SpotFeel.decisions_from_xml(fixture_source("dinner.dmn"))
+        # context = {
+        #   guest_count: 6,
+        #   season: "Fall",
+        #   children: true,
+        # }
+        # result = SpotFeel::Dmn::Decision.decide('beverages_decision', decisions:, context:)
+        # _(result).must_equal({ "beverages" => "Water, Wine" })
       end
     end
   end

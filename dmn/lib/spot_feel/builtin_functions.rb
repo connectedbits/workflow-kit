@@ -23,6 +23,8 @@ module SpotFeel
       "matches": ->(string, match) { string.match?(match) },
       "replace": ->(string, match, replacement) { string.gsub(match, replacement) },
       "split": ->(string, match) { string.split(match) },
+      "strip": -> (string) { string.strip },
+      "extract": -> (string, pattern) { string.match(pattern).captures },
       # Numeric functions
       "decimal": ->(n, scale) { n.round(scale) },
       "floor": ->(n) { n.floor },
@@ -36,7 +38,7 @@ module SpotFeel
       "exp": ->(n) { Math.exp(n) },
       "odd": ->(n) { n.odd? },
       "even": ->(n) { n.even? },
-      "random": ->(n) { rand(n) },
+      "random number": ->(n) { rand(n) },
       # List functions
       "list contains": ->(list, match) { list.include?(match) },
       "count": ->(list) { list.length },
@@ -70,6 +72,7 @@ module SpotFeel
       "get value": ->(context, name) { context[name] },
       "context put": ->(context, name, value) { context[name] = value; context },
       "context merge": ->(context1, context2) { context1.merge(context2) },
+      "get entries": ->(context) { context.entries },
       # Temporal functions
       "now": ->() { Time.now },
       "today": ->() { Date.today },
@@ -77,17 +80,6 @@ module SpotFeel
       "day of year": ->(date) { date.yday },
       "week of year": ->(date) { date.cweek },
       "month of year": ->(date) { date.month },
-      "season of year": ->(date) {
-        date = Date.today if date.nil?
-        day_hash = date.month * 100 + date.mday
-        case day_hash
-          when 101..300 then "winter"
-          when 301..531 then "spring"
-          when 601..831 then "summer"
-          when 901..1130 then "fall"
-          when 1201..1231 then "winter"
-        end
-      },
     }
   end
 end

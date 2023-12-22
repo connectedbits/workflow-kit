@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" id="dinner" name="Dinner" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="5.17.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.3.0">
-  <decision id="dish" name="Dish">
+  <decision id="dish_decision" name="Dish Decision">
     <informationRequirement id="InformationRequirement_0uhsccp">
       <requiredInput href="#InputData_0wx3jq8" />
     </informationRequirement>
@@ -92,9 +92,9 @@
   </decision>
   <inputData id="InputData_0wx3jq8" name="Season" />
   <inputData id="InputData_0fkssw2" name="Number of Guests" />
-  <decision id="beverages" name="Beverages">
+  <decision id="beverages_decision" name="Beverages Decision">
     <informationRequirement id="InformationRequirement_0yxfdh3">
-      <requiredDecision href="#dish" />
+      <requiredDecision href="#dish_decision" />
     </informationRequirement>
     <informationRequirement id="InformationRequirement_1brfp91">
       <requiredInput href="#InputData_0615xa9" />
@@ -182,7 +182,7 @@
   <inputData id="InputData_0615xa9" name="Guests with Children?" />
   <dmndi:DMNDI>
     <dmndi:DMNDiagram>
-      <dmndi:DMNShape dmnElementRef="dish">
+      <dmndi:DMNShape dmnElementRef="dish_decision">
         <dc:Bounds height="80" width="180" x="210" y="230" />
       </dmndi:DMNShape>
       <dmndi:DMNShape id="DMNShape_09zzsud" dmnElementRef="InputData_0wx3jq8">
@@ -201,7 +201,7 @@
         <di:waypoint x="330" y="330" />
         <di:waypoint x="330" y="310" />
       </dmndi:DMNEdge>
-      <dmndi:DMNShape id="DMNShape_0totejv" dmnElementRef="beverages">
+      <dmndi:DMNShape id="DMNShape_0totejv" dmnElementRef="beverages_decision">
         <dc:Bounds height="80" width="180" x="331" y="80" />
       </dmndi:DMNShape>
       <dmndi:DMNEdge id="DMNEdge_1ehocpv" dmnElementRef="InformationRequirement_0yxfdh3">

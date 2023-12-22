@@ -79,6 +79,14 @@ module SpotFeel
       it "should eval split" do
         _(SpotFeel.eval('split("Hello world", " ")')).must_equal ["Hello", "world"]
       end
+
+      it "should eval strip" do
+        _(SpotFeel.eval('strip(" Hello world ")')).must_equal "Hello world"
+      end
+
+      it "should eval extract" do
+        _(SpotFeel.eval('extract("Hello world", "(Hello) (world)")')).must_equal ["Hello", "world"]
+      end
     end
 
     describe :numeric do
@@ -132,8 +140,8 @@ module SpotFeel
         _(SpotFeel.eval('even(2)')).must_equal true
       end
 
-      it "should eval random" do
-        _(SpotFeel.eval('random(10)')).must_be :<, 10
+      it "should eval random number" do
+        _(SpotFeel.eval('random number(10)')).must_be :<, 10
       end
     end
 
@@ -254,6 +262,10 @@ module SpotFeel
       it "should eval context merge" do
         _(SpotFeel.eval('context merge({"foo": "bar"}, {"bar": "baz"})')).must_equal({ "foo" => "bar", "bar" => "baz" })
       end
+
+      it "should eval get entries" do
+        _(SpotFeel.eval('get entries({"foo": "bar"})')).must_equal({ "foo" => "bar" }.entries)
+      end
     end
 
     describe :temporal do
@@ -279,10 +291,6 @@ module SpotFeel
 
       it "should eval month of year" do
         _(SpotFeel.eval('month of year(date("1963-1-1"))')).must_equal 1
-      end
-
-      it "should eval season" do
-        _(SpotFeel.eval('season of year(date("1963-12-23"))')).must_equal "winter"
       end
     end
 

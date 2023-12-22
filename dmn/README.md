@@ -58,17 +58,16 @@ SpotFeel.test("Eric", '"Bob", "Holly", "Eric"')
 To evaluate a DMN decision table:
 
 ```ruby
-decisions = SpotFeel.decisions_from_xml(File.read('fine.xml'))
-SpotFeel.decide(decisions, id: 'fine', context: { type: "speed", actual_speed: 100, speed_limit: 65 } })
-# => { "amount" => 1000, "points" => 7 }
-```
-
-To evaluate a DMN decision table with dependent decisions:
-
-```ruby
-decisions = SpotFeel.decisions_from_xml(File.read('dinner.xml'))
-SpotFeel.decide(decisions, id: 'beverages', context: { guest_count: 6, season: "Fall", children: true } })
-# => { "dish" => "Spareribs", "beverages" => ["Bourbon", "Apple Juice"] }
+decisions = SpotFeel.decisions_from_xml(fixture_source("fine.dmn"))
+context = {
+  violation: {
+    type: "speed",
+    actual_speed: 100,
+    speed_limit: 65,
+  }
+}
+result = SpotFeel::Dmn::Decision.decide('fine_decision', decisions:, context:)
+# => { "amount" => 1000, "points" => 7 })
 ```
 
 ## Supported Features
@@ -133,6 +132,8 @@ Spot Feel implements the following built-in functions (custom functions can be a
 - [x] matches
 - [x] replace
 - [x] split
+- [x] strip\*
+- [x] extract\*
 
 #### Numeric
 
@@ -148,7 +149,7 @@ Spot Feel implements the following built-in functions (custom functions can be a
 - [x] exp
 - [x] odd
 - [x] even
-- [x] random
+- [x] random number\*
 
 #### List
 
@@ -183,6 +184,7 @@ Spot Feel implements the following built-in functions (custom functions can be a
 - [x] get value
 - [x] context put
 - [x] context merge
+- [x] context entries
 
 #### Temporal
 
@@ -192,7 +194,6 @@ Spot Feel implements the following built-in functions (custom functions can be a
 - [x] day of year
 - [x] week of year
 - [x] month of year
-- [x] season of year\*
 
 * Extension to the specification
 
@@ -200,6 +201,8 @@ Spot Feel implements the following built-in functions (custom functions can be a
 
 - [x] Parse DMN XML
 - [x] Evaluate DMN Decision Tables
+- [ ] Evaluate Dependent DMN Decision Tables
+- [ ] Evaluate Expression Decisions
 
 ## Installation
 
