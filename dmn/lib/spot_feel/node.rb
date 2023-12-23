@@ -622,19 +622,27 @@ module SpotFeel
   #
   class DateTimeLiteral < Node
     def eval(context = {})
-      val = head.eval(context)
-      return val if val.is_a?(ActiveSupport::Duration) || val.is_a?(DateTime) || val.is_a?(Date) || val.is_a?(Time)
+      head_val = head.eval(context)
+      return head_val if head_val.is_a?(ActiveSupport::Duration) || head_val.is_a?(DateTime) || head_val.is_a?(Date) || head_val.is_a?(Time)
       
       case keyword.text_value
       when "date and time"
-        DateTime.parse(val)
+        DateTime.parse(head_val)
       when "date"
-        Date.parse(val)
+        Date.parse(head_val)
       when "time"
-        Time.parse(val)
+        Time.parse(head_val)
       when "duration"
-        ActiveSupport::Duration.parse(val)
+        if defined?(tail) && tail.present?
+          (Date.parse(tail.text_value) - Date.parse(head.text_value)).to_i.days
+        else
+          ActiveSupport::Duration.parse(head_val)
+        end
       end
+    end
+
+    def duration_range(start_date, end_date)
+      (Date.parse(end_date) - Date.parse(start_date)).to_i
     end
   end
 end

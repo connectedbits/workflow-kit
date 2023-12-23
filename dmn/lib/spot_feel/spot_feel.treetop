@@ -616,7 +616,7 @@ grammar SpotFeel
   # 62. date time literal = ( "date" | "time" | "date and time" | "duration" ) , "(" , string literal , ")" ;
   #
   rule date_time_literal
-    keyword:date_time_keyword __ "(" __ head:expression __ ")" <DateTimeLiteral>
+    keyword:date_time_keyword __ "(" __ head:expression __ tail:("," __ expression)* __ ")" <DateTimeLiteral>
   end
 
   rule date_time_keyword
