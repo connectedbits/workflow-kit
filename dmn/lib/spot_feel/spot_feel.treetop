@@ -197,6 +197,7 @@ grammar SpotFeel
   # 18. endpoint = simple value ;
   #
   rule endpoint
+    arithmetic_expression /
     simple_value
   end
 

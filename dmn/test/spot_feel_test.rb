@@ -98,13 +98,11 @@ describe SpotFeel do
       end
 
       it "should match input entry 'limit - 10' to the same value as the limit minus 10" do
-        # BUG: arithmetic not matching in simple unary tests
-        #_(SpotFeel.test(42, 'limit - 10', context: { limit: 52 })).must_equal true
+        _(SpotFeel.test(42, 'limit - 10', context: { limit: 52 })).must_equal true
       end
 
       it "should match input entry 'limit * 2' to the same value as the limit times 2" do
-        # BUG: arithmetic not matching in simple unary tests
-        #_(SpotFeel.test(42, 'limit * 2', context: { limit: 21 })).must_equal true
+        _(SpotFeel.test(42, 'limit * 2', context: { limit: 21 })).must_equal true
       end
 
       it "should match input entry '[limit.upper, limit.lower]' to a value between the value of two given properties of object limit" do
@@ -130,8 +128,7 @@ describe SpotFeel do
       end
 
       it "should match input entry 'duration(d) * 2' to twice the duration" do
-        # BUG: arithmetic not matching in simple unary tests
-        #_(SpotFeel.test(6.days, 'duration("P3D") * 2')).must_equal true
+        _(SpotFeel.test(6.days, 'duration("P3D") * 2')).must_equal true
       end
 
       it "should match input entry 'duration(begin, end)' to the duration between the specified begin and end date" do
@@ -146,7 +143,7 @@ describe SpotFeel do
 
       it "should match input entry '< date(begin) + duration(d)' to any date before the date that results by adding the given duration to the given date" do
         # BUG: arithmetic not matching in simple unary tests
-        #_(SpotFeel.test(Date.new(1963, 12, 22), '< date("1963-12-23") + duration("P3D")')).must_equal true
+        _(SpotFeel.test(Date.new(1963, 12, 22), '< date("1963-12-23") + duration("P3D")')).must_equal true
       end
     end
 
