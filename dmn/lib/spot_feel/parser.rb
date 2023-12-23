@@ -15,7 +15,7 @@ module SpotFeel
     end
   
     def self.parse_test(expression)
-      @@parser.parse(expression, root: :simple_unary_tests).tap do |ast|
+      @@parser.parse(expression || '-', root: :simple_unary_tests).tap do |ast|
         raise SyntaxError, "Invalid unary test" unless ast
       end
     end

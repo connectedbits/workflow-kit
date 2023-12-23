@@ -71,8 +71,7 @@ describe SpotFeel do
       end
 
       it "should match input entry nil to anything" do
-        # BUG: Nil input entries are not handled correctly
-        #_(SpotFeel.test(33, nil)).must_equal true
+        _(SpotFeel.test(33, nil)).must_equal true
       end
   
       it "should match input entry 'null' to nil" do
