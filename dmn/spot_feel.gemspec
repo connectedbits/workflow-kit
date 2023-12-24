@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.authors = ["Connected Bits"]
   spec.email = ["info@connectedbits.com"]
 
-  spec.summary = "DMN FEEL expression gem for Rails apps."
+  spec.summary = "A light-weight DMN FEEL expression evaluator and business rule engine in Ruby."
   spec.description = "..."
   spec.homepage    = "https://www.connectedbits.com"
   spec.license = "MIT"

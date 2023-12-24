@@ -1,12 +1,12 @@
 # Spot Feel
 
-A DMN FEEL implementation in Ruby
+A light-weight DMN FEEL expression evaluator and business rule engine in Ruby.
 
 This gem implements a subset of FEEL (Friendly Enough Expression Language) as defined in the [DMN 1.3 specification](https://www.omg.org/spec/DMN/1.3/PDF) with some additional extensions.
 
-FEEL expressions are parsed into an abstract syntax tree (AST) and then evaluated in a context. The context is a hash of variables that are available to the expression. Expressions can also invoke built-in and user-defined functions.
+FEEL expressions are parsed into an abstract syntax tree (AST) and then evaluated in a context. The context is a hash of variables and functions to be resolved inside the expression.
 
-Expressions are safe, side-effect free, and deterministic. They are ideal for capturing business logic for storage in a database or embedded in DMN or BPMN documents for execution in a workflow engine like [spot-flow](https://github.com/connectedbits/spot_flow).
+Expressions are safe, side-effect free, and deterministic. They are ideal for capturing business logic for storage in a database or embedded in DMN, BPMN, or Form documents for execution in a workflow engine like [spot-flow](https://github.com/connectedbits/spot_flow).
 
 This project was inspired by these excellent libraries:
 
