@@ -130,7 +130,7 @@ result = SpotFeel::Dmn::Decision.decide('fine_decision', decisions:, context:)
 
 - [x] Parse DMN XML documents
 - [x] Evaluate DMN Decision Tables
-- [ ] Evaluate dependent DMN Decision Tables
+- [x] Evaluate dependent DMN Decision Tables
 - [ ] Evaluate Expression Decisions
 
 ## Installation

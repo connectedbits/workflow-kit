@@ -21,13 +21,11 @@ module SpotFeel
     end
   
     def self.eval(expression, context: {})
-      ctx = ActiveSupport::HashWithIndifferentAccess.new(context.merge(SpotFeel.builtin_functions))
+      ctx = ActiveSupport::HashWithIndifferentAccess.new(context.merge(SpotFeel.builtin_functions))    
       parse(expression).eval(ctx)
     end
   
     def self.test(input, expression, context: {})
-      # Replace ? with input, but not when ? is inside a string literal
-      #expression = expression.gsub(/(?<=\()?\?(?=\,)/) { |match| "\"#{input}\"" }
       ctx = ActiveSupport::HashWithIndifferentAccess.new(context.merge(SpotFeel.builtin_functions))
       parse_test(expression).eval(ctx).call(input)
     end
@@ -40,10 +38,24 @@ module SpotFeel
       @@parser.parse_test(expression).present?
     end
 
+    #
+    # Walk the tree and return an array of all function names called
+    #
+    def self.functions_called(tree)
+      return [] if tree.nil?
+
+      # Traverse the syntax tree to find all FunctionInvocation nodes
+      function_invocations = tree.descendants.select { |node| node.type == :FunctionInvocation }
+
+      # Extract the function names from the FunctionInvocation nodes
+      function_names = function_invocations.map { |node| node.children[0].value }
+
+      function_names
+    end
+
     def self.named_variables(expression)
       # Parse the expression
       tree = parse(expression)
-      return [] if tree.nil?
 
       # Initialize a set to hold the qualified names
       qualified_names = Set.new

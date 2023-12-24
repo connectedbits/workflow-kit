@@ -62,21 +62,17 @@ module SpotFeel
               test_date: Date.new(2018, 01, 03),
             }
           }
-
-          # NOTE: This fails because we can't handle this test:
-          # Testing 2018-01-03 against [period_begin .. period_begin + period_duration]
-          # TODO: Add support for this type of test and uncomment this test
           
-          # result = Decision.decide('primary_decision', decisions:, context:)
-          # _(result[:output][:score]).must_equal(50)
+          result = Dmn::Decision.decide('primary_decision', decisions:, context:)
+          _(result[:output][:score]).must_equal(50)   
 
-          # context[:input][:test_date] = Date.new(2018, 04, 04)
-          # result = Decision.decide('primary_decision', decisions:, context:)
-          # _(result[:output][:score]).must_equal(100)
+          context[:input][:test_date] = Date.new(2018, 04, 04)
+          result = Decision.decide('primary_decision', decisions:, context:)
+          _(result[:output][:score]).must_equal(100)
 
-          # context[:input][:test_date] = Date.new(2018, 04, 05)
-          # result = Decision.decide('primary_decision', decisions:, context:)
-          # _(result[:output][:score]).must_equal(0)     
+          context[:input][:test_date] = Date.new(2018, 04, 05)
+          result = Decision.decide('primary_decision', decisions:, context:)
+          _(result[:output][:score]).must_equal(0) 
         end
 
         it "should evaluate decision with unique hit policy" do

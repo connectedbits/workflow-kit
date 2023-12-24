@@ -108,6 +108,17 @@ describe SpotFeel do
         _(SpotFeel.test(42, '[limit.lower .. limit.upper]', context: { limit: { upper: 50, lower: 40 } })).must_equal true
       end
 
+      it "should do date math inside an interval" do
+        #_(SpotFeel.test(42, '[limit.lower .. limit.upper]', context: { limit: { upper: 50, lower: 40 } })).must_equal true
+        period_begin = Date.new(2018, 01, 01)
+        context = {
+          period_begin: period_begin,
+          period_duration: ActiveSupport::Duration.build(2716146),
+        }
+        input = period_begin + 20.days
+        _(SpotFeel.test(input, '[period_begin .. period_begin + period_duration]', context:)).must_equal true
+      end
+
       it "should match input entry 'date(\"1963-12-23\")' to the date value 1963-12-23" do
         _(SpotFeel.test(Date.new(1963, 12, 23), 'date("1963-12-23")')).must_equal true
         _(SpotFeel.test(Date.new(1963, 12, 24), 'date("1963-12-23")')).must_equal false

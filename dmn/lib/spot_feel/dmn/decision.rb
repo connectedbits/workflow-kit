@@ -53,10 +53,9 @@ module SpotFeel
           next if already_evaluated_decisions[required_decision_id]
           next if decisions.find { |d| d.id == required_decision_id }.nil?
 
-          result = decide(required_decision_id, decisions: decisions, context: context)
+          result = decide(required_decision_id, decisions:, context:)
 
-          context[:output] ||= {}
-          context[:output].merge!(result) if result.is_a?(Hash)
+          context.merge!(result) if result.is_a?(Hash)
 
           already_evaluated_decisions[required_decision_id] = true
         end
@@ -76,14 +75,16 @@ module SpotFeel
           # Test all input entries
           test_results = []
           rule.input_entries.each_with_index do |input_entry, index|
-            test_results.push test_input_entry(input_values[index], input_entry, context: context)
+            test_results.push test_input_entry(input_values[index], input_entry, context)
           end
 
           # If all input entries passed, we have a match 
           if test_results.all?
             output_value = HashWithIndifferentAccess.new
             decision_table.outputs.each_with_index do |output, index|
-              output_value[output.name] = SpotFeel.eval(rule.output_entries[index].expression, context: context)
+              output_value[output.name] = SpotFeel.eval(rule.output_entries[index].expression, context:)
+              val = SpotFeel.eval(rule.output_entries[index].expression, context:)
+              nested_hash_value(output_value, output.name, val)
             end
 
             return output_value if decision_table.hit_policy == :first || decision_table.hit_policy == :unique
@@ -98,6 +99,17 @@ module SpotFeel
       def test_input_entry(input_value, input_entry, context = {})
         return true if input_entry.test.nil? || input_entry.test == '-'
         return SpotFeel.test(input_value, input_entry.test, context: context)
+      end
+
+      def nested_hash_value(hash, key_string, value)
+        keys = key_string.split('.')
+        current = hash
+        keys[0...-1].each do |key|
+          current[key] ||= {}
+          current = current[key]
+        end
+        current[keys.last] = value
+        hash
       end
     end
   end
