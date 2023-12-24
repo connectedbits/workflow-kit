@@ -7,21 +7,33 @@ module SpotFeel
     describe Decision do
 
       describe :decisions_from_xml do
-        let(:decisions) { SpotFeel.decisions_from_xml(fixture_source("test.dmn")) }
-        let(:primary_decision) { decisions.find { |d| d.id == "primary_decision" } }
-        let(:dependent_decision) { decisions.find { |d| d.id == "dependent_decision" } }
+        describe :dependent_decisions do
+          let(:decisions) { SpotFeel.decisions_from_xml(fixture_source("test.dmn")) }
+          let(:primary_decision) { decisions.find { |d| d.id == "primary_decision" } }
+          let(:dependent_decision) { decisions.find { |d| d.id == "dependent_decision" } }
 
-        it "returns an array of decisions" do
-          _(decisions.size).must_equal(2)
-          _(primary_decision).wont_be_nil
-          _(dependent_decision).wont_be_nil
+          it "returns an array of decisions" do
+            _(decisions.size).must_equal(2)
+            _(primary_decision).wont_be_nil
+            _(dependent_decision).wont_be_nil
+          end
+
+          it "must parse decision attributes" do
+              _(primary_decision.name).must_equal("Primary Decision")
+              _(primary_decision.decision_table).wont_be_nil
+              _(dependent_decision.name).must_equal("Dependent Decision")
+              _(dependent_decision.decision_table).wont_be_nil
+          end
         end
 
-        it "must parse decision attributes" do
-            _(primary_decision.name).must_equal("Primary Decision")
-            _(primary_decision.decision_table).wont_be_nil
-            _(dependent_decision.name).must_equal("Dependent Decision")
-            _(dependent_decision.decision_table).wont_be_nil
+        describe :literal_expression do
+          let(:decisions) { SpotFeel.decisions_from_xml(fixture_source("test_literal_decision.dmn")) }
+          let(:decision) { decisions.first }  
+
+          it "returns a literal decision" do
+            _(decision).wont_be_nil
+            _(decision.literal_expression?).must_equal(true)
+          end          
         end
       end
 
@@ -100,6 +112,15 @@ module SpotFeel
             { "message" => "Message 4" },
             { "message" => "Message 5" },
           ])
+        end
+
+        it "should evaluate a literal expression" do
+          decisions = SpotFeel.decisions_from_xml(fixture_source("test_literal_decision.dmn"))
+          context = {
+            age: 16
+          }
+          result = Decision.decide('literal_decision', decisions:, context:)
+          _(result).must_equal({ "age_classification" => "minor" })
         end
       end
     end

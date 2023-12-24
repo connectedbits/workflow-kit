@@ -3,13 +3,15 @@
 module SpotFeel
   module Dmn
     class Decision
-      attr_accessor :id, :name, :decision_table, :required_decision_ids
+      attr_accessor :id, :name, :decision_table, :required_decision_ids, :variable_name, :literal_expression
 
-      def initialize(id:, name:, decision_table:, required_decision_ids: [])
+      def initialize(id:, name:, decision_table: nil, required_decision_ids: [], variable_name: nil, literal_expression: nil)
         @id = id
         @name = name
         @decision_table = decision_table
         @required_decision_ids = required_decision_ids
+        @variable_name = variable_name
+        @literal_expression = literal_expression
       end
 
       #
@@ -20,15 +22,28 @@ module SpotFeel
       #
       def self.decisions_from_xml(xml)
         Array.wrap(Hash.from_xml(xml)["definitions"]["decision"]).map do |decision_xml|
-          Decision.new(
-            id: decision_xml["id"],
-            name: decision_xml["name"],
-            decision_table: DecisionTable.from_xml(decision_xml["decisionTable"]),
-            required_decision_ids: Array.wrap(decision_xml["informationRequirement"]).map do |info_req|
-              info_req["requiredDecision"] && info_req["requiredDecision"]["href"] ? info_req["requiredDecision"]["href"].delete("#") : nil
-            end.compact,
-          )
+          if decision_xml["decisionTable"]
+            Decision.new(
+              id: decision_xml["id"],
+              name: decision_xml["name"],
+              decision_table: DecisionTable.from_xml(decision_xml["decisionTable"]),
+              required_decision_ids: Array.wrap(decision_xml["informationRequirement"]).map do |info_req|
+                info_req["requiredDecision"] && info_req["requiredDecision"]["href"] ? info_req["requiredDecision"]["href"].delete("#") : nil
+              end.compact,
+            )
+          elsif decision_xml["literalExpression"]
+            Decision.new(
+              id: decision_xml["id"],
+              name: decision_xml["name"],
+              variable_name: decision_xml["variable"]["name"],
+              literal_expression: decision_xml["literalExpression"]["text"],
+            )
+          end
         end
+      end
+
+      def literal_expression?
+        !literal_expression.nil?
       end
 
       #
@@ -64,6 +79,12 @@ module SpotFeel
       end
 
       def decide(context = {})
+        # If it's a literal decision, just evaluate the expression and return the result
+        return HashWithIndifferentAccess.new.tap do |result|
+          result[variable_name] = SpotFeel.eval(literal_expression, context:)
+        end if literal_expression?
+
+        # It's a decision table, evaluate it
         output_values = []
 
         # Evaluate all inputs
