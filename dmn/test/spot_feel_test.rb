@@ -166,17 +166,6 @@ describe SpotFeel do
         result = SpotFeel::Dmn::Decision.decide('fine_decision', decisions:, context:)
         _(result).must_equal({ "amount" => 1000, "points" => 7 })
       end
-
-      it "should evaluate dependent decisions" do
-        # decisions = SpotFeel.decisions_from_xml(fixture_source("dinner.dmn"))
-        # context = {
-        #   guest_count: 6,
-        #   season: "Fall",
-        #   children: true,
-        # }
-        # result = SpotFeel::Dmn::Decision.decide('beverages_decision', decisions:, context:)
-        # _(result).must_equal({ "beverages" => "Water, Wine" })
-      end
     end
   end
 end

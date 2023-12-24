@@ -21,13 +21,15 @@ module SpotFeel
     end
   
     def self.eval(expression, context: {})
-      ctx = ActiveSupport::HashWithIndifferentAccess.new(context.merge(SpotFeel.builtin_functions))    
-      parse(expression).eval(ctx)
+      tree = parse(expression)
+      functions = SpotFeel.builtin_function_named(named_functions(tree))  
+      tree.eval(ActiveSupport::HashWithIndifferentAccess.new(context.merge(functions)))
     end
   
     def self.test(input, expression, context: {})
-      ctx = ActiveSupport::HashWithIndifferentAccess.new(context.merge(SpotFeel.builtin_functions))
-      parse_test(expression).eval(ctx).call(input)
+      tree = parse_test(expression)
+      functions = SpotFeel.builtin_function_named(named_functions(tree)) 
+      tree.eval(ActiveSupport::HashWithIndifferentAccess.new(context.merge(functions))).call(input)
     end
 
     def valid_expression?(expression)
@@ -41,16 +43,30 @@ module SpotFeel
     #
     # Walk the tree and return an array of all function names called
     #
-    def self.functions_called(tree)
+    def self.named_functions(tree)
       return [] if tree.nil?
 
-      # Traverse the syntax tree to find all FunctionInvocation nodes
-      function_invocations = tree.descendants.select { |node| node.type == :FunctionInvocation }
+      # Initialize a set to hold the qualified names
+      function_names = Set.new
 
-      # Extract the function names from the FunctionInvocation nodes
-      function_names = function_invocations.map { |node| node.children[0].value }
+      # Define a lambda for the recursive function
+      walk_tree = lambda do |node|
+        # If the node is a qualified name, add it to the set
+        if node.is_a?(SpotFeel::FunctionInvocation)
+          function_names << node.fn_name.text_value
+        end
 
-      function_names
+        # Recursively walk the child nodes
+        node.elements&.each do |child|
+          walk_tree.call(child)
+        end
+      end
+
+      # Start walking the tree from the root
+      walk_tree.call(tree)
+
+      # Return the array of functions
+      function_names.to_a
     end
 
     def self.named_variables(expression)
