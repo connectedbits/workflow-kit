@@ -37,6 +37,9 @@ module SpotFeel
               name: decision_xml["name"],
               variable_name: decision_xml["variable"]["name"],
               literal_expression: decision_xml["literalExpression"]["text"],
+              required_decision_ids: Array.wrap(decision_xml["informationRequirement"]).map do |info_req|
+                info_req["requiredDecision"] && info_req["requiredDecision"]["href"] ? info_req["requiredDecision"]["href"].delete("#") : nil
+              end.compact,
             )
           end
         end
