@@ -80,6 +80,23 @@ result = SpotFeel::Dmn::Decision.decide('fine_decision', decisions:, context:)
 # => { "amount" => 1000, "points" => 7 })
 ```
 
+To get a list of variables or functions used in an expression:
+
+```ruby
+Expression.new('person.first_name + " " + person.last_name').variable_names
+# => ["person.age, person.last_name"]
+```
+
+```ruby
+Expression.new('sum([1, 2, 3])').function_names
+# => ["sum"]
+```
+
+```ruby
+UnaryTests.new('> speed - speed_limit').variable_names
+# => ["speed, speed_limit"]
+```
+
 ## Supported Features
 
 ### Data Types
