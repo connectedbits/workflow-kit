@@ -65,6 +65,8 @@ SpotFeel.test("Eric", '"Bob", "Holly", "Eric"')
 # => true
 ```
 
+![Decision Table](docs/media/decision_table.png)
+
 To evaluate a DMN decision table:
 
 ```ruby
