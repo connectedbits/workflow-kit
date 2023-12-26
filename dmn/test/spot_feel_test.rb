@@ -109,7 +109,6 @@ describe SpotFeel do
       end
 
       it "should do date math inside an interval" do
-        #_(SpotFeel.test(42, '[limit.lower .. limit.upper]', context: { limit: { upper: 50, lower: 40 } })).must_equal true
         period_begin = Date.new(2018, 01, 01)
         context = {
           period_begin: period_begin,
