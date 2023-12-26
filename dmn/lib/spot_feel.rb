@@ -9,6 +9,7 @@ require "active_support/duration"
 require "active_support/time"
 require "active_support/core_ext/hash"
 require "active_support/core_ext/object/json"
+require "active_support/configurable"
 
 require "treetop"
 
@@ -22,23 +23,37 @@ require "spot_feel/dmn"
 module SpotFeel
   class SyntaxError < StandardError; end
 
-  def self.eval(expression_text, context: {})
+  extend self
+
+  include ActiveSupport::Configurable
+
+  def configuration
+    (@configuration ||= ActiveSupport::OrderedOptions.new).tap do |config|
+      config.debug = false
+    end
+  end
+
+  def configure
+    yield configuration
+  end
+
+  def eval(expression_text, context: {})
     expression = Expression.new(expression_text)
     raise SyntaxError, "Expression is not valid" unless expression.valid?
     expression.eval(context)
   end
 
-  def self.test(input, unary_tests_text, context: {})
+  def test(input, unary_tests_text, context: {})
     unary_tests = UnaryTests.new(unary_tests_text)
     raise SyntaxError, "Unary tests are not valid" unless unary_tests.valid?
     unary_tests.test(input, context)
   end
 
-  def self.decisions_from_xml(xml)
+  def decisions_from_xml(xml)
     Dmn::Decision.decisions_from_xml(xml)
   end
 
-  def self.decide(decision_id, decisions:, context: {})
+  def decide(decision_id, decisions:, context: {})
     Dmn::Decision.decide(decision_id, decisions:, context:)
   end
 end

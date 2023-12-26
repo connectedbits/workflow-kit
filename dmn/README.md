@@ -78,7 +78,7 @@ context = {
     speed_limit: 65,
   }
 }
-result = SpotFeel::Dmn::Decision.decide('fine_decision', decisions:, context:)
+result = SpotFeel.decide('fine_decision', decisions:, context:)
 # => { "amount" => 1000, "points" => 7 })
 ```
 

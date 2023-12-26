@@ -120,6 +120,8 @@ module SpotFeel
         output_values.empty? ? nil : output_values
       end
 
+      private
+
       def test_input_entry(input_value, input_entry, context = {})
         return true if input_entry.test.nil? || input_entry.test == '-'
         return SpotFeel.test(input_value, input_entry.test, context: context)
