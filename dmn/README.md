@@ -18,21 +18,20 @@ This project was inspired by these excellent libraries:
 To evaluate an expression:
 
 ```ruby
-context = { name: "World" }
-SpotFeel.eval('"👋 Hello " + name', context:)
+SpotFeel.eval('"👋 Hello " + name', variables: { name: "World" })
 # => "👋 Hello World"
 ```
 
 A slightly more complex example:
 
 ```ruby
-context = {
+variables = {
   person: {
     name: "Eric",
     age: 59,
   }
 }
-SpotFeel.eval('if person.age >= 18 then "adult" else "minor"', context:)
+SpotFeel.eval('if person.age >= 18 then "adult" else "minor"', variables:)
 # => "adult"
 ```
 
@@ -46,10 +45,10 @@ SpotFeel.eval('sum([1, 2, 3])')
 Calling a user-defined function:
 
 ```ruby
-context = {
+functions = {
   "reverse": ->(s) { s.reverse }
 }
-SpotFeel.eval('reverse("Hello World!")', context:)
+SpotFeel.eval('reverse("Hello World!")', functions:)
 # => "!dlroW olleH"
 ```
 
@@ -71,14 +70,14 @@ To evaluate a DMN decision table:
 
 ```ruby
 decisions = SpotFeel.decisions_from_xml(fixture_source("fine.dmn"))
-context = {
+variables = {
   violation: {
     type: "speed",
     actual_speed: 100,
     speed_limit: 65,
   }
 }
-result = SpotFeel.decide('fine_decision', decisions:, context:)
+result = SpotFeel.decide('fine_decision', decisions:, variables:)
 # => { "amount" => 1000, "points" => 7 })
 ```
 

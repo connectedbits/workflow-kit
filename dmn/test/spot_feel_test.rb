@@ -12,11 +12,11 @@ module SpotFeel
 
   describe :expressions do
     it "should eval a simple expression" do
-      _(SpotFeel.eval('"👋 Hello " + name', context: { name: 'World' })).must_equal "👋 Hello World"
+      _(SpotFeel.eval('"👋 Hello " + name', variables: { name: 'World' })).must_equal "👋 Hello World"
     end
 
     it "should eval slightly more complex expressions" do
-      _(SpotFeel.eval('if person.age >= 18 then "adult" else "minor"', context: { person: { name: "Eric", age: 59 } })).must_equal "adult"
+      _(SpotFeel.eval('if person.age >= 18 then "adult" else "minor"', variables: { person: { name: "Eric", age: 59 } })).must_equal "adult"
     end
 
     it "should eval built-in functions" do
@@ -24,7 +24,7 @@ module SpotFeel
     end
 
     it "should eval user defined functions" do
-      _(SpotFeel.eval('reverse("Hello World!")', context: { "reverse": ->(s) { s.reverse } })).must_equal "!dlroW olleH"
+      _(SpotFeel.eval('reverse("Hello World!")', variables: { "reverse": ->(s) { s.reverse } })).must_equal "!dlroW olleH"
     end
   end
 
@@ -87,37 +87,37 @@ module SpotFeel
     end
 
     it "should match input entry 'property' to the same value as the property (must be given in the context)" do
-      _(SpotFeel.test(42, 'property', context: { property: 42 })).must_equal true
+      _(SpotFeel.test(42, 'property', variables: { property: 42 })).must_equal true
     end
 
     it "should match input entry 'object.property' to the same value as the property of the object" do
-      _(SpotFeel.test(42, 'object.property', context: { object: { property: 42 } })).must_equal true
+      _(SpotFeel.test(42, 'object.property', variables: { object: { property: 42 } })).must_equal true
     end
 
     it "should match input entry 'f(a)' to same value as the function evaluated with the property (function and property must be given in the context)" do
-      _(SpotFeel.test(true, 'f(a)', context: { "f": ->(a) { a == 42 }, a: 42 })).must_equal true
+      _(SpotFeel.test(true, 'f(a)', functions: { "f": ->(a) { a == 42 }, a: 42 })).must_equal true
     end
 
     it "should match input entry 'limit - 10' to the same value as the limit minus 10" do
-      _(SpotFeel.test(42, 'limit - 10', context: { limit: 52 })).must_equal true
+      _(SpotFeel.test(42, 'limit - 10', variables: { limit: 52 })).must_equal true
     end
 
     it "should match input entry 'limit * 2' to the same value as the limit times 2" do
-      _(SpotFeel.test(42, 'limit * 2', context: { limit: 21 })).must_equal true
+      _(SpotFeel.test(42, 'limit * 2', variables: { limit: 21 })).must_equal true
     end
 
     it "should match input entry '[limit.upper, limit.lower]' to a value between the value of two given properties of object limit" do
-      _(SpotFeel.test(42, '[limit.lower .. limit.upper]', context: { limit: { upper: 50, lower: 40 } })).must_equal true
+      _(SpotFeel.test(42, '[limit.lower .. limit.upper]', variables: { limit: { upper: 50, lower: 40 } })).must_equal true
     end
 
     it "should do date math inside an interval" do
       period_begin = Date.new(2018, 01, 01)
-      context = {
+      variables = {
         period_begin: period_begin,
         period_duration: ActiveSupport::Duration.build(2716146),
       }
       input = period_begin + 20.days
-      _(SpotFeel.test(input, '[period_begin .. period_begin + period_duration]', context:)).must_equal true
+      _(SpotFeel.test(input, '[period_begin .. period_begin + period_duration]', variables:)).must_equal true
     end
 
     it "should match input entry 'date(\"1963-12-23\")' to the date value 1963-12-23" do
@@ -126,11 +126,11 @@ module SpotFeel
     end
 
     it "should match input entry 'date(property)' to the date which is defined by the value of the given property, the time if cropped to 00:00:00" do
-      _(SpotFeel.test(Date.new(1963, 12, 23), 'date(property)', context: { property: Date.new(1963, 12, 23) })).must_equal true
+      _(SpotFeel.test(Date.new(1963, 12, 23), 'date(property)', variables: { property: Date.new(1963, 12, 23) })).must_equal true
     end
 
     it "should match input entry 'date and time(property)' to the date and time which is defined by the value of the given property" do
-      _(SpotFeel.test(DateTime.new(1963, 12, 23, 12, 34, 56), 'date and time(property)', context: { property: DateTime.new(1963, 12, 23, 12, 34, 56) })).must_equal true
+      _(SpotFeel.test(DateTime.new(1963, 12, 23, 12, 34, 56), 'date and time(property)', variables: { property: DateTime.new(1963, 12, 23, 12, 34, 56) })).must_equal true
     end
 
     it "should match input entry 'duration(d)' to the duration specified by d, an ISO 8601 duration string like P3D for three days (duration is built-in either)" do
@@ -157,14 +157,14 @@ module SpotFeel
   describe :decisions do
     it "should evaluate a simple decision table" do
       decisions = SpotFeel.decisions_from_xml(fixture_source("fine.dmn"))
-      context = { 
+      variables = { 
         violation: {
           type: "speed", 
           actual_speed: 100, 
           speed_limit: 65, 
         }
       } 
-      result = SpotFeel.decide('fine_decision', decisions:, context:)
+      result = SpotFeel.decide('fine_decision', decisions:, variables:)
       _(result).must_equal({ "amount" => 1000, "points" => 7 })
     end
   end
