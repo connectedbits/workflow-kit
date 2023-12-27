@@ -19,6 +19,7 @@ require "spot_feel/parser"
 require "spot_feel/expression"
 require "spot_feel/unary_tests"
 require "spot_feel/dmn"
+require "spot_feel/decision"
 
 module SpotFeel
   class SyntaxError < StandardError; end
@@ -50,10 +51,10 @@ module SpotFeel
   end
 
   def decisions_from_xml(xml)
-    Dmn::Decision.decisions_from_xml(xml)
+    Decision.decisions_from_xml(xml)
   end
 
   def decide(decision_id, decisions:, context: {})
-    Dmn::Decision.decide(decision_id, decisions:, context:)
+    Decision.decide(decision_id, decisions:, context:)
   end
 end
