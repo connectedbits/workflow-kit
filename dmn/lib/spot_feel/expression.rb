@@ -11,7 +11,7 @@ module SpotFeel
     end
 
     def eval(context = {})
-      tree.eval(ActiveSupport::HashWithIndifferentAccess.new(context.merge(functions)))
+      tree.eval(ActiveSupport::HashWithIndifferentAccess.new(functions.merge(context)))
     end
 
     def valid?

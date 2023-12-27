@@ -6,7 +6,7 @@ module SpotFeel
     end
 
     def test(input, context = {})
-      tree.eval(ActiveSupport::HashWithIndifferentAccess.new(context.merge(functions))).call(input)  
+      tree.eval(ActiveSupport::HashWithIndifferentAccess.new(functions.merge(context))).call(input)  
     end
   end
 end
