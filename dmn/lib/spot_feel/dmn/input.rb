@@ -20,10 +20,6 @@ module SpotFeel
           type_ref: xml["inputExpression"] ? xml["inputExpression"]["typeRef"]&.downcase&.to_sym : nil,
         )
       end
-
-      def eval(context: {})
-        SpotFeel.eval(expression, context:)
-      end
     end
   end
 end

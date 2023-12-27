@@ -14,7 +14,6 @@ require "active_support/configurable"
 require "treetop"
 
 require "spot_feel/node"
-require "spot_feel/builtin_functions"
 require "spot_feel/parser"
 require "spot_feel/expression"
 require "spot_feel/unary_tests"
