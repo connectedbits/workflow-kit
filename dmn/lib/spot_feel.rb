@@ -24,8 +24,6 @@ module SpotFeel
 
   class SyntaxError < StandardError; end
 
-  #extend self
-
   def self.eval(expression_text, variables: {}, functions: {})
     expression = Expression.new(expression_text)
     raise SyntaxError, "Expression is not valid" unless expression.valid?
