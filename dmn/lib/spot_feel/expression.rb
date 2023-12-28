@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SpotFeel
   class Expression
     attr_reader :text
@@ -10,8 +12,8 @@ module SpotFeel
       @tree ||= Parser.parse(text)
     end
 
-    def eval(context = {})
-      tree.eval(ActiveSupport::HashWithIndifferentAccess.new(functions.merge(context)))
+    def eval(variables = {})
+      tree.eval(functions.merge(variables))
     end
 
     def valid?
@@ -19,7 +21,9 @@ module SpotFeel
     end
 
     def functions
-      Expression.builtin_functions.slice(*named_functions)
+      builtins = Expression.builtin_functions.slice(*named_functions)
+      custom = (SpotFeel.config.functions || {}).slice(*named_functions)
+      ActiveSupport::HashWithIndifferentAccess.new(builtins.merge(custom))
     end
 
     def named_functions
@@ -75,12 +79,10 @@ module SpotFeel
         # Conversion functions
         "string": ->(from) { from.to_s },
         "number": ->(from) { from.include?(".") ? from.to_f : from.to_i },
-  
         # Boolean functions
         # "not": ->(value) { value == true ? false : true },
         "is defined": ->(value) { !value.nil? },
         "get or else": ->(value, default) { value.nil? ? default : value },
-  
         # String functions
         "substring": ->(string, start, length) { string[start - 1, length] },
         "substring before": ->(string, match) { string.split(match).first },
@@ -96,7 +98,6 @@ module SpotFeel
         "split": ->(string, match) { string.split(match) },
         "strip": -> (string) { string.strip },
         "extract": -> (string, pattern) { string.match(pattern).captures },
-  
         # Numeric functions
         "decimal": ->(n, scale) { n.round(scale) },
         "floor": ->(n) { n.floor },
@@ -111,7 +112,6 @@ module SpotFeel
         "odd": ->(n) { n.odd? },
         "even": ->(n) { n.even? },
         "random number": ->(n) { rand(n) },
-  
         # List functions
         "list contains": ->(list, match) { list.include?(match) },
         "count": ->(list) { list.length },
@@ -141,13 +141,11 @@ module SpotFeel
         "flatten": ->(list) { list.flatten },
         "sort": ->(list) { list.sort },
         "string join": ->(list, separator) { list.join(separator) },
-  
         # Context functions
         "get value": ->(context, name) { context[name] },
         "context put": ->(context, name, value) { context[name] = value; context },
         "context merge": ->(context1, context2) { context1.merge(context2) },
         "get entries": ->(context) { context.entries },
-  
         # Temporal functions
         "now": ->() { Time.now },
         "today": ->() { Date.today },

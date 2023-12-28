@@ -27,25 +27,25 @@ module SpotFeel
 
       describe :literal_expression do
         let(:decisions) { Decision.decisions_from_xml(fixture_source("test_literal_decision.dmn")) }
-        let(:decision) { decisions.first }  
+        let(:decision) { decisions.first }
 
         it "returns a literal decision" do
           _(decision).wont_be_nil
           _(decision.literal_expression?).must_equal(true)
-        end          
+        end
       end
     end
 
     describe :decide do
       it "should evaluate decisons" do
         decisions = Decision.decisions_from_xml(fixture_source("test.dmn"))
-        context = {
+        variables = {
           input: {
             category: "E",
-            reference_date: Date.new(2018, 01, 04)
-          }
+            reference_date: Date.new(2018, 01, 04),
+          },
         }
-        result = Decision.decide('dependent_decision', decisions:, context:)
+        result = Decision.decide('dependent_decision', decisions:, variables:)
         _(result[:period_begin]).must_be_kind_of(Date)
         _(result[:period_begin]).must_equal(Date.new(2018, 01, 04))
         _(result[:period_duration]).must_be_kind_of(ActiveSupport::Duration)
@@ -54,57 +54,57 @@ module SpotFeel
 
       it "should evaluate a decision with no matching rules" do
         decisions = Decision.decisions_from_xml(fixture_source("test_no_matching_rules.dmn"))
-        context = {
+        variables = {
           input: {
             input_1: 1,
             input_2: 2,
-          }
+          },
         }
-        result = Decision.decide('unique_decision', decisions:, context:)
+        result = Decision.decide('unique_decision', decisions:, variables:)
         _(result).must_be_nil
       end
 
       it "should evaluate a decision with a required decision" do
         decisions = Decision.decisions_from_xml(fixture_source("test.dmn"))
-        context = {
+        variables = {
           input: {
             category: "E",
             reference_date: Date.new(2018, 01, 04),
             test_date: Date.new(2018, 01, 03),
           }
         }
-        
-        result = Decision.decide('primary_decision', decisions:, context:)
-        _(result[:output][:score]).must_equal(50)   
 
-        context[:input][:test_date] = Date.new(2018, 04, 04)
-        result = Decision.decide('primary_decision', decisions:, context:)
+        result = Decision.decide('primary_decision', decisions:, variables:)
+        _(result[:output][:score]).must_equal(50)
+
+        variables[:input][:test_date] = Date.new(2018, 04, 04)
+        result = Decision.decide('primary_decision', decisions:, variables:)
         _(result[:output][:score]).must_equal(100)
 
-        context[:input][:test_date] = Date.new(2018, 04, 05)
-        result = Decision.decide('primary_decision', decisions:, context:)
-        _(result[:output][:score]).must_equal(0) 
+        variables[:input][:test_date] = Date.new(2018, 04, 05)
+        result = Decision.decide('primary_decision', decisions:, variables:)
+        _(result[:output][:score]).must_equal(0)
       end
 
       it "should evaluate decision with unique hit policy" do
         decisions = Decision.decisions_from_xml(fixture_source("test_unique.dmn"))
-        context = { 
+        variables = {
           input: { 
-            category: "B" 
-          } 
+            category: "B",
+          },
         }
-        result = Decision.decide('unique_decision', decisions:, context:)
+        result = Decision.decide('unique_decision', decisions:, variables:)
         _(result).must_equal({ "message" => "Message 2" })
       end
 
       it "should evaluate rule order hit policy" do
         decisions = Decision.decisions_from_xml(fixture_source("test_rule_order.dmn"))
-        context = { 
-          input: { 
-            category: "A" 
-          } 
+        variables = {
+          input: {
+            category: "A",
+          },
         }
-        result = Decision.decide('rule_order_decision', decisions:, context:)
+        result = Decision.decide('rule_order_decision', decisions:, variables:)
         _(result).must_equal([
           { "message" => "Message 1" },
           { "message" => "Message 3" },
@@ -115,10 +115,10 @@ module SpotFeel
 
       it "should evaluate a literal expression" do
         decisions = Decision.decisions_from_xml(fixture_source("test_literal_decision.dmn"))
-        context = {
-          age: 16
+        variables = {
+          age: 16,
         }
-        result = Decision.decide('literal_decision', decisions:, context:)
+        result = Decision.decide('literal_decision', decisions:, variables:)
         _(result).must_equal({ "age_classification" => "minor" })
       end
     end

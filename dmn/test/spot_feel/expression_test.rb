@@ -9,76 +9,76 @@ module SpotFeel
       tree = Expression.new('(3 + 4) + 2')
       _(tree.valid?).must_equal true
     end
-  
+
     describe :data_types do
       describe :null do
         it "should eval null literal" do
           _(Expression.new('null').eval).must_be_nil
         end
       end
-  
+
       describe :number do
         it "should eval integer literal" do
           _(Expression.new('314').eval).must_equal 314
         end
-  
+
         it "should eval float literal" do
           _(Expression.new('3.14').eval).must_equal 3.14
         end
-  
+
         it "should eval negative integers" do
           _(Expression.new('-314').eval).must_equal(-314)
         end
-  
+
         it "should eval negative floats" do
           _(Expression.new('-3.14').eval).must_equal(-3.14)
         end
       end
-  
+
       describe :string do
         it "should eval string literals with double quotes" do 
           _(Expression.new('"hello"').eval).must_equal "hello"
         end
-  
+
         it "should eval string literals with single quotes" do
           _(Expression.new("'hello'").eval).must_equal "hello"
         end
-  
+
         it "should handle unicode strings" do
           _(Expression.new('"横綱"').eval).must_equal("横綱")
         end
-  
+
         it "should handle string concatenation" do
           _(Expression.new('"hello" + "world"').eval).must_equal("helloworld")
         end
       end
-  
+
       describe :boolean do
         it "should eval true literal" do
           _(Expression.new('true').eval).must_equal true
         end
-  
+
         it "should eval false literal" do
           _(Expression.new('false').eval).must_equal false
         end
       end
-  
+
       describe :temporal do
         it "should eval dates" do
           _(Expression.new('date("1963-12-23")').eval).must_equal Date.new(1963, 12, 23)
         end
-  
+
         it "should eval times" do
           value = Expression.new('time("04:25:12")').eval
           _(value.class).must_equal Time
-  
+
           value = Expression.new('time("14:10:00+02:00")').eval
           _(value.class).must_equal Time
-  
+
           value = Expression.new('time("09:30:00@Europe/Rome")').eval
           _(value.class).must_equal Time
         end
-  
+
         it "should eval date and times" do
           value = Expression.new('date and time("2017-06-23T04:25:12")').eval
           _(value.class).must_equal DateTime
@@ -89,17 +89,17 @@ module SpotFeel
           _(value.min).must_equal 25
           _(value.sec).must_equal 12
         end
-  
+
         it "should eval durations" do
           value = Expression.new('duration("PT6H")').eval
           _(value.class).must_equal ActiveSupport::Duration
           _(value.in_hours).must_equal 6
         end
-  
+
         it "should support date math" do
           _(Expression.new('date("2019-01-01") + duration("P1D")').eval).must_equal Date.parse("2019-01-02")
         end
-  
+
         it "should eval date properties" do
           # _(SpotFeel.eval('date("1963-12-23").year')).must_equal 1963
           # _(SpotFeel.eval('date("1963-12-23").month')).must_equal 12
@@ -107,20 +107,20 @@ module SpotFeel
           # _(SpotFeel.eval('date("1963-12-23").weekday')).must_equal 1
         end
       end
-  
+
       describe :list do
         it "should eval list literals (arrays)" do
           _(Expression.new('[ 2, 3, 4, 5 ]').eval).must_equal [2, 3, 4, 5]
           _(Expression.new('["John", "Paul", "George", "Ringo"]').eval).must_equal ["John", "Paul", "George", "Ringo"]
         end
       end
-  
+
       describe :context do
         it "should eval context literals (hashes)" do
           _(Expression.new('{ "a": 1, "b": 2 }').eval).must_equal({ "a" => 1, "b" => 2 })
         end
       end
-    end  
+    end
 
     describe :arithmetic do
       describe :addition do
@@ -202,18 +202,22 @@ module SpotFeel
 
     describe :function_invocation do
       it "should invoke a function" do
-        _(Expression.new('reverse("Hello World")').eval(reverse: proc { |str| str.reverse })).must_equal "dlroW olleH"
+        SpotFeel.config.functions = { "reverse" => proc { |str| str.reverse } }
+        _(Expression.new('reverse("Hello World")').eval).must_equal "dlroW olleH"
       end
 
       it "should parse single parameter" do
-        _(Expression.new('reverse("Hello World")').eval(reverse: proc { |str| str.reverse })).must_equal "dlroW olleH"
+        SpotFeel.config.functions = { "reverse" => proc { |str| str.reverse } }
+        _(Expression.new('reverse("Hello World")').eval).must_equal "dlroW olleH"
       end
 
       it "should reference variables in the context" do
-        _(Expression.new('greet(name)').eval(name: 'Eric', greet: proc { |name| "Hi #{name}" })).must_equal "Hi Eric"
+        SpotFeel.config.functions = { "greet" => proc { |name| "Hi #{name}" } }
+        _(Expression.new('greet(name)').eval(name: "Eric")).must_equal "Hi Eric"
       end
 
       it "should parse multiple parameters" do
+        # Note: also works passing functions as variables
         _(Expression.new('plus(1, 2)').eval(plus: proc { |x, y| x + y })).must_equal 3
       end
     end

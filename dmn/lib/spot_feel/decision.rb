@@ -81,7 +81,7 @@ module SpotFeel
       @input_entries = input_entries
       @output_entries = output_entries
     end
-    
+
     def self.from_xml(xml)
       Rule.new(
         id: xml["id"],
@@ -159,19 +159,19 @@ module SpotFeel
     end
 
     #
-    # Evaluates a decision given a set of decisions and a context
+    # Evaluates a decision given a set of decisions and variables
     #
     # @param String the id of the decision to evaluate
     # @param [Decision] an array of Decision objects
     # @param Used in recursive calls to pass along which decisions have already been evaluated
-    # @param Hash of context variables to use in evaluation
+    # @param Hash of variables to use in evaluation
     # @param Boolean whether to print debug output
     # @return
     #   - nil if no rule matched,
     #   - a hash if hit policy is :first or :unique and a rule matched,
     #   - an array of hashes if hit policy is :collect or :rule_order and one or more rules matched
     #
-    def self.decide(decision_id, decisions:, context: {}, already_evaluated_decisions: {})
+    def self.decide(decision_id, decisions:, variables: {}, already_evaluated_decisions: {})
       decision = decisions.find { |d| d.id == decision_id }
       raise Error, "Decision #{decision_id} not found" unless decision
 
@@ -180,20 +180,20 @@ module SpotFeel
         next if already_evaluated_decisions[required_decision_id]
         next if decisions.find { |d| d.id == required_decision_id }.nil?
 
-        result = decide(required_decision_id, decisions:, context:)
+        result = decide(required_decision_id, decisions:, variables:)
 
-        context.merge!(result) if result.is_a?(Hash)
+        variables.merge!(result) if result.is_a?(Hash)
 
         already_evaluated_decisions[required_decision_id] = true
       end
 
-      decision.decide(context)
+      decision.decide(variables)
     end
 
-    def decide(context = {})
+    def decide(variables = {})
       # If it's a literal decision, just evaluate the expression and return the result
       return HashWithIndifferentAccess.new.tap do |result|
-        result[variable_name] = Expression.new(literal_expression).eval(context)
+        result[variable_name] = Expression.new(literal_expression).eval(variables)
       end if literal_expression?
 
       # It's a decision table, evaluate it
@@ -201,22 +201,22 @@ module SpotFeel
 
       # Evaluate all inputs
       input_values = decision_table.inputs.map do |input|
-        SpotFeel.eval(input.expression, variables: context)
+        SpotFeel.eval(input.expression, variables: variables)
       end
 
       decision_table.rules.each do |rule|
         # Test all input entries
         test_results = []
         rule.input_entries.each_with_index do |input_entry, index|
-          test_results.push test_input_entry(input_values[index], input_entry, context)
+          test_results.push test_input_entry(input_values[index], input_entry, variables)
         end
 
         # If all input entries passed, we have a match 
         if test_results.all?
           output_value = HashWithIndifferentAccess.new
           decision_table.outputs.each_with_index do |output, index|
-            output_value[output.name] = Expression.new(rule.output_entries[index].expression).eval(context)
-            val = Expression.new(rule.output_entries[index].expression).eval(context)
+            output_value[output.name] = Expression.new(rule.output_entries[index].expression).eval(variables)
+            val = Expression.new(rule.output_entries[index].expression).eval(variables)
             nested_hash_value(output_value, output.name, val)
           end
 
@@ -228,7 +228,6 @@ module SpotFeel
 
       output_values.empty? ? nil : output_values
     end
-    
 
     private
 

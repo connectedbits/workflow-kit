@@ -7,8 +7,8 @@ module SpotFeel
       @tree ||= Parser.parse_test(text)
     end
 
-    def test(input, context = {})
-      tree.eval(ActiveSupport::HashWithIndifferentAccess.new(functions.merge(context))).call(input)  
+    def test(input, variables = {})
+      tree.eval(functions.merge(variables)).call(input)
     end
   end
 end
