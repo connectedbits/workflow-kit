@@ -10,25 +10,25 @@ module SpotFeel
     end
   end
 
-  describe :expressions do
+  describe :evaluate do
     it "should eval a simple expression" do
-      _(SpotFeel.eval('"👋 Hello " + name', variables: { name: 'World' })).must_equal "👋 Hello World"
+      _(SpotFeel.evaluate('"👋 Hello " + name', variables: { name: 'World' })).must_equal "👋 Hello World"
     end
 
     it "should eval slightly more complex expressions" do
-      _(SpotFeel.eval('if person.age >= 18 then "adult" else "minor"', variables: { person: { name: "Eric", age: 59 } })).must_equal "adult"
+      _(SpotFeel.evaluate('if person.age >= 18 then "adult" else "minor"', variables: { person: { name: "Eric", age: 59 } })).must_equal "adult"
     end
 
     it "should eval built-in functions" do
-        _(SpotFeel.eval('sum([1, 2, 3])')).must_equal 6
+      _(SpotFeel.evaluate('sum([1, 2, 3])')).must_equal 6
     end
 
     it "should eval user defined functions" do
-      _(SpotFeel.eval('reverse("Hello World!")', variables: { "reverse": ->(s) { s.reverse } })).must_equal "!dlroW olleH"
+      _(SpotFeel.evaluate('reverse("Hello World!")', variables: { "reverse": ->(s) { s.reverse } })).must_equal "!dlroW olleH"
     end
   end
 
-  describe :unary_tests do
+  describe :test do
     it "should match input entry '42' to the numeric value 42" do
       _(SpotFeel.test(42, '42')).must_equal true
       _(SpotFeel.test(41, '42')).must_equal false
@@ -95,7 +95,8 @@ module SpotFeel
     end
 
     it "should match input entry 'f(a)' to same value as the function evaluated with the property (function and property must be given in the context)" do
-      _(SpotFeel.test(true, 'f(a)', functions: { "f": ->(a) { a == 42 }, a: 42 })).must_equal true
+      SpotFeel.config.functions = { "f" => proc { |a| a == 42 } }
+      _(SpotFeel.test(true, 'f(a)', variables: { a: 42 })).must_equal true
     end
 
     it "should match input entry 'limit - 10' to the same value as the limit minus 10" do
@@ -154,18 +155,16 @@ module SpotFeel
     end
   end
 
-  describe :decisions do
-    it "should evaluate a simple decision table" do
-      decisions = SpotFeel.decisions_from_xml(fixture_source("fine.dmn"))
+  describe :decide do
+    it "should evaluate a decision" do
       variables = { 
         violation: {
-          type: "speed", 
-          actual_speed: 100, 
-          speed_limit: 65, 
-        }
-      } 
-      result = SpotFeel.decide('fine_decision', decisions:, variables:)
-      _(result).must_equal({ "amount" => 1000, "points" => 7 })
+          type: "speed",
+          actual_speed: 100,
+          speed_limit: 65,
+        },
+      }
+      _(SpotFeel.decide("fine_decision", definitions_xml: fixture_source("fine.dmn"), variables:)).must_equal({ "amount" => 1000, "points" => 7 })
     end
   end
 end

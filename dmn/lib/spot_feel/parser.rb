@@ -13,13 +13,13 @@ module SpotFeel
         raise SyntaxError, "Invalid expression" unless ast
       end
     end
-  
+
     def self.parse_test(expression)
       @@parser.parse(expression || '-', root: :simple_unary_tests).tap do |ast|
         raise SyntaxError, "Invalid unary test" unless ast
       end
     end
-  
+
     def self.clean_tree(root_node)
       return if(root_node.elements.nil?)
       root_node.elements.delete_if{|node| node.class.name == "Treetop::Runtime::SyntaxNode" }

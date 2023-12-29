@@ -18,7 +18,7 @@ This project was inspired by these excellent libraries:
 To evaluate an expression:
 
 ```ruby
-SpotFeel.eval('"👋 Hello " + name', variables: { name: "World" })
+SpotFeel.evaluate('"👋 Hello " + name', variables: { name: "World" })
 # => "👋 Hello World"
 ```
 
@@ -31,24 +31,24 @@ variables = {
     age: 59,
   }
 }
-SpotFeel.eval('if person.age >= 18 then "adult" else "minor"', variables:)
+SpotFeel.evaluate('if person.age >= 18 then "adult" else "minor"', variables:)
 # => "adult"
 ```
 
 Calling a built-in function:
 
 ```ruby
-SpotFeel.eval('sum([1, 2, 3])')
+SpotFeel.evaluate('sum([1, 2, 3])')
 # => 6
 ```
 
 Calling a user-defined function:
 
 ```ruby
-functions = {
+SpotFeel.config.functions = {
   "reverse": ->(s) { s.reverse }
 }
-SpotFeel.eval('reverse("Hello World!")', functions:)
+SpotFeel.evaluate('reverse("Hello World!")', functions:)
 # => "!dlroW olleH"
 ```
 
@@ -69,7 +69,6 @@ SpotFeel.test("Eric", '"Bob", "Holly", "Eric"')
 To evaluate a DMN decision table:
 
 ```ruby
-decisions = SpotFeel.decisions_from_xml(fixture_source("fine.dmn"))
 variables = {
   violation: {
     type: "speed",
@@ -77,24 +76,24 @@ variables = {
     speed_limit: 65,
   }
 }
-result = SpotFeel.decide('fine_decision', decisions:, variables:)
+result = SpotFeel.decide('fine_decision', definitions_xml: fixture_source("fine.dmn"), variables:)
 # => { "amount" => 1000, "points" => 7 })
 ```
 
 To get a list of variables or functions used in an expression:
 
 ```ruby
-Expression.new('person.first_name + " " + person.last_name').variable_names
+LiteralExpression.new(text: 'person.first_name + " " + person.last_name').variable_names
 # => ["person.age, person.last_name"]
 ```
 
 ```ruby
-Expression.new('sum([1, 2, 3])').function_names
+LiteralExpression.new(text: 'sum([1, 2, 3])').function_names
 # => ["sum"]
 ```
 
 ```ruby
-UnaryTests.new('> speed - speed_limit').variable_names
+UnaryTests.new(text: '> speed - speed_limit').variable_names
 # => ["speed, speed_limit"]
 ```
 

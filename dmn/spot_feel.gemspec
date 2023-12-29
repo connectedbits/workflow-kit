@@ -25,6 +25,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "activesupport", ">= 7.0.2.3"
   spec.add_dependency "awesome_print", "~> 1.9"
   spec.add_dependency "treetop"
+  spec.add_dependency "xmlhasher", "~> 1.0.7"
 
   spec.add_development_dependency "rake"
   spec.add_development_dependency "guard"
