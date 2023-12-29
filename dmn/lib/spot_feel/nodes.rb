@@ -279,7 +279,7 @@ module SpotFeel
 
   #
   # 30. name start char = "?" | [A-Z] | "\_" | [a-z] | [\uC0-\uD6] | [\uD8-\uF6] | [\uF8-\u2FF] | [\u370-\u37D] | [\u37F-\u1FFF] | [\u200C-\u200D] | [\u2070-\u218F] | [\u2C00-\u2FEF] | [\u3001-\uD7FF] | [\uF900-\uFDCF] | [\uFDF0-\uFFFD] | [\u10000-\uEFFFF] ;
-  # 
+  #
 
   #
   # 31. name part char = name start char | digit | \uB7 | [\u0300-\u036F] | [\u203F-\u2040] ;
@@ -417,16 +417,16 @@ module SpotFeel
       else
         quantified_every(context)
       end
+    end
 
-      def quantified_some(context)
-        quantified_expression = quantified_expression(context)
-        quantified_expression.any? { |input| satisfies(input, context) }
-      end
+    def quantified_some(context)
+      quantified_expression = quantified_expression(context)
+      quantified_expression.any? { |input| satisfies(input, context) }
+    end
 
-      def quantified_every(context)
-        quantified_expression = quantified_expression(context)
-        quantified_expression.all? { |input| satisfies(input, context) }        
-      end
+    def quantified_every(context)
+      quantified_expression = quantified_expression(context)
+      quantified_expression.all? { |input| satisfies(input, context) }
     end
   end
 
@@ -624,7 +624,7 @@ module SpotFeel
     def eval(context = {})
       head_val = head.eval(context)
       return head_val if head_val.is_a?(ActiveSupport::Duration) || head_val.is_a?(DateTime) || head_val.is_a?(Date) || head_val.is_a?(Time)
-      
+
       case keyword.text_value
       when "date and time"
         DateTime.parse(head_val)
