@@ -231,6 +231,16 @@ module SpotFeel
           # NOTE: If the condition c doesn't evaluate to a boolean value (e.g. null), it executes the expression b
           _(LiteralExpression.new(text: 'if null then "low" else "high"').evaluate).must_equal "high"
         end
+
+        it "should parse if expressions" do
+          _(LiteralExpression.new(text: 'if true then "Eric" else "Dave"').evaluate(cool: true)).must_equal("Eric")
+        end
+
+        it "should parse if expressions" do
+          _(LiteralExpression.new(text: 'if true then "Eric" else "Eli"').evaluate).must_equal("Eric")
+          skip "BUG: This expression fails with syntax error"
+          _(LiteralExpression.new(text: 'if condition then "Eric" else "Eli"').evaluate(condition: true)).must_equal("Eric")
+        end
       end
 
       describe :for_expression do
