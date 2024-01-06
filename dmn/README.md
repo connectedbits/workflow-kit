@@ -6,7 +6,7 @@ This gem implements a subset of FEEL (Friendly Enough Expression Language) as de
 
 FEEL expressions are parsed into an abstract syntax tree (AST) and then evaluated in a context. The context is a hash of variables and functions to be resolved inside the expression.
 
-Expressions are safe, side-effect free, and deterministic. They are ideal for capturing business logic for storage in a database or embedded in DMN, BPMN, or Form documents for execution in a workflow engine like [spot-flow](https://github.com/connectedbits/spot_flow).
+Expressions are safe, side-effect free, and deterministic. They are ideal for capturing business logic for storage in a database or embedded in DMN, BPMN, or Form documents for execution in a workflow engine like [SpotFlow](https://github.com/connectedbits/spot-flow).
 
 This project was inspired by these excellent libraries:
 

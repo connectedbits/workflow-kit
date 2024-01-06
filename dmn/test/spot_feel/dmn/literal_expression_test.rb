@@ -237,6 +237,7 @@ module SpotFeel
         end
 
         it "should parse if expressions" do
+          _(LiteralExpression.new(text: 'if age >= 18 then "adult" else "minor"').evaluate(age: 18)).must_equal("adult")
           _(LiteralExpression.new(text: 'if true then "Eric" else "Eli"').evaluate).must_equal("Eric")
           skip "BUG: This expression fails with syntax error"
           _(LiteralExpression.new(text: 'if condition then "Eric" else "Eli"').evaluate(condition: true)).must_equal("Eric")
