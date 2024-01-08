@@ -24,7 +24,16 @@ module SpotFeel
     end
 
     it "should eval user defined functions" do
-      _(SpotFeel.evaluate('reverse("Hello World!")', variables: { "reverse": ->(s) { s.reverse } })).must_equal "!dlroW olleH"
+      _(SpotFeel.evaluate('reverse_inline("Hello World!")', variables: { "reverse_inline": ->(s) { s.reverse } })).must_equal "!dlroW olleH"
+    end
+
+    it "should eval user defined functions from config" do
+      SpotFeel.config.functions = {
+        "upcase_config": ->(s) { s.upcase }
+      }
+      _(SpotFeel.evaluate('upcase_config("Hello World!")')).must_equal "HELLO WORLD!"
+    ensure
+      SpotFeel.config.functions = {}
     end
   end
 
