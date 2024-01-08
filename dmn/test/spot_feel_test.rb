@@ -157,7 +157,7 @@ module SpotFeel
 
   describe :decide do
     it "should evaluate a decision" do
-      variables = { 
+      variables = {
         violation: {
           type: "speed",
           actual_speed: 100,

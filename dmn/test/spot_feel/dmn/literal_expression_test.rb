@@ -36,7 +36,7 @@ module SpotFeel
         end
 
         describe :string do
-          it "should eval string literals with double quotes" do 
+          it "should eval string literals with double quotes" do
             _(LiteralExpression.new(text: '"hello"').evaluate).must_equal "hello"
           end
 

@@ -270,7 +270,7 @@ module SpotFeel
   end
 
   #
-  # 28. name start = name start char, { name part char } ; 
+  # 28. name start = name start char, { name part char } ;
   #
 
   #

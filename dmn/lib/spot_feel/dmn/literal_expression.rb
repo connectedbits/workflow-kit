@@ -127,9 +127,9 @@ module SpotFeel
           "product": ->(list) { list.inject(:*) },
           "mean": ->(list) { list.sum / list.length },
           "median": ->(list) { list.sort[list.length / 2] },
-          "stddev": ->(list) { 
+          "stddev": ->(list) {
             mean = list.sum / list.length.to_f
-            Math.sqrt(list.map { |n| (n - mean)**2 }.sum / list.length) 
+            Math.sqrt(list.map { |n| (n - mean)**2 }.sum / list.length)
           },
           "mode": ->(list) { list.group_by(&:itself).values.max_by(&:size).first },
           "all": ->(list) { list.all? },
