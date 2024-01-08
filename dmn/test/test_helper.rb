@@ -5,6 +5,7 @@ GEM_ROOT = File.join(File.dirname(__FILE__), "..")
 require "minitest/autorun"
 require "minitest/reporters"
 require "minitest/spec"
+require "minitest/focus"
 require "active_support"
 require "active_support/testing/time_helpers"
 require "pry"
