@@ -27,8 +27,8 @@ module SpotFeel
       end
 
       def functions
-        builtins = LiteralExpression.builtin_functions.slice(*named_functions)
-        custom = (SpotFeel.config.functions || {}).slice(*named_functions)
+        builtins = LiteralExpression.builtin_functions
+        custom = (SpotFeel.config.functions || {})
         ActiveSupport::HashWithIndifferentAccess.new(builtins.merge(custom))
       end
 
