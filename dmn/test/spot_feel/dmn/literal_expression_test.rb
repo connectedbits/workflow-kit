@@ -223,21 +223,28 @@ module SpotFeel
               error = assert_raises(EvaluationError) do
                 LiteralExpression.new(text: 'name').evaluate
               end
-              _(error.message).must_equal "Qualified name 'name' not found in context."
+              _(error.message).must_equal "Identifier name not found."
             end
 
             it "should raise EvaluationError with qualified identifier" do
               error = assert_raises(EvaluationError) do
                 _(LiteralExpression.new(text: 'person.name').evaluate({ person: {} })).must_be_nil
               end
-              _(error.message).must_equal "Qualified name 'person.name' not found in context."
+              _(error.message).must_equal "Identifier person.name not found."
             end
 
             it "should return nil with missing parent in qualified identifier" do
               error = assert_raises(EvaluationError) do
                 _(LiteralExpression.new(text: 'person.name').evaluate).must_be_nil
               end
-              _(error.message).must_equal "Qualified name 'person.name' not found in context."
+              _(error.message).must_equal "Identifier person.name not found."
+            end
+
+            it "should return provide helpful did you mean hint" do
+              error = assert_raises(EvaluationError) do
+                _(LiteralExpression.new(text: 'person.agx').evaluate({ "person": { "name": "Bob", "age": 32 } })).must_be_nil
+              end
+              _(error.message).must_equal "Identifier person.agx not found. Did you mean person.age?"
             end
 
             after do
@@ -268,6 +275,35 @@ module SpotFeel
         it "should parse multiple parameters" do
           # Note: also works passing functions as variables
           _(LiteralExpression.new(text: 'plus(1, 2)').evaluate(plus: proc { |x, y| x + y })).must_equal 3
+        end
+
+        describe :missing_functions do
+          it "should invoke a function" do
+            SpotFeel.config.functions = { "test" => proc { "Hi" } }
+            _(LiteralExpression.new(text: 'testy()').evaluate).must_be_nil
+          end
+
+          describe :strict do
+            before do
+              SpotFeel.configure do |config|
+                config.strict = true
+              end
+            end
+
+            it "should return provide helpful did you mean hint" do
+              error = assert_raises(EvaluationError) do
+                SpotFeel.config.functions = { "test" => proc { "Hi" } }
+                LiteralExpression.new(text: 'testy()').evaluate
+              end
+              _(error.message).must_equal "Identifier testy not found. Did you mean test?"
+            end
+
+            after do
+              SpotFeel.configure do |config|
+                config.strict = false
+              end
+            end
+          end
         end
       end
 

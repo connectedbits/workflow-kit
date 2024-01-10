@@ -2,6 +2,30 @@
 
 module SpotFeel
   class Node < Treetop::Runtime::SyntaxNode
+    #
+    # Takes a context hash and returns an array of qualified names
+    # { "person": { "name": { "first": "Eric", "last": "Carlson" }, "age": 60 } } => ["person", "person.name.first", "person.name.last", "person.age"]
+    #
+    def qualified_names_in_context(hash = {}, prefix = '', qualified_names = Set.new)
+      hash.each do |key, value|
+        new_prefix = prefix.empty? ? "#{key}" : "#{prefix}.#{key}"
+        if value.is_a?(Hash)
+          qualified_names_in_context(value, new_prefix, qualified_names)
+        else
+          qualified_names.add(new_prefix)
+        end
+      end if hash
+
+      qualified_names.to_a
+    end
+
+    def raise_evaluation_error(missing_name, ctx = {})
+      names = qualified_names_in_context(ctx)
+      checker = DidYouMean::SpellChecker.new(dictionary: names)
+      guess = checker.correct(missing_name)
+      suffix = " Did you mean #{guess.first}?" unless guess.empty?
+      raise EvaluationError.new("Identifier #{missing_name} not found.#{suffix}")
+    end
   end
 
   #
@@ -201,11 +225,11 @@ module SpotFeel
   class QualifiedName < Node
     def eval(context = {})
       if tail.empty?
-        raise SpotFeel::EvaluationError.new("Qualified name '#{head.text_value}' not found in context.") if SpotFeel.config.strict && !context.key?(head.text_value.to_sym)
+        raise_evaluation_error(head.text_value, context) if SpotFeel.config.strict && !context.key?(head.text_value.to_sym)
         context[head.text_value.to_sym]
       else
         tail.elements.flat_map { |element| element.name.text_value.split('.') }.inject(context[head.text_value.to_sym]) do |hash, key|
-          raise SpotFeel::EvaluationError.new("Qualified name '#{head.text_value}#{tail.text_value}' not found in context.") if SpotFeel.config.strict && (hash.blank? || !hash.key?(key.to_sym))
+          raise_evaluation_error("#{head.text_value}#{tail.text_value}", context) if SpotFeel.config.strict && (hash.blank? || !hash.key?(key.to_sym))
           return nil unless hash
           hash[key.to_sym]
         end
@@ -356,7 +380,11 @@ module SpotFeel
   class FunctionInvocation < Node
     def eval(context = {})
       fn = context[fn_name.text_value.to_sym]
-      raise "Undefined function: #{fn_name.text_value}" unless fn
+
+      unless fn
+        raise_evaluation_error(fn_name.text_value, context) if SpotFeel.config.strict
+        return nil
+      end
 
       args = params.present? ? params.eval(context) : []
 
