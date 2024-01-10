@@ -205,7 +205,8 @@ module SpotFeel
         context[head.text_value.to_sym]
       else
         tail.elements.flat_map { |element| element.name.text_value.split('.') }.inject(context[head.text_value.to_sym]) do |hash, key|
-          raise SpotFeel::EvaluationError.new("Qualified name '#{head.text_value}#{tail.text_value}' not found in context.") if SpotFeel.config.strict && !hash.key?(key.to_sym)
+          raise SpotFeel::EvaluationError.new("Qualified name '#{head.text_value}#{tail.text_value}' not found in context.") if SpotFeel.config.strict && (hash.blank? || !hash.key?(key.to_sym))
+          return nil unless hash
           hash[key.to_sym]
         end
       end

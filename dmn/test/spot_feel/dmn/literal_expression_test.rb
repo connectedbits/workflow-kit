@@ -208,6 +208,10 @@ module SpotFeel
             _(LiteralExpression.new(text: 'person.name').evaluate({ person: {} })).must_be_nil
           end
 
+          it "should return nil with missing parent in qualified identifier" do
+            _(LiteralExpression.new(text: 'person.name').evaluate).must_be_nil
+          end
+
           describe :strict do
             before do
               SpotFeel.configure do |config|
@@ -225,6 +229,13 @@ module SpotFeel
             it "should raise EvaluationError with qualified identifier" do
               error = assert_raises(EvaluationError) do
                 _(LiteralExpression.new(text: 'person.name').evaluate({ person: {} })).must_be_nil
+              end
+              _(error.message).must_equal "Qualified name 'person.name' not found in context."
+            end
+
+            it "should return nil with missing parent in qualified identifier" do
+              error = assert_raises(EvaluationError) do
+                _(LiteralExpression.new(text: 'person.name').evaluate).must_be_nil
               end
               _(error.message).must_equal "Qualified name 'person.name' not found in context."
             end
