@@ -198,6 +198,44 @@ module SpotFeel
         it "should evaluate nested identifiers" do
           _(LiteralExpression.new(text: 'person.name').evaluate(person: { name: "John" })).must_equal("John")
         end
+
+        describe :missing_identifiers do
+          it "should return nil with simple identifier" do
+            _(LiteralExpression.new(text: 'name').evaluate).must_be_nil
+          end
+
+          it "should return nil with qualified identifier" do
+            _(LiteralExpression.new(text: 'person.name').evaluate({ person: {} })).must_be_nil
+          end
+
+          describe :strict do
+            before do
+              SpotFeel.configure do |config|
+                config.strict = true
+              end
+            end
+
+            it "should raise EvaluationError with simple identifier" do
+              error = assert_raises(EvaluationError) do
+                LiteralExpression.new(text: 'name').evaluate
+              end
+              _(error.message).must_equal "Qualified name 'name' not found in context."
+            end
+
+            it "should raise EvaluationError with qualified identifier" do
+              error = assert_raises(EvaluationError) do
+                _(LiteralExpression.new(text: 'person.name').evaluate({ person: {} })).must_be_nil
+              end
+              _(error.message).must_equal "Qualified name 'person.name' not found in context."
+            end
+
+            after do
+              SpotFeel.configure do |config|
+                config.strict = false
+              end
+            end
+          end
+        end
       end
 
       describe :function_invocation do

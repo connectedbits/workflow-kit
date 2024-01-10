@@ -14,14 +14,13 @@ require "active_support/configurable"
 require "treetop"
 require "xmlhasher"
 
+require "spot_feel/configuration"
 require "spot_feel/nodes"
 require "spot_feel/parser"
 
 require "spot_feel/dmn"
 
 module SpotFeel
-  include ActiveSupport::Configurable
-
   class SyntaxError < StandardError; end
   class EvaluationError < StandardError; end
 
@@ -52,5 +51,13 @@ module SpotFeel
 
   def self.definitions_from_json(json)
     Dmn::Definitions.from_json(json)
+  end
+
+  def self.config
+    @config ||= Configuration.new
+  end
+
+  def self.configure
+    yield(config)
   end
 end
