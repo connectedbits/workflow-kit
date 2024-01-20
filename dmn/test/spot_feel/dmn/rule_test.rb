@@ -86,6 +86,21 @@ module SpotFeel
               _(result).must_equal({ "message" => { "greeting" => "", "name" => "Eric" } })
             end
           end
+
+          describe :with_null_literal_output_entry do
+            let(:output_entries) {
+              [
+                LiteralExpression.new(text: 'null'),
+                LiteralExpression.new(text: 'name'),
+              ]
+            }
+
+            it "should ignore the output entry" do
+              rule.output_entries = output_entries
+              result = rule.output_value(outputs, variables)
+              _(result).must_equal({ "message" => { "greeting" => nil, "name" => "Eric" } })
+            end
+          end
         end
       end
     end
