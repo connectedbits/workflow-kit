@@ -51,7 +51,6 @@ module SpotFeel
             }
 
             it "should ignore the output entry" do
-              rule.output_entries = output_entries
               result = rule.output_value(outputs, variables)
               _(result).must_equal({ "message" => { "name" => "Eric" } })
             end
@@ -66,7 +65,6 @@ module SpotFeel
             }
 
             it "should ignore the output entry" do
-              rule.output_entries = output_entries
               result = rule.output_value(outputs, variables)
               _(result).must_equal({ "message" => { "name" => "Eric" } })
             end
@@ -81,7 +79,6 @@ module SpotFeel
             }
 
             it "should ignore the output entry" do
-              rule.output_entries = output_entries
               result = rule.output_value(outputs, variables)
               _(result).must_equal({ "message" => { "greeting" => "", "name" => "Eric" } })
             end
@@ -96,7 +93,6 @@ module SpotFeel
             }
 
             it "should ignore the output entry" do
-              rule.output_entries = output_entries
               result = rule.output_value(outputs, variables)
               _(result).must_equal({ "message" => { "greeting" => nil, "name" => "Eric" } })
             end
