@@ -10,8 +10,8 @@ module SpotFeel
         describe :output_value do
           let(:outputs) {
             [
-              Output.new(id: 1, label: "Greeting", name: "message.greeting", type_ref: "string"),
-              Output.new(id: 1, label: "Name", name: "message.name", type_ref: "string"),
+              Output.new(id: 1, label: "Greeting", name: "response.message.greeting", type_ref: "string"),
+              Output.new(id: 1, label: "Name", name: "response.message.name", type_ref: "string"),
             ]
           }
 
@@ -39,7 +39,7 @@ module SpotFeel
 
           it "should return a hash with the output value" do
             result = rule.output_value(outputs, variables)
-            _(result).must_equal({ "message" => { "greeting" => "Bonjour", "name" => "Eric" } })
+            _(result).must_equal({ "response" => { "message" => { "greeting" => "Bonjour", "name" => "Eric" } } })
           end
 
           describe :with_nil_output_entry do
@@ -52,7 +52,7 @@ module SpotFeel
 
             it "should ignore the output entry" do
               result = rule.output_value(outputs, variables)
-              _(result).must_equal({ "message" => { "name" => "Eric" } })
+              _(result).must_equal({ "response" => { "message" => { "name" => "Eric" } } })
             end
           end
 
@@ -66,7 +66,7 @@ module SpotFeel
 
             it "should ignore the output entry" do
               result = rule.output_value(outputs, variables)
-              _(result).must_equal({ "message" => { "name" => "Eric" } })
+              _(result).must_equal({ "response" => { "message" => { "name" => "Eric" } } })
             end
           end
 
@@ -80,7 +80,7 @@ module SpotFeel
 
             it "should ignore the output entry" do
               result = rule.output_value(outputs, variables)
-              _(result).must_equal({ "message" => { "greeting" => "", "name" => "Eric" } })
+              _(result).must_equal({ "response" => { "message" => { "greeting" => "", "name" => "Eric" } } })
             end
           end
 
@@ -94,7 +94,21 @@ module SpotFeel
 
             it "should ignore the output entry" do
               result = rule.output_value(outputs, variables)
-              _(result).must_equal({ "message" => { "greeting" => nil, "name" => "Eric" } })
+              _(result).must_equal({ "response" => { "message" => { "greeting" => nil, "name" => "Eric" } } })
+            end
+          end
+
+          describe :with_all_nil_output_entires do
+            let(:output_entries) {
+              [
+                LiteralExpression.new(text: nil),
+                LiteralExpression.new(text: nil),
+              ]
+            }
+
+            it "should ignore the output entry" do
+              result = rule.output_value(outputs, variables)
+              _(result).must_equal({ "response" => { "message" => {} } })
             end
           end
         end

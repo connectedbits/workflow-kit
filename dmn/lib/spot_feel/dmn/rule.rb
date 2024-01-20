@@ -26,17 +26,6 @@ module SpotFeel
         end
       end
 
-      def output_value(outputs, variables)
-        HashWithIndifferentAccess.new.tap do |ov|
-          output_entries.each_with_index do |output_entry, index|
-            if output_entry.valid?
-              val = output_entry.evaluate(variables)
-              nested_hash_value(ov, outputs[index].name, val)
-            end
-          end
-        end
-      end
-
       def as_json
         {
           id: id,
@@ -44,6 +33,20 @@ module SpotFeel
           output_entries: output_entries.map(&:as_json),
           description: description,
         }
+      end
+
+      def output_value(outputs, variables)
+        HashWithIndifferentAccess.new.tap do |ov|
+          output_entries.each_with_index do |output_entry, index|
+            keys = outputs[index].name.split('.')
+            if output_entry.valid?
+              val = output_entry.evaluate(variables)
+              nested_hash_value(ov, outputs[index].name, val)
+            else
+              nested_hash_value(ov, keys[0...-1].join('.'), {}) if keys.length > 1
+            end
+          end
+        end
       end
 
       private
