@@ -19,6 +19,7 @@ module SpotFeel
       end
 
       def valid?
+        return false if text.blank?
         tree.present?
       end
 

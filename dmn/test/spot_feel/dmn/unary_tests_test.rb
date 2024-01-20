@@ -10,6 +10,11 @@ module SpotFeel
         _(UnaryTests.new(text: '-').test(2)).must_equal true
       end
 
+      it "should always pass with nil" do
+        _(UnaryTests.new(text: nil).test(3)).must_equal true
+        _(UnaryTests.new(text: nil).test(2)).must_equal true
+      end
+
       describe :comparison do
         it "should default to equality" do
           _(UnaryTests.new(text: '3').test(3)).must_equal true

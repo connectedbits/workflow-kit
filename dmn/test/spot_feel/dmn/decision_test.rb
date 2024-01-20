@@ -5,7 +5,6 @@ require "test_helper"
 module SpotFeel
   module Dmn
     describe Decision do
-
       describe :evaluate do
         it "should evaluate literal expressions" do
           definitions = Definitions.from_xml(fixture_source("test_literal_decision.dmn"))

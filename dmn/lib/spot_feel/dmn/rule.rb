@@ -3,7 +3,7 @@
 module SpotFeel
   module Dmn
     class Rule
-      attr_reader :id, :input_entries, :output_entries, :description
+      attr_accessor :id, :input_entries, :output_entries, :description
 
       def self.from_json(json)
         input_entries = Array.wrap(json[:input_entry]).map { |input_entry| UnaryTests.from_json(input_entry) }
@@ -11,7 +11,7 @@ module SpotFeel
         Rule.new(id: json[:id], input_entries:, output_entries:, description: json[:description])
       end
 
-      def initialize(id:, input_entries:, output_entries:, description:)
+      def initialize(id:, input_entries:, output_entries:, description: nil)
         @id = id
         @input_entries = input_entries
         @output_entries = output_entries
@@ -29,8 +29,10 @@ module SpotFeel
       def output_value(outputs, variables)
         HashWithIndifferentAccess.new.tap do |ov|
           output_entries.each_with_index do |output_entry, index|
-            val = output_entry.evaluate(variables)
-            nested_hash_value(ov, outputs[index].name, val)
+            if output_entry.valid?
+              val = output_entry.evaluate(variables)
+              nested_hash_value(ov, outputs[index].name, val)
+            end
           end
         end
       end
