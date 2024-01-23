@@ -38,12 +38,9 @@ module SpotFeel
       def output_value(outputs, variables)
         HashWithIndifferentAccess.new.tap do |ov|
           output_entries.each_with_index do |output_entry, index|
-            keys = outputs[index].name.split('.')
             if output_entry.valid?
               val = output_entry.evaluate(variables)
               nested_hash_value(ov, outputs[index].name, val)
-            else
-              nested_hash_value(ov, keys[0...-1].join('.'), {}) if keys.length > 1
             end
           end
         end
