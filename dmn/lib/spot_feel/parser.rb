@@ -10,13 +10,13 @@ module SpotFeel
 
     def self.parse(expression, root: nil)
       @@parser.parse(expression, root:).tap do |ast|
-        raise SyntaxError, "Invalid expression" unless ast
+        raise SyntaxError, "Invalid expression: #{expression.inspect}" unless ast
       end
     end
 
     def self.parse_test(expression)
       @@parser.parse(expression || '-', root: :simple_unary_tests).tap do |ast|
-        raise SyntaxError, "Invalid unary test" unless ast
+        raise SyntaxError, "Invalid unary test: #{expression.inspect}" unless ast
       end
     end
 
