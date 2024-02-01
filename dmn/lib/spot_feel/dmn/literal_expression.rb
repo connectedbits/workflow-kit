@@ -11,7 +11,7 @@ module SpotFeel
 
       def initialize(id: nil, text:)
         @id = id
-        @text = text
+        @text = text&.strip
       end
 
       def tree

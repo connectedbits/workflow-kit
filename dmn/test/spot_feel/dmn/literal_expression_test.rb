@@ -199,6 +199,10 @@ module SpotFeel
           _(LiteralExpression.new(text: 'person.name').evaluate(person: { name: "John" })).must_equal("John")
         end
 
+        it "should evaluate identifiers with extra spaces" do
+          _(LiteralExpression.new(text: ' person.name ').evaluate(person: { name: "John" })).must_equal("John")
+        end
+
         describe :missing_identifiers do
           it "should return nil with simple identifier" do
             _(LiteralExpression.new(text: 'name').evaluate).must_be_nil
