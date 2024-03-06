@@ -369,6 +369,12 @@ module SpotFeel
           _(LiteralExpression.new(text: '"Hello " + "World"').evaluate).must_equal "Hello World"
           _(LiteralExpression.new(text: '"Very" + "Long" + "Word"').evaluate).must_equal "VeryLongWord"
         end
+
+        it "should return nil when concatenating a nil value" do
+          _(LiteralExpression.new(text: '"Hello " + name').evaluate).must_be_nil
+          _(LiteralExpression.new(text: '"Hello " + name').evaluate(name: nil)).must_be_nil
+          _(LiteralExpression.new(text: 'greeting + " Eric"').evaluate).must_be_nil
+        end
       end
 
       describe :qualified_names do

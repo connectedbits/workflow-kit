@@ -242,6 +242,9 @@ module SpotFeel
   #
   class Addition < Node
     def eval(context = {})
+      head_val = head.eval(context)
+      tail_val = tail.eval(context)
+      return nil if head_val.nil? || tail_val.nil?
       head.eval(context) + tail.eval(context)
     end
   end
