@@ -583,6 +583,7 @@ module SpotFeel
   #
   class List < Node
     def eval(context = {})
+      return [] unless defined?(list_entries)
       if list_entries.present?
         list_entries.eval(context)
       else
@@ -657,6 +658,7 @@ module SpotFeel
   class DateTimeLiteral < Node
     def eval(context = {})
       head_val = head.eval(context)
+      return nil if head_val.nil?
       return head_val if head_val.is_a?(ActiveSupport::Duration) || head_val.is_a?(DateTime) || head_val.is_a?(Date) || head_val.is_a?(Time)
 
       case keyword.text_value

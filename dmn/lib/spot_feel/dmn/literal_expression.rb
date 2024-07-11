@@ -84,82 +84,278 @@ module SpotFeel
       def self.builtin_functions
         HashWithIndifferentAccess.new({
           # Conversion functions
-          "string": ->(from) { from.to_s },
-          "number": ->(from) { from.include?(".") ? from.to_f : from.to_i },
+          "string": ->(from) { 
+            return if from.nil?
+            from.to_s 
+          },
+          "number": ->(from) { 
+            return if from.nil?
+            from.include?(".") ? from.to_f : from.to_i 
+          },
           # Boolean functions
           # "not": ->(value) { value == true ? false : true },
-          "is defined": ->(value) { !value.nil? },
-          "get or else": ->(value, default) { value.nil? ? default : value },
+          "is defined": ->(value) { 
+            return if value.nil?
+            !value.nil? 
+          },
+          "get or else": ->(value, default) { 
+            value.nil? ? default : value 
+          },
           # String functions
-          "substring": ->(string, start, length) { string[start - 1, length] },
-          "substring before": ->(string, match) { string.split(match).first },
-          "substring after": ->(string, match) { string.split(match).last },
-          "string length": ->(string) { string.length },
-          "upper case": ->(string) { string.upcase },
-          "lower case": -> (string) { string.downcase },
-          "contains": ->(string, match) { string.include?(match) },
-          "starts with": ->(string, match) { string.start_with?(match) },
-          "ends with": ->(string, match) { string.end_with?(match) },
-          "matches": ->(string, match) { string.match?(match) },
-          "replace": ->(string, match, replacement) { string.gsub(match, replacement) },
-          "split": ->(string, match) { string.split(match) },
-          "strip": -> (string) { string.strip },
-          "extract": -> (string, pattern) { string.match(pattern).captures },
+          "substring": ->(string, start, length) { 
+            return if string.nil? || start.nil?
+            return "" if length.nil?
+            string[start - 1, length] 
+          },
+          "substring before": ->(string, match) { 
+            return if string.nil? || match.nil?
+            string.split(match).first 
+          },
+          "substring after": ->(string, match) { 
+            return if string.nil? || match.nil?
+            string.split(match).last 
+          },
+          "string length": ->(string) { 
+            return if string.nil?
+            string.length 
+          },
+          "upper case": ->(string) { 
+            return if string.nil?
+            string.upcase
+          },
+          "lower case": -> (string) { 
+            return if string.nil?
+            string.downcase 
+          },
+          "contains": ->(string, match) { 
+            return if string.nil? || match.nil?
+            string.include?(match) 
+          },
+          "starts with": ->(string, match) { 
+            return if string.nil? || match.nil?
+            string.start_with?(match) 
+          },
+          "ends with": ->(string, match) { 
+            return if string.nil? || match.nil?
+            string.end_with?(match) 
+          },
+          "matches": ->(string, match) { 
+            return if string.nil? || match.nil?
+            string.match?(match) 
+          },
+          "replace": ->(string, match, replacement) { 
+            return if string.nil? || match.nil? || replacement.nil?
+            string.gsub(match, replacement) 
+          },
+          "split": ->(string, match) { 
+            return if string.nil? || match.nil?
+            string.split(match) 
+          },
+          "strip": -> (string) { 
+            return if string.nil?
+            string.strip 
+          },
+          "extract": -> (string, pattern) {
+            return if string.nil? || pattern.nil?
+            string.match(pattern).captures 
+          },
           # Numeric functions
-          "decimal": ->(n, scale) { n.round(scale) },
-          "floor": ->(n) { n.floor },
-          "ceiling": ->(n) { n.ceil },
-          "round up": ->(n) { n.ceil },
-          "round down": ->(n) { n.floor },
-          "abs": ->(n) { n.abs },
-          "modulo": ->(n, divisor) { n % divisor },
-          "sqrt": ->(n) { Math.sqrt(n) },
-          "log": ->(n) { Math.log(n) },
-          "exp": ->(n) { Math.exp(n) },
-          "odd": ->(n) { n.odd? },
-          "even": ->(n) { n.even? },
-          "random number": ->(n) { rand(n) },
+          "decimal": ->(n, scale) { 
+            return if n.nil? || scale.nil?
+            n.round(scale) 
+          },
+          "floor": ->(n) {
+            return if n.nil?
+            n.floor 
+          },
+          "ceiling": ->(n) { 
+            return if n.nil?
+            n.ceil 
+          },
+          "round up": ->(n) { 
+            return if n.nil?
+            n.ceil 
+          },
+          "round down": ->(n) { 
+            return if n.nil?
+            n.floor 
+          },
+          "abs": ->(n) { 
+            return if n.nil?
+            n.abs 
+          },
+          "modulo": ->(n, divisor) { 
+            return if n.nil? || divisor.nil?
+            n % divisor 
+          },
+          "sqrt": ->(n) { 
+            return if n.nil?
+            Math.sqrt(n) 
+          },
+          "log": ->(n) { 
+            return if n.nil?
+            Math.log(n) 
+          },
+          "exp": ->(n) { 
+            return if n.nil?
+            Math.exp(n) 
+          },
+          "odd": ->(n) { 
+            return if n.nil?
+            n.odd? 
+          },
+          "even": ->(n) { 
+            return if n.nil?
+            n.even? 
+          },
+          "random number": ->(n) { 
+            return if n.nil?
+            rand(n) 
+          },
           # List functions
-          "list contains": ->(list, match) { list.include?(match) },
-          "count": ->(list) { list.length },
-          "min": ->(list) { list.min },
-          "max": ->(list) { list.max },
-          "sum": ->(list) { list.sum },
-          "product": ->(list) { list.inject(:*) },
-          "mean": ->(list) { list.sum / list.length },
-          "median": ->(list) { list.sort[list.length / 2] },
+          "list contains": ->(list, match) { 
+            return if list.nil?
+            return false if match.nil?
+            list.include?(match) 
+          },
+          "count": ->(list) { 
+            return if list.nil?
+            return 0 if list.empty?
+            list.length 
+          },
+          "min": ->(list) { 
+            return if list.nil?
+            list.min 
+          },
+          "max": ->(list) { 
+            return if list.nil?
+            list.max 
+          },
+          "sum": ->(list) { 
+            return if list.nil?
+            list.sum 
+          },
+          "product": ->(list) { 
+            return if list.nil?
+            list.inject(:*) 
+          },
+          "mean": ->(list) {
+            return if list.nil?
+            list.sum / list.length 
+          },
+          "median": ->(list) {
+            return if list.nil?
+            list.sort[list.length / 2] 
+          },
           "stddev": ->(list) {
+            return if list.nil?
             mean = list.sum / list.length.to_f
             Math.sqrt(list.map { |n| (n - mean)**2 }.sum / list.length)
           },
-          "mode": ->(list) { list.group_by(&:itself).values.max_by(&:size).first },
-          "all": ->(list) { list.all? },
-          "any": ->(list) { list.any? },
-          "sublist": ->(list, start, length) { list[start - 1, length] },
-          "append": ->(list, item) { list + [item] },
-          "concatenate": ->(list1, list2) { list1 + list2 },
-          "insert before": ->(list, position, item) { list.insert(position - 1, item) },
-          "remove": ->(list, position) { list.delete_at(position - 1); list },
-          "reverse": ->(list) { list.reverse },
-          "index of": ->(list, match) { list.index(match) + 1 },
-          "union": ->(list1, list2) { list1 | list2 },
-          "distinct values": ->(list) { list.uniq },
-          "duplicate values": ->(list) { list.select { |e| list.count(e) > 1 }.uniq },
-          "flatten": ->(list) { list.flatten },
-          "sort": ->(list) { list.sort },
-          "string join": ->(list, separator) { list.join(separator) },
+          "mode": ->(list) { 
+            return if list.nil?
+            list.group_by(&:itself).values.max_by(&:size).first 
+          },
+          "all": ->(list) {
+            return if list.nil?
+            list.all? 
+          },
+          "any": ->(list) {
+            return if list.nil?
+            list.any? 
+          },
+          "sublist": ->(list, start, length) { 
+            return if list.nil? || start.nil?
+            return [] if length.nil?
+            list[start - 1, length] 
+          },
+          "append": ->(list, item) { 
+            return if list.nil?
+            list + [item] 
+          },
+          "concatenate": ->(list1, list2) { 
+            return [nil, nil] if list1.nil? && list2.nil?
+            return [nil] + list2 if list1.nil?
+            return list1 + [nil] if list2.nil? 
+            Array.wrap(list1) + Array.wrap(list2)
+          },
+          "insert before": ->(list, position, item) { 
+            return if list.nil? || position.nil?
+            list.insert(position - 1, item) 
+          },
+          "remove": ->(list, position) { 
+            return if list.nil? || position.nil?
+            list.delete_at(position - 1); list 
+          },
+          "reverse": ->(list) { 
+            return if list.nil?
+            list.reverse 
+          },
+          "index of": ->(list, match) { 
+            return if list.nil?
+            return [] if match.nil?
+            list.index(match) + 1 
+          },
+          "union": ->(list1, list2) { 
+            return if list1.nil? || list2.nil?
+            list1 | list2 
+          },
+          "distinct values": ->(list) { 
+            return if list.nil?
+            list.uniq 
+          },
+          "duplicate values": ->(list) { 
+            return if list.nil?
+            list.select { |e| list.count(e) > 1 }.uniq 
+          },
+          "flatten": ->(list) { 
+            return if list.nil?
+            list.flatten 
+          },
+          "sort": ->(list) { 
+            return if list.nil?
+            list.sort 
+          },
+          "string join": ->(list, separator) { 
+            return if list.nil?
+            list.join(separator) 
+          },
           # Context functions
-          "get value": ->(context, name) { context[name] },
-          "context put": ->(context, name, value) { context[name] = value; context },
-          "context merge": ->(context1, context2) { context1.merge(context2) },
-          "get entries": ->(context) { context.entries },
+          "get value": ->(context, name) { 
+            return if context.nil? || name.nil?
+            context[name] 
+          },
+          "context put": ->(context, name, value) { 
+            return if context.nil? || name.nil?
+            context[name] = value; context 
+          },
+          "context merge": ->(context1, context2) { 
+            return if context1.nil? || context2.nil?
+            context1.merge(context2) 
+          },
+          "get entries": ->(context) { 
+            return if context.nil?
+            context.entries 
+          },
           # Temporal functions
           "now": ->() { Time.now },
           "today": ->() { Date.today },
-          "day of week": ->(date) { date.wday },
-          "day of year": ->(date) { date.yday },
-          "week of year": ->(date) { date.cweek },
-          "month of year": ->(date) { date.month },
+          "day of week": ->(date) { 
+            return if date.nil?
+            date.wday 
+          },
+          "day of year": ->(date) { 
+            return if date.nil?
+            date.yday 
+          },
+          "week of year": ->(date) { 
+            return if date.nil?
+            date.cweek 
+          },
+          "month of year": ->(date) { 
+            return if date.nil?
+            date.month 
+          },
         })
       end
 
