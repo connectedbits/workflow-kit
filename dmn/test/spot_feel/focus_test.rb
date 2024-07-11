@@ -6,7 +6,6 @@ module SpotFeel
   module Dmn
     describe :focus do
       it "should should pass" do
-        #_(LiteralExpression.new(text: '[]').evaluate).must_equal []
       end
     end
   end

@@ -124,8 +124,7 @@ module SpotFeel
           it "should eval list literals (arrays)" do
             _(LiteralExpression.new(text: '[ 2, 3, 4, 5 ]').evaluate).must_equal [2, 3, 4, 5]
             _(LiteralExpression.new(text: '["John", "Paul", "George", "Ringo"]').evaluate).must_equal ["John", "Paul", "George", "Ringo"]
-            # TODO: Fix this bug!
-            #_(LiteralExpression.new(text: '[]').evaluate).must_equal []
+            _(LiteralExpression.new(text: '[]').evaluate).must_equal []
           end
         end
 

@@ -583,6 +583,7 @@ module SpotFeel
   #
   class List < Node
     def eval(context = {})
+      return [] unless defined?(list_entries)
       if list_entries.present?
         list_entries.eval(context)
       else
