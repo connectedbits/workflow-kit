@@ -106,6 +106,14 @@ module SpotFeel
             # _(SpotFeel.eval('date("1963-12-23").day')).must_equal 23
             # _(SpotFeel.eval('date("1963-12-23").weekday')).must_equal 1
           end
+
+          it "should handle null values" do
+            _(LiteralExpression.new(text: 'date(null)').evaluate).must_be_nil
+            _(LiteralExpression.new(text: 'time(null)').evaluate).must_be_nil
+            _(LiteralExpression.new(text: 'date and time(null)').evaluate).must_be_nil
+            _(LiteralExpression.new(text: 'duration(null)').evaluate).must_be_nil
+            _(LiteralExpression.new(text: 'date(missing_var)').evaluate).must_be_nil
+          end
         end
 
         describe :list do
