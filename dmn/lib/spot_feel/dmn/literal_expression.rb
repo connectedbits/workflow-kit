@@ -274,6 +274,9 @@ module SpotFeel
             list + [item] 
           },
           "concatenate": ->(list1, list2) { 
+            return [nil, nil] if list1.nil? && list2.nil?
+            return [nil] + list2 if list1.nil?
+            return list1 + [nil] if list2.nil? 
             Array.wrap(list1) + Array.wrap(list2)
           },
           "insert before": ->(list, position, item) { 

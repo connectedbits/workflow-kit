@@ -288,13 +288,13 @@ module SpotFeel
 
       describe :function_invocation do
         it "should invoke a function" do
-          SpotFeel.config.functions = { "reverse" => proc { |str| str.reverse } }
-          _(LiteralExpression.new(text: 'reverse("Hello World")').evaluate).must_equal "dlroW olleH"
+          SpotFeel.config.functions = { "rev" => proc { |str| str.reverse } }
+          _(LiteralExpression.new(text: 'rev("Hello World")').evaluate).must_equal "dlroW olleH"
         end
 
         it "should parse single parameter" do
-          SpotFeel.config.functions = { "reverse" => proc { |str| str.reverse } }
-          _(LiteralExpression.new(text: 'reverse("Hello World")').evaluate).must_equal "dlroW olleH"
+          SpotFeel.config.functions = { "rev" => proc { |str| str.reverse } }
+          _(LiteralExpression.new(text: 'rev("Hello World")').evaluate).must_equal "dlroW olleH"
         end
 
         it "should reference variables in the context" do
@@ -354,8 +354,8 @@ module SpotFeel
         it "should parse if expressions" do
           _(LiteralExpression.new(text: 'if age >= 18 then "adult" else "minor"').evaluate(age: 18)).must_equal("adult")
           _(LiteralExpression.new(text: 'if true then "Eric" else "Eli"').evaluate).must_equal("Eric")
-          skip "BUG: This expression fails with syntax error"
-          _(LiteralExpression.new(text: 'if condition then "Eric" else "Eli"').evaluate(condition: true)).must_equal("Eric")
+          # TODO: Why is this parsing as an invalid expression?
+          #_(LiteralExpression.new(text: 'if condition then "Eric" else "Eli"').evaluate(condition: true)).must_equal("Eric")
         end
       end
 
@@ -452,7 +452,7 @@ module SpotFeel
           it "should eval substring after" do
             _(LiteralExpression.new(text: 'substring after("Hello world", "Hello")').evaluate).must_equal " world"
             _(LiteralExpression.new(text: 'substring after(null, "Hello")').evaluate).must_be_nil
-            _(LiteralExpression.new(text: 'substring after("Hello world", null)').evaluate).must_equal nil
+            _(LiteralExpression.new(text: 'substring after("Hello world", null)').evaluate).must_be_nil
           end
 
           it "should eval string length" do
@@ -604,115 +604,164 @@ module SpotFeel
 
           it "should eval min" do
             _(LiteralExpression.new(text: 'min([1, 2, 3])').evaluate).must_equal 1
+            _(LiteralExpression.new(text: 'min(null)').evaluate).must_be_nil
           end
 
           it "should eval max" do
             _(LiteralExpression.new(text: 'max([1, 2, 3])').evaluate).must_equal 3
+            _(LiteralExpression.new(text: 'max(null)').evaluate).must_be_nil
           end
 
           it "should eval sum" do
             _(LiteralExpression.new(text: 'sum([1, 2, 3])').evaluate).must_equal 6
+            _(LiteralExpression.new(text: 'sum(null)').evaluate).must_be_nil
           end
 
           it "should eval product" do
             _(LiteralExpression.new(text: 'product([1, 2, 3])').evaluate).must_equal 6
+            _(LiteralExpression.new(text: 'product(null)').evaluate).must_be_nil
           end
 
           it "should eval mean" do
             _(LiteralExpression.new(text: 'mean([1, 2, 3])').evaluate).must_equal 2
+            _(LiteralExpression.new(text: 'mean(null)').evaluate).must_be_nil
           end
 
           it "should eval median" do
             _(LiteralExpression.new(text: 'median([1, 2, 3])').evaluate).must_equal 2
+            _(LiteralExpression.new(text: 'median(null)').evaluate).must_be_nil
           end
 
           it "should eval stddev" do
             _(LiteralExpression.new(text: 'stddev([1, 2, 3])').evaluate).must_equal 0.816496580927726
+            _(LiteralExpression.new(text: 'stddev(null)').evaluate).must_be_nil
           end
 
           it "should eval mode" do
             _(LiteralExpression.new(text: 'mode([1, 2, 2, 3])').evaluate).must_equal 2
+            _(LiteralExpression.new(text: 'mode(null)').evaluate).must_be_nil
           end
 
           it "should eval all" do
             _(LiteralExpression.new(text: 'all([true, true, true])').evaluate).must_equal true
             _(LiteralExpression.new(text: 'all([true, false, true])').evaluate).must_equal false
+            _(LiteralExpression.new(text: 'all(null)').evaluate).must_be_nil
           end
 
           it "should eval any" do
             _(LiteralExpression.new(text: 'any([true, false, false])').evaluate).must_equal true
             _(LiteralExpression.new(text: 'any([false, false, false])').evaluate).must_equal false
+            _(LiteralExpression.new(text: 'any(null)').evaluate).must_be_nil
           end
 
           it "should eval sublist" do
             _(LiteralExpression.new(text: 'sublist([1, 2, 3], 1, 2)').evaluate).must_equal [1, 2]
+            _(LiteralExpression.new(text: 'sublist([1, 2, 3], 1, null)').evaluate).must_equal []
+            _(LiteralExpression.new(text: 'sublist([1, 2, 3], null, 2)').evaluate).must_be_nil
+            _(LiteralExpression.new(text: 'sublist(null, 1, 2)').evaluate).must_be_nil
+            _(LiteralExpression.new(text: 'sublist(null, null, null)').evaluate).must_be_nil
           end
 
           it "should eval append" do
             _(LiteralExpression.new(text: 'append([1, 2, 3], 4)').evaluate).must_equal [1, 2, 3, 4]
+            _(LiteralExpression.new(text: 'append([1, 2, 3], null)').evaluate).must_equal [1, 2, 3, nil]
+            _(LiteralExpression.new(text: 'append(null, 4)').evaluate).must_be_nil
+            _(LiteralExpression.new(text: 'append(null, null)').evaluate).must_be_nil
           end
 
           it "should eval concatenate" do
             _(LiteralExpression.new(text: 'concatenate([1, 2, 3], [4, 5, 6])').evaluate).must_equal [1, 2, 3, 4, 5, 6]
+            _(LiteralExpression.new(text: 'concatenate([1, 2, 3], null)').evaluate).must_equal [1, 2, 3, nil]
+            _(LiteralExpression.new(text: 'concatenate(null, [4, 5, 6])').evaluate).must_equal [nil, 4, 5, 6]
+            _(LiteralExpression.new(text: 'concatenate(null, null)').evaluate).must_equal [nil, nil]
           end
 
           it "should eval insert before" do
             _(LiteralExpression.new(text: 'insert before([1, 2, 3], 2, 4)').evaluate).must_equal [1, 4, 2, 3]
+            _(LiteralExpression.new(text: 'insert before([1, 2, 3], null, 4)').evaluate).must_be_nil
+            _(LiteralExpression.new(text: 'insert before([1, 2, 3], 2, null)').evaluate).must_equal [1, nil, 2, 3]
+            _(LiteralExpression.new(text: 'insert before(null, null, null)').evaluate).must_be_nil
           end
 
           it "should eval remove" do
             _(LiteralExpression.new(text: 'remove([1, 2, 3], 2)').evaluate).must_equal [1, 3]
+            _(LiteralExpression.new(text: 'remove(null, 2)').evaluate).must_be_nil
+            _(LiteralExpression.new(text: 'remove([1, 2, 3], null)').evaluate).must_be_nil
+            _(LiteralExpression.new(text: 'remove(null, null)').evaluate).must_be_nil
           end
 
           it "should eval reverse" do
             _(LiteralExpression.new(text: 'reverse([1, 2, 3])').evaluate).must_equal [3, 2, 1]
+            _(LiteralExpression.new(text: 'reverse(null)').evaluate).must_be_nil
           end
 
           it "should eval index of" do
             _(LiteralExpression.new(text: 'index of([1, 2, 3], 2)').evaluate).must_equal 2
+            _(LiteralExpression.new(text: 'index of([1, 2, 3], null)').evaluate).must_equal []
+            _(LiteralExpression.new(text: 'index of(null, 2)').evaluate).must_be_nil
+            _(LiteralExpression.new(text: 'index of(null, null)').evaluate).must_be_nil
           end
 
           it "should eval union" do
             _(LiteralExpression.new(text: 'union([1, 2, 3], [4, 5, 6])').evaluate).must_equal [1, 2, 3, 4, 5, 6]
+            _(LiteralExpression.new(text: 'union(null, [4, 5, 6])').evaluate).must_be_nil
+            _(LiteralExpression.new(text: 'union([1, 2, 3], null)').evaluate).must_be_nil
+            _(LiteralExpression.new(text: 'union(null, null)').evaluate).must_be_nil
           end
 
           it "should eval distinct values" do
             _(LiteralExpression.new(text: 'distinct values([1, 2, 2, 3])').evaluate).must_equal [1, 2, 3]
+            _(LiteralExpression.new(text: 'distinct values(null)').evaluate).must_be_nil
           end
 
           it "should eval duplicate values" do
             _(LiteralExpression.new(text: 'duplicate values([1, 2, 2, 3])').evaluate).must_equal [2]
+            _(LiteralExpression.new(text: 'duplicate values(null)').evaluate).must_be_nil
           end
 
           it "should eval flatten" do
             _(LiteralExpression.new(text: 'flatten([[1, 2], [3, 4]])').evaluate).must_equal [1, 2, 3, 4]
+            _(LiteralExpression.new(text: 'flatten([null, [3, 4]])').evaluate).must_equal [nil, 3, 4]
+            _(LiteralExpression.new(text: 'flatten(null)').evaluate).must_be_nil
           end
 
           it "should eval sort" do
             _(LiteralExpression.new(text: 'sort([3, 2, 1])').evaluate).must_equal [1, 2, 3]
+            _(LiteralExpression.new(text: 'sort(null)').evaluate).must_be_nil
           end
 
           it "should eval string join" do
             _(LiteralExpression.new(text: 'string join(["Hello", "world"], " ")').evaluate).must_equal "Hello world"
+            _(LiteralExpression.new(text: 'string join(["Hello", "world"], null)').evaluate).must_equal "Helloworld"
+            _(LiteralExpression.new(text: 'string join(null, " ")').evaluate).must_be_nil
           end
         end
 
         describe :context do
           it "should eval get value" do
             _(LiteralExpression.new(text: 'get value({"foo": "bar"}, "foo")').evaluate).must_equal "bar"
+            _(LiteralExpression.new(text: 'get value({"foo": "bar"}, null)').evaluate).must_be_nil
+            _(LiteralExpression.new(text: 'get value(null, "foo")').evaluate).must_be_nil
           end
 
           it "should eval context put" do
             _(LiteralExpression.new(text: 'context put({"foo": "baz"}, "foo", "bar")').evaluate).must_equal({ "foo" => "bar" })
             _(LiteralExpression.new(text: 'context put({}, "foo", "bar")').evaluate).must_equal({ "foo" => "bar" })
+            _(LiteralExpression.new(text: 'context put({"foo": "baz"}, "foo", null)').evaluate).must_equal({ "foo" => nil })
+            _(LiteralExpression.new(text: 'context put(null, "foo", "bar")').evaluate).must_be_nil
+            _(LiteralExpression.new(text: 'context put({"foo": "baz"}, null, "bar")').evaluate).must_be_nil
           end
 
           it "should eval context merge" do
             _(LiteralExpression.new(text: 'context merge({"foo": "bar"}, {"bar": "baz"})').evaluate).must_equal({ "foo" => "bar", "bar" => "baz" })
+            _(LiteralExpression.new(text: 'context merge(null, {"bar": "baz"})').evaluate).must_be_nil
+            _(LiteralExpression.new(text: 'context merge({"foo": "bar"}, null)').evaluate).must_be_nil
+            _(LiteralExpression.new(text: 'context merge(null, null)').evaluate).must_be_nil
           end
 
           it "should eval get entries" do
             _(LiteralExpression.new(text: 'get entries({"foo": "bar"})').evaluate).must_equal({ "foo" => "bar" }.entries)
+            _(LiteralExpression.new(text: 'get entries(null)').evaluate).must_be_nil
           end
         end
 
@@ -727,18 +776,22 @@ module SpotFeel
 
           it "should eval day of week" do
             _(LiteralExpression.new(text: 'day of week(date("1963-1-1"))').evaluate).must_equal 2
+            _(LiteralExpression.new(text: 'day of week(null)').evaluate).must_be_nil
           end
 
           it "should eval day of year" do
             _(LiteralExpression.new(text: 'day of year(date("1963-1-1"))').evaluate).must_equal 1
+            _(LiteralExpression.new(text: 'day of year(null)').evaluate).must_be_nil
           end
 
           it "should eval week of year" do
             _(LiteralExpression.new(text: 'week of year(date("1963-1-1"))').evaluate).must_equal 1
+            _(LiteralExpression.new(text: 'week of year(null)').evaluate).must_be_nil
           end
 
           it "should eval month of year" do
             _(LiteralExpression.new(text: 'month of year(date("1963-1-1"))').evaluate).must_equal 1
+            _(LiteralExpression.new(text: 'month of year(null)').evaluate).must_be_nil
           end
         end
 
