@@ -20,18 +20,22 @@ module SpotFeel
         describe :number do
           it "should eval integer literal" do
             _(LiteralExpression.new(text: '314').evaluate).must_equal 314
-          end
-
-          it "should eval float literal" do
-            _(LiteralExpression.new(text: '3.14').evaluate).must_equal 3.14
+            _(LiteralExpression.new(text: '(314)').evaluate).must_equal 314
           end
 
           it "should eval negative integers" do
             _(LiteralExpression.new(text: '-314').evaluate).must_equal(-314)
+            _(LiteralExpression.new(text: '-(314)').evaluate).must_equal(-314)
+          end
+
+          it "should eval float literal" do
+            _(LiteralExpression.new(text: '3.14').evaluate).must_equal 3.14
+            _(LiteralExpression.new(text: '(3.14)').evaluate).must_equal 3.14
           end
 
           it "should eval negative floats" do
             _(LiteralExpression.new(text: '-3.14').evaluate).must_equal(-3.14)
+            _(LiteralExpression.new(text: '-(3.14)').evaluate).must_equal(-3.14)
           end
         end
 
@@ -795,7 +799,8 @@ module SpotFeel
           end
         end
 
-        describe :misc do
+        it "should eval a nested mathematic operation" do
+          _(LiteralExpression.new(text: '-(1 + (3 * 5))').evaluate).must_equal -16
         end
       end
     end

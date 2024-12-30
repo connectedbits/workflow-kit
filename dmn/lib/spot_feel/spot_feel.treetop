@@ -268,7 +268,7 @@ grammar SpotFeel
   # 26. arithmetic negation = "-" , expression ;
   #
   rule arithmetic_negation
-    "not" __ "(" __ expr:expression __ ")" {
+    "-" __ "(" __ expr:expression __ ")" {
       def eval(context={})
         -expr.eval(context)
       end
