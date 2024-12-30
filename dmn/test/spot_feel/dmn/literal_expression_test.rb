@@ -69,6 +69,14 @@ module SpotFeel
           it "should eval false literal" do
             _(LiteralExpression.new(text: 'false').evaluate).must_equal false
           end
+
+          it "should eval not true literal" do
+            _(LiteralExpression.new(text: 'not(false)').evaluate).must_equal true
+          end
+
+          it "should eval not false literal" do
+            _(LiteralExpression.new(text: 'not(true)').evaluate).must_equal false
+          end
         end
 
         describe :temporal do

@@ -93,7 +93,7 @@ module SpotFeel
             from.include?(".") ? from.to_f : from.to_i 
           },
           # Boolean functions
-          # "not": ->(value) { value == true ? false : true },
+          "not": ->(value) { value == true ? false : true },
           "is defined": ->(value) { 
             return if value.nil?
             !value.nil? 

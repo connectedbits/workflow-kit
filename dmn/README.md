@@ -136,7 +136,7 @@ UnaryTests.new(text: '> speed - speed_limit').variable_names
 ### Built-in Functions
 
 - [x] Conversion: `string`, `number`
-- [x] Boolean: `is defined`, `get or else`
+- [x] Boolean: `not`, `is defined`, `get or else`
 - [x] String: `substring`, `substring before`, `substring after`, `string length`, `upper case`, `lower case`, `contains`, `starts with`, `ends with`, `matches`, `replace`, `split`, `strip`, `extract`
 - [x] Numeric: `decimal`, `floor`, `ceiling`, `round`, `abs`, `modulo`, `sqrt`, `log`, `exp`, `odd`, `even`, `random number`
 - [x] List: `list contains`, `count`, `min`, `max`, `sum`, `product`, `mean`, `median`, `stddev`, `mode`, `all`, `any`, `sublist`, `append`, `concatenate`, `insert before`, `remove`, `reverse`, `index of`, `union`, `distinct values`, `duplicate values`, `flatten`, `sort`, `string join`

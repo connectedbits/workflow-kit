@@ -629,12 +629,7 @@ grammar SpotFeel
   rule keyword
     true_token /
     false_token /
-    null_token /
-    not_token
-  end
-
-  rule not_token 
-    "not"
+    null_token
   end
 
   rule true_token
