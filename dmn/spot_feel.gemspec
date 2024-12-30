@@ -3,7 +3,7 @@
 require_relative "lib/spot_feel/version"
 
 Gem::Specification.new do |spec|
-  spec.name = "spot_feel"
+  spec.name = "feel"
   spec.version = SpotFeel::VERSION
   spec.authors = ["Connected Bits"]
   spec.email = ["info@connectedbits.com"]
