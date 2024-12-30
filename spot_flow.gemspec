@@ -1,7 +1,7 @@
 require_relative "lib/spot_flow/version"
 
 Gem::Specification.new do |spec|
-  spec.name        = "spot_flow"
+  spec.name        = "bpmn"
   spec.version     = SpotFlow::VERSION
   spec.authors     = ["Connected Bits"]
   spec.email       = ["info@connectedbits.com"]
