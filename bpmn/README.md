@@ -15,14 +15,14 @@ Processes are made of a series of tasks. Tasks can be manual (require `signal` t
 - BusinessRuleTask (automated): evaluates the decision_id (expects dmn source to be included in the context).
 - ScriptTask (automated): evaluates the FEEL expression in the script property.
 
-To start the process, initialize SpotFlow with the BPMN and DMN source files, then call `start`.
+To start the process, initialize with the BPMN and DMN source files, then call `start`.
 
 ```ruby
 sources = [
   File.read("hello_world.bpmn"),
   File.read("choose_greeting.dmn")
 ]
-execution = SpotFlow.new(sources).start
+execution = BPMN.new(sources).start
 ```
 
 It's often useful to print the process state to the console.
@@ -39,7 +39,7 @@ HelloWorld started * Flow_080794y
 2 BoundaryEvent EggTimer: waiting
 ```
 
-The HelloWorld process began at the Start event and is _waiting_ at the IntroduceYourself user task. This is an important concept in the SpotFlow engine. It's designed to be used in a Rails application where a process might be waiting for a user to complete a form, or a background job to complete. It's common to save the state the process until a task is complete. Calling `serialize` on a process will return the execution state so it can be continued later.
+The HelloWorld process began at the Start event and is _waiting_ at the IntroduceYourself user task. This is an important concept in the BPMN engine. It's designed to be used in a Rails application where a process might be waiting for a user to complete a form, or a background job to complete. It's common to save the state the process until a task is complete. Calling `serialize` on a process will return the execution state so it can be continued later.
 
 ```ruby
 # Returns a hash of the process state.
@@ -49,7 +49,7 @@ execution_state = execution.serialize
 # or a background job completes (ServiceTask)
 
 # Restores the process from the execution state.
-execution = SpotFlow.restore(sources, execution_state:)
+execution = BPMN.restore(sources, execution_state:)
 
 # Now we can continue the process by `signaling` the waiting task.
 step = execution.step_by_element_id("IntroduceYourself")
@@ -162,13 +162,13 @@ HelloWorld completed *
 Execute:
 
 ```bash
-$ bundle add spot_flow
+$ bundle add bpmn
 ```
 
 Or install it directly:
 
 ```bash
-$ gem install spot_flow
+$ gem install bpmn
 ```
 
 ## Development

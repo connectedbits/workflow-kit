@@ -18,7 +18,7 @@ Minitest::Reporters.use!(
     Minitest.backtrace_filter,
 )
 
-require_relative "../lib/spot_feel"
+require_relative "../lib/dmn"
 
 class Minitest::Spec
   include ActiveSupport::Testing::TimeHelpers
@@ -38,11 +38,11 @@ class Minitest::Spec
   end
 
   def eval(expression, context: {})
-    SpotFeel::Parser.new.evaluate(expression, context: context)
+    DMN::Parser.new.evaluate(expression, context: context)
   end
 
   def unary(context, expression)
-    SpotFeel::Parser.new.unary_test(expression, context: context)
+    DMN::Parser.new.unary_test(expression, context: context)
   end
 
   def custom_functions

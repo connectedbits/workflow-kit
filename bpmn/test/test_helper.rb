@@ -16,10 +16,10 @@ SimpleCov.start do
 
   add_filter %r{^/test/}
 
-  add_group "Spot Flow",                  ["spot_flow/"]
-  add_group "Spot Flow Services",         ["spot_flow/services/"]
-  add_group "Spot Flow BPMN",             ["spot_flow/bpmn/"]
-  add_group "Spot Flow Zeebe Extensions", ["spot_flow/zeebe/"]
+  add_group "Spot Flow",                  ["bpmn/"]
+  add_group "Spot Flow Services",         ["bpmn/services/"]
+  add_group "Spot Flow BPMN",             ["bpmn/bpmn/"]
+  add_group "Spot Flow Zeebe Extensions", ["bpmn/zeebe/"]
 end
 
 Time.zone_default = Time.find_zone!("UTC")
@@ -30,7 +30,7 @@ Minitest::Reporters.use!(
     Minitest.backtrace_filter,
 )
 
-require_relative "../lib/spot_flow"
+require_relative "../lib/bpmn"
 
 class Minitest::Spec
   include ActiveSupport::Testing::TimeHelpers

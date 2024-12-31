@@ -1,44 +1,42 @@
 # frozen_string_literal: true
 
-module SpotFlow
-  module Bpmn
-    class Element
-      include ActiveModel::Model
+module BPMN
+  class Element
+    include ActiveModel::Model
 
-      attr_accessor :id, :name, :extension_elements
+    attr_accessor :id, :name, :extension_elements
 
-      def initialize(attributes = {})
-        super(attributes.slice(:id, :name))
+    def initialize(attributes = {})
+      super(attributes.slice(:id, :name))
 
-        @extension_elements = ExtensionElements.new(attributes[:extension_elements]) if attributes[:extension_elements].present?
-      end
-
-      def inspect
-        "#<#{self.class.name.gsub(/SpotFlow::/, "")} @id=#{id.inspect} @name=#{name.inspect}>"
-      end
+      @extension_elements = ExtensionElements.new(attributes[:extension_elements]) if attributes[:extension_elements].present?
     end
 
-    class Message < Element
+    def inspect
+      "#<#{self.class.name.gsub(/BPMN::/, "")} @id=#{id.inspect} @name=#{name.inspect}>"
     end
+  end
 
-    class Signal < Element
-    end
+  class Message < Element
+  end
 
-    class Error < Element
-    end
+  class Signal < Element
+  end
 
-    class Collaboration < Element
-    end
+  class Error < Element
+  end
 
-    class LaneSet < Element
-    end
+  class Collaboration < Element
+  end
 
-    class Participant < Element
-      attr_accessor :process_ref, :process
+  class LaneSet < Element
+  end
 
-      def initialize(attributes = {})
-        super(attributes.except(:process_ref))
-      end
+  class Participant < Element
+    attr_accessor :process_ref, :process
+
+    def initialize(attributes = {})
+      super(attributes.except(:process_ref))
     end
   end
 end

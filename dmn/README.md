@@ -18,7 +18,7 @@ This project was inspired by these excellent libraries:
 To evaluate an expression:
 
 ```ruby
-SpotFeel.evaluate('"👋 Hello " + name', variables: { name: "World" })
+DMN.evaluate('"👋 Hello " + name', variables: { name: "World" })
 # => "👋 Hello World"
 ```
 
@@ -31,36 +31,36 @@ variables = {
     age: 59,
   }
 }
-SpotFeel.evaluate('if person.age >= 18 then "adult" else "minor"', variables:)
+DMN.evaluate('if person.age >= 18 then "adult" else "minor"', variables:)
 # => "adult"
 ```
 
 Calling a built-in function:
 
 ```ruby
-SpotFeel.evaluate('sum([1, 2, 3])')
+DMN.evaluate('sum([1, 2, 3])')
 # => 6
 ```
 
 Calling a user-defined function:
 
 ```ruby
-SpotFeel.config.functions = {
+DMN.config.functions = {
   "reverse": ->(s) { s.reverse }
 }
-SpotFeel.evaluate('reverse("Hello World!")', functions:)
+DMN.evaluate('reverse("Hello World!")', functions:)
 # => "!dlroW olleH"
 ```
 
 To evaluate a unary tests:
 
 ```ruby
-SpotFeel.test(3, '<= 10, > 50'))
+DMN.test(3, '<= 10, > 50'))
 # => true
 ```
 
 ```ruby
-SpotFeel.test("Eric", '"Bob", "Holly", "Eric"')
+DMN.test("Eric", '"Bob", "Holly", "Eric"')
 # => true
 ```
 
@@ -76,7 +76,7 @@ variables = {
     speed_limit: 65,
   }
 }
-result = SpotFeel.decide('fine_decision', definitions_xml: fixture_source("fine.dmn"), variables:)
+result = DMN.decide('fine_decision', definitions_xml: fixture_source("fine.dmn"), variables:)
 # => { "amount" => 1000, "points" => 7 })
 ```
 
@@ -155,13 +155,13 @@ UnaryTests.new(text: '> speed - speed_limit').variable_names
 Execute:
 
 ```bash
-$ bundle add "spot_feel"
+$ bundle add "dmn"
 ```
 
 Or install it directly:
 
 ```bash
-$ gem install spot_feel
+$ gem install dmn
 ```
 
 ### Setup
