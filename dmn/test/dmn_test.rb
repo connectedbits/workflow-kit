@@ -12,7 +12,7 @@ module DMN
 
   describe :evaluate do
     it "should eval a simple expression" do
-      _(DMN.evaluate('"👋 Hello " + name', variables: { name: 'World' })).must_equal "👋 Hello World"
+      _(DMN.evaluate('"👋 Hello " + name', variables: { name: "World" })).must_equal "👋 Hello World"
     end
 
     it "should eval slightly more complex expressions" do
@@ -20,7 +20,7 @@ module DMN
     end
 
     it "should eval built-in functions" do
-      _(DMN.evaluate('sum([1, 2, 3])')).must_equal 6
+      _(DMN.evaluate("sum([1, 2, 3])")).must_equal 6
     end
 
     it "should eval user defined functions" do
@@ -29,7 +29,7 @@ module DMN
 
     it "should eval user defined functions from config" do
       DMN.config.functions = {
-        "upcase_config": ->(s) { s.upcase }
+        "upcase_config": ->(s) { s.upcase },
       }
       _(DMN.evaluate('upcase_config("Hello World!")')).must_equal "HELLO WORLD!"
     ensure
@@ -39,23 +39,23 @@ module DMN
 
   describe :test do
     it "should match input entry '42' to the numeric value 42" do
-      _(DMN.test(42, '42')).must_equal true
-      _(DMN.test(41, '42')).must_equal false
+      _(DMN.test(42, "42")).must_equal true
+      _(DMN.test(41, "42")).must_equal false
     end
 
     it "should match input entry '< 42' to a value less than 42" do
-      _(DMN.test(41, '< 42')).must_equal true
-      _(DMN.test(42, '< 42')).must_equal false
+      _(DMN.test(41, "< 42")).must_equal true
+      _(DMN.test(42, "< 42")).must_equal false
     end
 
     it "should match input entry '[41 .. 50]' to a value between 41 and 50 (inclusive)" do
-      _(DMN.test(41, '[41 .. 50]')).must_equal true
-      _(DMN.test(40, '[41 .. 50]')).must_equal false
+      _(DMN.test(41, "[41 .. 50]")).must_equal true
+      _(DMN.test(40, "[41 .. 50]")).must_equal false
     end
 
     it "should match input entry '<10, >20' to a value less than 10 or greater than 20" do
-      _(DMN.test(21, '<10, >20')).must_equal true
-      _(DMN.test(15, '<10, >20')).must_equal false
+      _(DMN.test(21, "<10, >20")).must_equal true
+      _(DMN.test(15, "<10, >20")).must_equal false
     end
 
     it "should match input entry '\"A\"' to the string value \"A\"" do
@@ -70,15 +70,15 @@ module DMN
     end
 
     it "should match input entry 'true' to the boolean value true" do
-      _(DMN.test(true, 'true')).must_equal true
-      _(DMN.test(false, 'true')).must_equal false
-      _(DMN.test(3, 'true')).must_equal false
+      _(DMN.test(true, "true")).must_equal true
+      _(DMN.test(false, "true")).must_equal false
+      _(DMN.test(3, "true")).must_equal false
     end
 
     it "should match input entry '-' to anything" do
-      _(DMN.test("ANYTHING", '-')).must_equal true
-      _(DMN.test(3, '-')).must_equal true
-      _(DMN.test(false, '-')).must_equal true
+      _(DMN.test("ANYTHING", "-")).must_equal true
+      _(DMN.test(3, "-")).must_equal true
+      _(DMN.test(false, "-")).must_equal true
     end
 
     it "should match input entry nil to anything" do
@@ -86,38 +86,38 @@ module DMN
     end
 
     it "should match input entry 'null' to nil" do
-      _(DMN.test(nil, 'null')).must_equal true
-      _(DMN.test(3, 'null')).must_equal false
+      _(DMN.test(nil, "null")).must_equal true
+      _(DMN.test(3, "null")).must_equal false
     end
 
     it "should match input entry 'not(null)' to any value other than nil" do
-      _(DMN.test("ANYTHING", 'not(null)')).must_equal true
-      _(DMN.test(nil, 'not(null)')).must_equal false
+      _(DMN.test("ANYTHING", "not(null)")).must_equal true
+      _(DMN.test(nil, "not(null)")).must_equal false
     end
 
     it "should match input entry 'property' to the same value as the property (must be given in the context)" do
-      _(DMN.test(42, 'property', variables: { property: 42 })).must_equal true
+      _(DMN.test(42, "property", variables: { property: 42 })).must_equal true
     end
 
     it "should match input entry 'object.property' to the same value as the property of the object" do
-      _(DMN.test(42, 'object.property', variables: { object: { property: 42 } })).must_equal true
+      _(DMN.test(42, "object.property", variables: { object: { property: 42 } })).must_equal true
     end
 
     it "should match input entry 'f(a)' to same value as the function evaluated with the property (function and property must be given in the context)" do
       DMN.config.functions = { "f" => proc { |a| a == 42 } }
-      _(DMN.test(true, 'f(a)', variables: { a: 42 })).must_equal true
+      _(DMN.test(true, "f(a)", variables: { a: 42 })).must_equal true
     end
 
     it "should match input entry 'limit - 10' to the same value as the limit minus 10" do
-      _(DMN.test(42, 'limit - 10', variables: { limit: 52 })).must_equal true
+      _(DMN.test(42, "limit - 10", variables: { limit: 52 })).must_equal true
     end
 
     it "should match input entry 'limit * 2' to the same value as the limit times 2" do
-      _(DMN.test(42, 'limit * 2', variables: { limit: 21 })).must_equal true
+      _(DMN.test(42, "limit * 2", variables: { limit: 21 })).must_equal true
     end
 
     it "should match input entry '[limit.upper, limit.lower]' to a value between the value of two given properties of object limit" do
-      _(DMN.test(42, '[limit.lower .. limit.upper]', variables: { limit: { upper: 50, lower: 40 } })).must_equal true
+      _(DMN.test(42, "[limit.lower .. limit.upper]", variables: { limit: { upper: 50, lower: 40 } })).must_equal true
     end
 
     it "should do date math inside an interval" do
@@ -127,7 +127,7 @@ module DMN
         period_duration: ActiveSupport::Duration.build(2716146),
       }
       input = period_begin + 20.days
-      _(DMN.test(input, '[period_begin .. period_begin + period_duration]', variables:)).must_equal true
+      _(DMN.test(input, "[period_begin .. period_begin + period_duration]", variables:)).must_equal true
     end
 
     it "should match input entry 'date(\"1963-12-23\")' to the date value 1963-12-23" do
@@ -136,11 +136,11 @@ module DMN
     end
 
     it "should match input entry 'date(property)' to the date which is defined by the value of the given property, the time if cropped to 00:00:00" do
-      _(DMN.test(Date.new(1963, 12, 23), 'date(property)', variables: { property: Date.new(1963, 12, 23) })).must_equal true
+      _(DMN.test(Date.new(1963, 12, 23), "date(property)", variables: { property: Date.new(1963, 12, 23) })).must_equal true
     end
 
     it "should match input entry 'date and time(property)' to the date and time which is defined by the value of the given property" do
-      _(DMN.test(DateTime.new(1963, 12, 23, 12, 34, 56), 'date and time(property)', variables: { property: DateTime.new(1963, 12, 23, 12, 34, 56) })).must_equal true
+      _(DMN.test(DateTime.new(1963, 12, 23, 12, 34, 56), "date and time(property)", variables: { property: DateTime.new(1963, 12, 23, 12, 34, 56) })).must_equal true
     end
 
     it "should match input entry 'duration(d)' to the duration specified by d, an ISO 8601 duration string like P3D for three days (duration is built-in either)" do

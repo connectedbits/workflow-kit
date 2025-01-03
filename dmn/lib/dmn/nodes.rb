@@ -6,7 +6,7 @@ module DMN
     # Takes a context hash and returns an array of qualified names
     # { "person": { "name": { "first": "Eric", "last": "Carlson" }, "age": 60 } } => ["person", "person.name.first", "person.name.last", "person.age"]
     #
-    def qualified_names_in_context(hash = {}, prefix = '', qualified_names = Set.new)
+    def qualified_names_in_context(hash = {}, prefix = "", qualified_names = Set.new)
       hash.each do |key, value|
         new_prefix = prefix.empty? ? "#{key}" : "#{prefix}.#{key}"
         if value.is_a?(Hash)
@@ -114,13 +114,13 @@ module DMN
       second_val = second.eval(context)
 
       case [start, finish]
-      when ['(', ')']
+      when ["(", ")"]
         ->(input) { first_val < input && input < second_val }
-      when ['[', ']']
+      when ["[", "]"]
         ->(input) { first_val <= input && input <= second_val }
-      when ['(', ']']
+      when ["(", "]"]
         ->(input) { first_val < input && input <= second_val }
-      when ['[', ')']
+      when ["[", ")"]
         ->(input) { first_val <= input && input < second_val }
       end
     end
@@ -228,7 +228,7 @@ module DMN
         raise_evaluation_error(head.text_value, context) if DMN.config.strict && !context.key?(head.text_value.to_sym)
         context[head.text_value.to_sym]
       else
-        tail.elements.flat_map { |element| element.name.text_value.split('.') }.inject(context[head.text_value.to_sym]) do |hash, key|
+        tail.elements.flat_map { |element| element.name.text_value.split(".") }.inject(context[head.text_value.to_sym]) do |hash, key|
           raise_evaluation_error("#{head.text_value}#{tail.text_value}", context) if DMN.config.strict && (hash.blank? || !hash.key?(key.to_sym))
           return nil unless hash
           hash[key.to_sym]
@@ -492,12 +492,12 @@ module DMN
   class Comparison < Node
     def eval(context = {})
       case operator.text_value
-      when '<' then left.eval(context) < right.eval(context)
-      when '<=' then left.eval(context) <= right.eval(context)
-      when '>=' then left.eval(context) >= right.eval(context)
-      when '>' then left.eval(context) > right.eval(context)
-      when '!=' then left.eval(context) != right.eval(context)
-      when '=' then left.eval(context) == right.eval(context)
+      when "<" then left.eval(context) < right.eval(context)
+      when "<=" then left.eval(context) <= right.eval(context)
+      when ">=" then left.eval(context) >= right.eval(context)
+      when ">" then left.eval(context) > right.eval(context)
+      when "!=" then left.eval(context) != right.eval(context)
+      when "=" then left.eval(context) == right.eval(context)
       end
     end
   end

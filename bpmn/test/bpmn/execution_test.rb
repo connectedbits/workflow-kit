@@ -88,7 +88,7 @@ module BPMN
     end
 
     describe :serialization do
-      before { @execution = context.start(variables: {"foo": "bar"}) }
+      before { @execution = context.start(variables: { "foo": "bar" }) }
 
       let(:execution) { @execution }
       let(:start_event) { execution.child_by_step_id("Start") }

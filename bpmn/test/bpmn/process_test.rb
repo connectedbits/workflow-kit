@@ -36,7 +36,7 @@ module BPMN
         let(:execution) { @execution }
         let(:sub_process) { execution.child_by_step_id("SubProcess") }
         let(:call_activity) { sub_process.child_by_step_id("CallActivity") }
-        let (:callee_task) { call_activity.child_by_step_id("Task") }
+        let(:callee_task) { call_activity.child_by_step_id("Task") }
 
         it "should start the process" do
           _(execution.started?).must_equal true

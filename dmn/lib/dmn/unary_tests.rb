@@ -13,12 +13,12 @@ module DMN
     end
 
     def valid?
-      return true if text.nil? || text == '-'
+      return true if text.nil? || text == "-"
       tree.present?
     end
 
     def test(input, variables = {})
-      return true if text.nil? || text == '-'
+      return true if text.nil? || text == "-"
       tree.eval(functions.merge(variables)).call(input)
     end
   end

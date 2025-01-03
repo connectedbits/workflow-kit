@@ -29,7 +29,7 @@ module BPMN
       step = step_type == "Process" ? context.process_by_id(step_id) : context.element_by_id(step_id)
       child_attributes = attributes.delete("children")
       Execution.new(attributes.merge(step: step, context:)).tap do |execution|
-        execution.children = child_attributes.map do |ca| 
+        execution.children = child_attributes.map do |ca|
           Execution.from_json(ca, context:).tap { |child| child.parent = execution }
         end if child_attributes
       end

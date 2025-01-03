@@ -17,7 +17,7 @@ module DMN
         let(:output_entries) {
           [
             LiteralExpression.new(text: '"Bonjour"'),
-            LiteralExpression.new(text: 'name'),
+            LiteralExpression.new(text: "name"),
           ]
         }
 
@@ -45,7 +45,7 @@ module DMN
           let(:output_entries) {
             [
               LiteralExpression.new(text: nil),
-              LiteralExpression.new(text: 'name'),
+              LiteralExpression.new(text: "name"),
             ]
           }
 
@@ -58,8 +58,8 @@ module DMN
         describe :with_blank_output_entry do
           let(:output_entries) {
             [
-              LiteralExpression.new(text: ''),
-              LiteralExpression.new(text: 'name'),
+              LiteralExpression.new(text: ""),
+              LiteralExpression.new(text: "name"),
             ]
           }
 
@@ -73,7 +73,7 @@ module DMN
           let(:output_entries) {
             [
               LiteralExpression.new(text: '""'),
-              LiteralExpression.new(text: 'name'),
+              LiteralExpression.new(text: "name"),
             ]
           }
 
@@ -86,8 +86,8 @@ module DMN
         describe :with_null_literal_output_entry do
           let(:output_entries) {
             [
-              LiteralExpression.new(text: 'null'),
-              LiteralExpression.new(text: 'name'),
+              LiteralExpression.new(text: "null"),
+              LiteralExpression.new(text: "name"),
             ]
           }
 

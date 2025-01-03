@@ -48,7 +48,7 @@ module DMN
     private
 
     def nested_hash_value(hash, key_string, value)
-      keys = key_string.split('.')
+      keys = key_string.split(".")
       current = hash
       keys[0...-1].each do |key|
         current[key] ||= {}
