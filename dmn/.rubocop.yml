@@ -22,8 +22,8 @@ AllCops:
 # Style:
 #   Enabled: true
 
-# Style/StringLiterals:
-#   EnforcedStyle: double_quotes
+Style/StringLiterals:
+  EnforcedStyle: double_quotes
 
 Style/TrailingCommaInArguments:
   EnforcedStyleForMultiline: consistent_comma
