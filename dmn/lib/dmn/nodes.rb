@@ -522,7 +522,7 @@ module DMN
   # 53. instance of = expression , "instance" , "of" , type ;
   #
   class InstanceOf < Node
-    def eval(context = {})
+    def eval(_context = {})
       case type.text_value
       when "string"
         ->(input) { input.is_a?(String) }

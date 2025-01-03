@@ -1,6 +1,11 @@
 require:
   - rubocop-performance
 
+inherit_mode:
+  merge:
+    - Include
+    - Exclude
+
 ### Everything
 
 AllCops:
@@ -8,14 +13,6 @@ AllCops:
   DisabledByDefault: true
   Exclude:
     - bin/*
-      - lib/feel/feel.treetop
-    - lib/feel/feel.rb
-  Include:
-    - Rakefile
-    - bin/test
-    - bin/setup
-    - lib/**/*.rb
-    - test/**/*.rb
 
 ### Style Department
 
@@ -44,6 +41,8 @@ Style/FrozenStringLiteralComment:
   Enabled: true
   Exclude:
     - Rakefile
+    - Gemfile
+    - "**/*.gemspec"
     - bin/*
 
 Style/RegexpLiteral:
