@@ -2,14 +2,9 @@
 
 require_relative "dmn/version"
 
-require "awesome_print"
-
 require "active_support"
-require "active_support/duration"
 require "active_support/time"
 require "active_support/core_ext/hash"
-require "active_support/core_ext/object/json"
-require "active_support/configurable"
 
 require "treetop"
 require "xmlhasher"
