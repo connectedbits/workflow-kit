@@ -556,8 +556,6 @@ module DMN
         ->(input) { input.is_a?(ActiveSupport::Duration) && input.parts.keys.sort == [:seconds] }
       when "time duration"
         ->(input) { input.is_a?(ActiveSupport::Duration) && input.parts.keys.sort == [:hours, :minutes, :seconds] }
-      when "years and months duration"
-        ->(input) { input.is_a?(ActiveSupport::Duration) && input.parts.keys.sort == [:months, :years] }
       when "list"
         ->(input) { input.is_a?(Array) }
       when "interval"
