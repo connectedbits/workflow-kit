@@ -2,8 +2,6 @@
 
 require_relative "dmn/version"
 
-require "awesome_print"
-
 require "active_support"
 require "active_support/duration"
 require "active_support/time"
