@@ -21,6 +21,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "activemodel", ">= 7.0.2.3"
   spec.add_dependency "activesupport", ">= 7.0.2.3"
+  spec.add_dependency "ostruct"
   spec.add_dependency "treetop"
   spec.add_dependency "xmlhasher", "~> 1.0.7"
 
