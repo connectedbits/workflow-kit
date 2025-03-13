@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.email       = ["info@connectedbits.com"]
   spec.homepage    = "https://www.connectedbits.com"
   spec.summary     = "A BPMN workflow engine in Ruby"
-  spec.description = "Spot Flow is a workflow gem for Rails applications based on the [bpmn](https://www.bpmn.org) standard. It executes business processes and rules defined in a modeler."
+  spec.description = "BPMN is a workflow gem for Ruby applications based on the BPMN standard. It executes business processes and rules defined in a modeler."
   spec.license     = "MIT"
 
   spec.metadata["homepage_uri"] = spec.homepage

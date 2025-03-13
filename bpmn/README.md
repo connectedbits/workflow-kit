@@ -1,6 +1,6 @@
-# Spot Flow
+# BPMN
 
-Spot Flow is a workflow engine for Rails applications based on the [bpmn](https://www.bpmn.org) standard. It executes business processes defined in a [modeler](https://camunda.com/download/modeler/). It uses [Spot Feel](https://github.com/connectedbits/spot-feel) to evaluate expressions and business rules in the BPMN model. It can be used with [Spot Form](https://github.com/connectedbits/spot-form) to render dynamic forms for user tasks.
+A workflow engine for Ruby applications based on the [BPMN](https://www.bpmn.org) standard. It executes business processes defined in a [modeler](https://camunda.com/download/modeler/). It uses [DMN](https://github.com/connectedbits/bpmn/tree/main/dmn) to evaluate expressions and business rules in the BPMN model.
 
 ## Usage
 
