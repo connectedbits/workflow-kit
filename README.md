@@ -20,7 +20,7 @@ FEEL.test(3, '<= 10, > 50'))
 # => true
 ```
 
-See the [FEEL README](feel/README.md) and tests for more examples and documentation.
+See the FEEL [README](feel/README.md) and [tests](feel/test) for more examples and documentation.
 
 ## DMN
 
@@ -42,7 +42,7 @@ result = DMN.decide('fine_decision', definitions_xml: fixture_source("fine.dmn")
 # => { "amount" => 1000, "points" => 7 })
 ```
 
-See the [DMN README](dmn/README.md) and tests for more examples and documentation.
+See the DMN [README](dmn/README.md) and [tests](dmn/test) for more examples and documentation.
 
 Learn more about the [DMN and FEEL Specs](https://www.omg.org/spec/DMN). Note: this gem implements a subset of the DMN 1.3 specification.
 
@@ -129,7 +129,7 @@ HelloWorld completed *
 9 EndEvent End: completed * in: Flow_0gkfhvr
 ```
 
-See the [BPMN README](bpmn/README.md) and tests for more examples and documentation.
+See the BPMN [README](bpmn/README.md) and [tests](bpmn/test) for more examples and documentation.
 
 Learn more about the [BPMN Spec](https://www.omg.org/spec/BPMN).
 
