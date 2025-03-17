@@ -1,3 +1,3 @@
-# BPMN & DMN/FEEL
+# ProcessKit
 
-This is a combined repository of both the [BPMN](bpmn) and [DMN](dmn) ruby gems.
+ProcessKit provides essential Ruby gems for managing business workflows [BPMN](bpmn), decision-making logic [DMN](dmn), and [FEEL](feel) expressions, keeping your apps clean, organized, and maintainable.
