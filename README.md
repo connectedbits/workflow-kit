@@ -2,7 +2,7 @@
 
 WorkflowKit provides essential Ruby gems for managing business workflows [BPMN](bpmn), decision-making logic [DMN](dmn), and [FEEL](feel) expressions, keeping your apps clean, organized, and maintainable. These gems are light-weight with minimal dependencies and are based on open standards.
 
-# FEEL
+## FEEL
 
 FEEL expressions are safe and side-effect free. They are ideal for capturing business logic for storage in a database or embedded in DMN or BPMN documents for execution.
 
