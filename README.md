@@ -55,7 +55,7 @@ Processes are made of a series of tasks. The engine supports the following task 
 - BusinessRuleTask (automated): evaluates the decision_id (expects dmn source to be included in the context).
 - ScriptTask (automated): evaluates the FEEL expression in the script property.
 
-![Example](test/fixtures/files/hello_world.png)
+![Example](bpmn/test/fixtures/files/hello_world.png)
 
 To start the process, initialize with the BPMN and DMN source files, then call `start`.
 

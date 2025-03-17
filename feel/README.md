@@ -1,4 +1,4 @@
-# DMN
+# FEEL
 
 A light-weight FEEL expression evaluator ruby gem.
 
