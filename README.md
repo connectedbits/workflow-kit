@@ -1,6 +1,6 @@
 # WorkflowKit
 
-WorkflowKit provides essential Ruby gems for managing business processes ([BPMN](bpmn)), rules ([DMN](dmn)), and expressions ([FEEL](feel)); keeping your apps clean, organized, and maintainable. These gems are light-weight with minimal dependencies and are based on open standards.
+WorkflowKit provides essential Ruby gems for managing business processes ([BPMN](bpmn)), rules ([DMN](dmn)), and expressions ([FEEL](feel)); keeping your apps clean, organized, and maintainable. These gems are light-weight with minimal dependencies and are based on [open standards](https://www.bpmn.org).
 
 ## FEEL
 
@@ -43,6 +43,8 @@ result = DMN.decide('fine_decision', definitions_xml: fixture_source("fine.dmn")
 ```
 
 See the [DMN README](dmn/README.md) and tests for more examples and documentation.
+
+Learn more about the [DMN and FEEL Specs](https://www.omg.org/spec/DMN). Note: this gem implements a subset of the DMN 1.3 specification.
 
 ## BPMN
 
@@ -128,6 +130,8 @@ HelloWorld completed *
 ```
 
 See the [BPMN README](bpmn/README.md) and tests for more examples and documentation.
+
+Learn more about the [BPMN Spec](https://www.omg.org/spec/BPMN).
 
 ## License
 
