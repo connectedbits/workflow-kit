@@ -35,6 +35,10 @@ module FEEL
     ensure
       FEEL.config.functions = {}
     end
+
+    it "should handle newlines in strings" do
+      _(FEEL.evaluate('"Hello\nWorld!"')).must_equal "Hello\nWorld!"
+    end
   end
 
   describe :test do
@@ -161,6 +165,10 @@ module FEEL
 
     it "should match input entry '< date(begin) + duration(d)' to any date before the date that results by adding the given duration to the given date" do
       _(FEEL.test(Date.new(1963, 12, 22), '< date("1963-12-23") + duration("P3D")')).must_equal true
+    end
+
+    it "should handle newlines in strings" do
+      _(FEEL.test("Hello\nWorld!", '"Hello\nWorld!"')).must_equal true
     end
   end
 end

@@ -330,9 +330,40 @@ module FEEL
   #
   # 35. string literal = '"' , { character – ('"' | vertical space) }, '"' ;
   #
-  class StringLiteral < Node
-    def eval(_context = {})
-      text_value[1..-2]
+  class StringLiteral < Treetop::Runtime::SyntaxNode
+    def eval(context={})
+      # Collect all characters and process escape sequences
+      string_value = chars.elements.map do |char|
+        if char.respond_to?(:text_value) && char.text_value.start_with?('\\')
+          process_escape_sequence(char.text_value)
+        else
+          char.text_value
+        end
+      end.join
+      
+      string_value
+    end
+    
+    private
+    
+    def process_escape_sequence(escape_seq)
+      case escape_seq
+      when '\\n'
+        "\n"
+      when '\\r'
+        "\r"
+      when '\\t'
+        "\t"
+      when '\\"'
+        '"'
+      when '\\\''
+        "'"
+      when '\\\\'
+        '\\'
+      else
+        # Return the character after the backslash for unknown escape sequences
+        escape_seq[1..-1]
+      end
     end
   end
 
