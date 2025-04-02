@@ -1,4 +1,4 @@
-grammar DMN
+grammar FEEL
 
   rule start
     expression_or_tests
@@ -370,27 +370,22 @@ grammar DMN
   end
 
   rule double_string_character
-    !('"' / "\\" / line_terminator) source_character /
-    "\\" escape_sequence /
-    line_continuation
+    !('"' / "\\") source_character /
+    "\\" escape_sequence
   end
 
   rule single_string_character
-    !("'" / "\\" / line_terminator) source_character /
-    "\\" escape_sequence /
-    line_continuation
+    !("'" / "\\") source_character /
+    "\\" escape_sequence
   end
 
   rule source_character
     .
   end
 
-  rule line_continuation
-    "\\" __ line_terminator_sequence __
-  end
-
   rule escape_sequence
-    character_escape_sequence
+    character_escape_sequence /
+    line_terminator_sequence
   end
 
   rule character_escape_sequence
@@ -398,15 +393,15 @@ grammar DMN
   end
 
   rule single_escape_character
-    "'" / '"' / "\\"
+    "'" / '"' / "\\" / "n" / "r" / "t"
   end
 
   rule line_terminator
-    line_terminator_sequence
+    "\n" / "\r" / "\r\n"
   end
 
   rule line_terminator_sequence
-    "\n" / "\r" / "\r\n"
+    line_terminator
   end
 
   #
