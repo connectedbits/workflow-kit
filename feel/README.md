@@ -35,6 +35,17 @@ FEEL.evaluate('if person.age >= 18 then "adult" else "minor"', variables:)
 # => "adult"
 ```
 
+Strict mode will raise an exception if an expression references a variable that is not defined in the context.
+
+```ruby
+FEEL.configure do |config|
+  config.strict = true
+end
+
+LiteralExpression.new(text: "person.agx").evaluate({ "person": { "name": "Bob", "age": 32 } })
+# => raises EvaluationError("Identifier person.agx not found. Did you mean person.age?")
+```
+
 Calling a built-in function:
 
 ```ruby
