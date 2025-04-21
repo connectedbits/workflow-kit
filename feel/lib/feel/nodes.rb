@@ -340,12 +340,12 @@ module FEEL
           char.text_value
         end
       end.join
-      
+
       string_value
     end
-    
+
     private
-    
+
     def process_escape_sequence(escape_seq)
       case escape_seq
       when '\\n'

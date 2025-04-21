@@ -44,7 +44,7 @@ module DMN
           input_2: 2,
         },
       }
-      result =decision_table.evaluate(variables)
+      result = decision_table.evaluate(variables)
       _(result).must_be_nil
     end
   end
