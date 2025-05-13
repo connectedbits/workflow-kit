@@ -52,7 +52,7 @@ execution_state = execution.serialize
 execution = BPMN.restore(sources, execution_state:)
 
 # Now we can continue the process by `signaling` the waiting task.
-step = execution.step_by_element_id("IntroduceYourself")
+step = execution.child_by_step_id("IntroduceYourself")
 step.signal(name: "Eric", language: "it", formal: false, cookie: true)
 ```
 
@@ -113,7 +113,7 @@ HelloWorld started * Flow_0ws7a4m
 This time we'll `run` the script task manually.
 
 ```ruby
-step = execution.step_by_element_id("GenerateMessage")
+step = execution.child_by_step_id("GenerateMessage")
 step.run
 ```
 
