@@ -19,7 +19,7 @@ module DMN
           speed_limit: 65,
         },
       }
-      _(DMN.decide("fine_decision", definitions_xml: fixture_source("fine.dmn"), variables:)).must_equal({ "amount" => 1000, "points" => 7 })
+      _(DMN.decide("fine_decision", definitions_xml: fixture_source("fine.dmn"), variables: variables)).must_equal({ "amount" => 1000, "points" => 7 })
     end
   end
 end

@@ -7,7 +7,7 @@ module DMN
     def self.from_json(json)
       input_expression = FEEL::
       LiteralExpression.from_json(json[:input_expression]) if json[:input_expression]
-      Input.new(id: json[:id], label: json[:label], input_expression:)
+      Input.new(id: json[:id], label: json[:label], input_expression: input_expression)
     end
 
     def initialize(id:, label:, input_expression:)

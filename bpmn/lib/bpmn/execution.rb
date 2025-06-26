@@ -28,9 +28,9 @@ module BPMN
       step_type = attributes.delete("step_type")
       step = step_type == "Process" ? context.process_by_id(step_id) : context.element_by_id(step_id)
       child_attributes = attributes.delete("children")
-      Execution.new(attributes.merge(step: step, context:)).tap do |execution|
+      Execution.new(attributes.merge(step: step, context: context)).tap do |execution|
         execution.children = child_attributes.map do |ca|
-          Execution.from_json(ca, context:).tap { |child| child.parent = execution }
+          Execution.from_json(ca, context: context).tap { |child| child.parent = execution }
         end if child_attributes
       end
     end
@@ -175,7 +175,7 @@ module BPMN
     end
 
     def evaluate_expression(expression, variables: parent&.variables || {}.with_indifferent_access)
-      DMN.evaluate(expression.delete_prefix("="), variables:)
+      DMN.evaluate(expression.delete_prefix("="), variables: variables)
     end
 
     def run_automated_tasks

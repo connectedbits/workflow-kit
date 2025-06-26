@@ -131,7 +131,7 @@ module FEEL
         period_duration: ActiveSupport::Duration.build(2716146),
       }
       input = period_begin + 20.days
-      _(FEEL.test(input, "[period_begin .. period_begin + period_duration]", variables:)).must_equal true
+      _(FEEL.test(input, "[period_begin .. period_begin + period_duration]", variables: variables)).must_equal true
     end
 
     it "should match input entry 'date(\"1963-12-23\")' to the date value 1963-12-23" do

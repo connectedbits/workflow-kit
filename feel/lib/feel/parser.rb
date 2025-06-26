@@ -9,7 +9,7 @@ module FEEL
     @@parser = FEELParser.new
 
     def self.parse(expression, root: nil)
-      @@parser.parse(expression, root:).tap do |ast|
+      @@parser.parse(expression, root: root).tap do |ast|
         raise SyntaxError, "Invalid expression: #{expression.inspect}" unless ast
       end
     end

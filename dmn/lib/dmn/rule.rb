@@ -7,7 +7,7 @@ module DMN
     def self.from_json(json)
       input_entries = Array.wrap(json[:input_entry]).map { |input_entry| FEEL::UnaryTests.from_json(input_entry) }
       output_entries = Array.wrap(json[:output_entry]).map { |output_entry| FEEL::LiteralExpression.from_json(output_entry) }
-      Rule.new(id: json[:id], input_entries:, output_entries:, description: json[:description])
+      Rule.new(id: json[:id], input_entries: input_entries, output_entries: output_entries, description: json[:description])
     end
 
     def initialize(id:, input_entries:, output_entries:, description: nil)

@@ -32,15 +32,15 @@ module DMN
           },
         }
 
-        result = definitions.evaluate("primary_decision", variables:)
+        result = definitions.evaluate("primary_decision", variables: variables)
         _(result[:output][:score]).must_equal(50)
 
         variables[:input][:test_date] = Date.new(2018, 04, 04)
-        result = definitions.evaluate("primary_decision", variables:)
+        result = definitions.evaluate("primary_decision", variables: variables)
         _(result[:output][:score]).must_equal(100)
 
         variables[:input][:test_date] = Date.new(2018, 04, 05)
-        result = definitions.evaluate("primary_decision", variables:)
+        result = definitions.evaluate("primary_decision", variables: variables)
         _(result[:output][:score]).must_equal(0)
       end
     end

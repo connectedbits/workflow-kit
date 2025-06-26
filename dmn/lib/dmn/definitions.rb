@@ -40,7 +40,7 @@ module DMN
         next if already_evaluated_decisions[required_decision_id]
         next if decisions.find { |d| d.id == required_decision_id }.nil?
 
-        result = evaluate(required_decision_id, variables:, already_evaluated_decisions:)
+        result = evaluate(required_decision_id, variables: variables, already_evaluated_decisions: already_evaluated_decisions)
 
         variables.merge!(result) if result.is_a?(Hash)
 

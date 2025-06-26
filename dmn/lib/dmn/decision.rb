@@ -9,7 +9,7 @@ module DMN
       decision_table = DecisionTable.from_json(json[:decision_table]) if json[:decision_table]
       literal_expression = FEEL::LiteralExpression.from_json(json[:literal_expression]) if json[:literal_expression]
       variable = Variable.from_json(json[:variable]) if json[:variable]
-      Decision.new(id: json[:id], name: json[:name], decision_table:, variable:, literal_expression:, information_requirements:)
+      Decision.new(id: json[:id], name: json[:name], decision_table: decision_table, variable: variable, literal_expression: literal_expression, information_requirements: information_requirements)
     end
 
     def initialize(id:, name:, decision_table:, variable:, literal_expression:, information_requirements:)
