@@ -21,8 +21,8 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "feel", ">= 0.0.4"
 
-  spec.add_dependency "activemodel", ">= 7.0.2.3"
-  spec.add_dependency "activesupport", ">= 7.0.2.3"
+  spec.add_dependency "activemodel", ">= 6.0"
+  spec.add_dependency "activesupport", ">= 6.0"
   spec.add_dependency "ostruct"
   spec.add_dependency "treetop", "=1.6.12" # locked as treetop made some class changes that cause: superclass mismatch for class Parser (TypeError)
   spec.add_dependency "xmlhasher", "~> 1.0.7"
