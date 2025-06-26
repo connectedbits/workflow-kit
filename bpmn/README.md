@@ -176,6 +176,7 @@ $ gem install bpmn
 ```bash
 $ git clone ...
 $ bin/setup
+$ cd bpmn
 $ bin/rake
 $ bin/guard
 ```

@@ -9,7 +9,7 @@ task default: :test
   task task_name do
     errors = []
     GEMS.each do |project|
-      system(%(cd #{project} && #{$0} #{task_name} --trace)) || errors << project
+      system(%(cd #{project} && bin/rake #{task_name} --trace)) || errors << project
     end
     fail("Errors in #{errors.join(', ')}") unless errors.empty?
   end

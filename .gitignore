@@ -1,0 +1,12 @@
+/.bundle/
+/doc/
+/coverage/
+*.log
+/pkg/
+/tmp/
+.byebug_history
+
+.DS_Store
+
+Gemfile.lock
+coverage

@@ -48,6 +48,8 @@ $ gem install dmn
 ```bash
 $ git clone ...
 $ bin/setup
+$ cd dmn
+$ bin/rake
 $ bin/guard
 ```
 

@@ -157,6 +157,8 @@ $ gem install feel
 ```bash
 $ git clone ...
 $ bin/setup
+$ cd feel
+$ bin/rake
 $ bin/guard
 ```
 
