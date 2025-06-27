@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "dmn", ">= 0.0.4"
 
-  spec.add_dependency "activemodel", ">= 6.0"
+  spec.add_dependency "activemodel", ENV.fetch("RAILS_VERSION", ">= 6.0")
   spec.add_dependency "xmlhasher", "~> 1.0.7"
 
   spec.add_development_dependency "rake"
