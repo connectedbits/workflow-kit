@@ -29,7 +29,7 @@ module DMN
       _(result[:period_begin]).must_be_kind_of(Date)
       _(result[:period_begin]).must_equal(Date.new(2018, 01, 04))
       _(result[:period_duration]).must_be_kind_of(ActiveSupport::Duration)
-      _(result[:period_duration].in_months).must_equal(3)
+      _(result[:period_duration] / 1.month).must_equal(3)
     end
   end
 end

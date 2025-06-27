@@ -113,7 +113,7 @@ module FEEL
         it "should eval durations" do
           value = LiteralExpression.new(text: 'duration("PT6H")').evaluate
           _(value.class).must_equal ActiveSupport::Duration
-          _(value.in_hours).must_equal 6
+          _(value / 1.hour).must_equal 6
         end
 
         it "should support date math" do
