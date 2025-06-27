@@ -6,6 +6,7 @@ require "logger" # Required for Rails 7.0 and below compatibility, see https://g
 require "active_support"
 require "active_support/time"
 require "active_support/core_ext/hash"
+require "active_support/core_ext/enumerable"
 require "active_support/core_ext/object/json"
 require "active_support/configurable"
 require "active_model"
