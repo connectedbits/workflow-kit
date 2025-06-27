@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.license     = "MIT"
 
   spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = "https://github.com/connectedbits/process_pilot"
+  spec.metadata["source_code_uri"] = "https://github.com/connectedbits/workflow-kit/bpmn"
 
   spec.files = Dir["{lib,doc}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
 
