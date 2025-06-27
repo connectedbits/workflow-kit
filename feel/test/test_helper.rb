@@ -6,9 +6,9 @@ require "minitest/autorun"
 require "minitest/reporters"
 require "minitest/spec"
 require "minitest/focus"
-require "active_support"
-require "active_support/testing/time_helpers"
 require "pry"
+require_relative "../lib/feel"
+require "active_support/testing/time_helpers"
 
 Time.zone_default = Time.find_zone!("UTC")
 
@@ -18,7 +18,6 @@ Minitest::Reporters.use!(
     Minitest.backtrace_filter,
 )
 
-require_relative "../lib/feel"
 
 class Minitest::Spec
   include ActiveSupport::Testing::TimeHelpers

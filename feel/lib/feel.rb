@@ -2,6 +2,7 @@
 
 require_relative "feel/version"
 
+require "logger" # Required for Rails 7.0 and below compatibility, see https://github.com/rails/rails/commit/0f5e7a66143
 require "active_support"
 require "active_support/time"
 require "active_support/core_ext/hash"
