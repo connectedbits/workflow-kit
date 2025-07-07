@@ -76,6 +76,8 @@ module BPMN
                 event_definition.signal = definitions.signal_by_id(event_definition.signal_ref)
               elsif event_definition.is_a?(ErrorEventDefinition)
                 event_definition.error = definitions.error_by_id(event_definition.error_ref)
+              elsif event_definition.is_a?(EscalationEventDefinition)
+                event_definition.escalation = definitions.escalation_by_id(event_definition.escalation_ref)
               end
             end
 
