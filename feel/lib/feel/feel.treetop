@@ -279,7 +279,19 @@ grammar FEEL
   # 27. name = name start , { name part | additional name symbols } ;
   #
   rule name
+    backtick_name / regular_name
+  end
+  
+  rule regular_name
     head:name_start tail:(__ name_part)* <Name>
+  end
+  
+  rule backtick_name
+    "`" content:backtick_content "`" <BacktickName>
+  end
+  
+  rule backtick_content
+    (!"`" .)*
   end
 
   rule reserved_word

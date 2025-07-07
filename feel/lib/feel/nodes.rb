@@ -224,14 +224,45 @@ module FEEL
   #
   class QualifiedName < Node
     def eval(context = {})
+      # Get the evaluated name from the head (handles both regular and backtick names)
+      head_name = head.eval(context)
+      
       if tail.empty?
-        raise_evaluation_error(head.text_value, context) if FEEL.config.strict && !context.key?(head.text_value.to_sym)
-        context[head.text_value.to_sym]
+        # Check for both string and symbol keys
+        if context.key?(head_name.to_sym)
+          context[head_name.to_sym]
+        elsif context.key?(head_name)
+          context[head_name]
+        else
+          raise_evaluation_error(head.text_value + tail.text_value, context) if FEEL.config.strict
+          nil
+        end
       else
-        tail.elements.flat_map { |element| element.name.text_value.split(".") }.inject(context[head.text_value.to_sym]) do |hash, key|
-          raise_evaluation_error("#{head.text_value}#{tail.text_value}", context) if FEEL.config.strict && (hash.blank? || !hash.key?(key.to_sym))
+        # Get initial value using head_name
+        initial_value = if context.key?(head_name.to_sym)
+          context[head_name.to_sym]
+        elsif context.key?(head_name)
+          context[head_name]
+        else
+          raise_evaluation_error(head.text_value + tail.text_value, context) if FEEL.config.strict
+          nil
+        end
+        
+        # Process each segment in the tail, evaluating names to handle backticks
+        tail.elements.inject(initial_value) do |hash, element|
           return nil unless hash
-          hash[key.to_sym]
+          # Get the evaluated name from each segment
+          key = element.name.eval(context)
+          
+          # Check for both string and symbol keys
+          if hash.key?(key.to_sym)
+            hash[key.to_sym]
+          elsif hash.key?(key)
+            hash[key]
+          else
+            raise_evaluation_error("#{head.text_value}#{tail.text_value}", context) if FEEL.config.strict
+            nil
+          end
         end
       end
     end
@@ -296,6 +327,13 @@ module FEEL
     def eval(_context = {})
       #head + tail.map{|t| t[1]}.join("")
       text_value.strip
+    end
+  end
+  
+  class BacktickName < Node
+    def eval(_context = {})
+      # Extract content between backticks
+      content.text_value
     end
   end
 
