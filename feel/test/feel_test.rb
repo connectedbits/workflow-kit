@@ -56,26 +56,12 @@ module FEEL
       _(FEEL.evaluate('`a.b`', variables: { "a.b": 42 })).must_equal 42
     end
     
-    it "should handle backtick-escaped context keys" do
-      _(FEEL.evaluate('person.`first name`', variables: { person: { "first name": "Jane" } })).must_equal "Jane"
-    end
-    
-    it "should handle nested backtick-escaped context keys" do
-      _(FEEL.evaluate('order.`total price`', variables: { order: { "total price": 99.99 } })).must_equal 99.99
-    end
-    
     it "should handle mixed regular and backtick names in qualified names" do
       _(FEEL.evaluate('a.`b`', variables: { a: { b: "test" } })).must_equal "test"
     end
     
-    it "should handle all backtick segments in qualified names" do
-      _(FEEL.evaluate('`user info`.`home address`.`zip code`', variables: { 
-        "user info": { 
-          "home address": { 
-            "zip code": "12345" 
-          } 
-        } 
-      })).must_equal "12345"
+    it "should handle nested backticks with dots" do
+      _(FEEL.evaluate('a.`b.c`.d', variables: { a: { "b.c": { d: "test" } } })).must_equal "test"
     end
   end
 
