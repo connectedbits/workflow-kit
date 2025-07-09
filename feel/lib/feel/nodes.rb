@@ -224,15 +224,35 @@ module FEEL
   #
   class QualifiedName < Node
     def eval(context = {})
+      head_name = head.eval(context)
+      
       if tail.empty?
-        raise_evaluation_error(head.text_value, context) if FEEL.config.strict && !context.key?(head.text_value.to_sym)
-        context[head.text_value.to_sym]
+        context_get(context, head_name)
       else
-        tail.elements.flat_map { |element| element.name.text_value.split(".") }.inject(context[head.text_value.to_sym]) do |hash, key|
-          raise_evaluation_error("#{head.text_value}#{tail.text_value}", context) if FEEL.config.strict && (hash.blank? || !hash.key?(key.to_sym))
+        initial_value = context_get(context, head_name)
+        
+        # Process each segment in the tail, evaluating names to handle backticks
+        tail.elements.inject(initial_value) do |hash, element|
           return nil unless hash
-          hash[key.to_sym]
+
+          key = element.name.eval(context)
+          context_get(hash, key, root: context)
         end
+      end
+    end
+
+    # Get a key from the context, using symbol/string lookup, with errors if
+    # need be, and optionally overriding the root object for full path during
+    # errors.
+    def context_get(context, key, root: :nil)
+      root = context if root == :nil
+      if context.key?(key.to_sym)
+        context[key.to_sym]
+      elsif context.key?(key)
+        context[key]
+      else
+        raise_evaluation_error(head.text_value + tail.text_value, root) if FEEL.config.strict
+        nil
       end
     end
   end
@@ -296,6 +316,13 @@ module FEEL
     def eval(_context = {})
       #head + tail.map{|t| t[1]}.join("")
       text_value.strip
+    end
+  end
+  
+  class BacktickName < Node
+    def eval(_context = {})
+      # Extract content between backticks
+      content.text_value
     end
   end
 
