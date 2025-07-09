@@ -224,46 +224,35 @@ module FEEL
   #
   class QualifiedName < Node
     def eval(context = {})
-      # Get the evaluated name from the head (handles both regular and backtick names)
       head_name = head.eval(context)
       
       if tail.empty?
-        # Check for both string and symbol keys
-        if context.key?(head_name.to_sym)
-          context[head_name.to_sym]
-        elsif context.key?(head_name)
-          context[head_name]
-        else
-          raise_evaluation_error(head.text_value + tail.text_value, context) if FEEL.config.strict
-          nil
-        end
+        context_get(context, head_name)
       else
-        # Get initial value using head_name
-        initial_value = if context.key?(head_name.to_sym)
-          context[head_name.to_sym]
-        elsif context.key?(head_name)
-          context[head_name]
-        else
-          raise_evaluation_error(head.text_value + tail.text_value, context) if FEEL.config.strict
-          nil
-        end
+        initial_value = context_get(context, head_name)
         
         # Process each segment in the tail, evaluating names to handle backticks
         tail.elements.inject(initial_value) do |hash, element|
           return nil unless hash
-          # Get the evaluated name from each segment
+
           key = element.name.eval(context)
-          
-          # Check for both string and symbol keys
-          if hash.key?(key.to_sym)
-            hash[key.to_sym]
-          elsif hash.key?(key)
-            hash[key]
-          else
-            raise_evaluation_error("#{head.text_value}#{tail.text_value}", context) if FEEL.config.strict
-            nil
-          end
+          context_get(hash, key, root: context)
         end
+      end
+    end
+
+    # Get a key from the context, using symbol/string lookup, with errors if
+    # need be, and optionally overriding the root object for full path during
+    # errors.
+    def context_get(context, key, root: :nil)
+      root = context if root == :nil
+      if context.key?(key.to_sym)
+        context[key.to_sym]
+      elsif context.key?(key)
+        context[key]
+      else
+        raise_evaluation_error(head.text_value + tail.text_value, root) if FEEL.config.strict
+        nil
       end
     end
   end
