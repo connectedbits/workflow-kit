@@ -8,11 +8,11 @@ require "active_support/time"
 require "active_support/core_ext/hash"
 require "active_support/core_ext/enumerable"
 require "active_support/core_ext/object/json"
-require "active_support/configurable"
 require "active_model"
 
 require "dmn"
 
+require "bpmn/configuration"
 require "bpmn/element"
 require "bpmn/extensions"
 require "bpmn/extension_elements"
@@ -29,7 +29,13 @@ require "bpmn/context"
 require "bpmn/execution"
 
 module BPMN
-  include ActiveSupport::Configurable
+  def self.config
+    @config ||= Configuration.new
+  end
+
+  def self.configure
+    yield(config)
+  end
 
   #
   # Entry point for starting a process execution.

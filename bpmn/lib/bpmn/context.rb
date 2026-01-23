@@ -11,7 +11,7 @@ module BPMN
       @bpmn_definitions = []
       @dmn_definitions = []
       @decisions = Array.wrap(decisions)
-      @services = HashWithIndifferentAccess.new((BPMN.config.services || {}).merge(services))
+      @services = BPMN.config.services.merge(services)
 
       @sources.each do |source|
         if source.include?("http://www.omg.org/spec/DMN/20180521/DC/")
