@@ -424,6 +424,11 @@ module FEEL
         _(LiteralExpression.new(text: "a + b").named_variables).must_equal %w[a b]
         _(LiteralExpression.new(text: "person.income * person.age").named_variables).must_equal %w[person.income person.age]
       end
+
+      it "should return an empty array when text is nil" do
+        _(LiteralExpression.new(text: nil).named_variables).must_equal []
+        _(LiteralExpression.new(text: nil).named_functions).must_equal []
+      end
     end
 
     describe :builtin_functions do

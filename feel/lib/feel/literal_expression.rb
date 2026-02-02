@@ -33,6 +33,8 @@ module FEEL
     end
 
     def named_functions
+      return [] if text.blank?
+
       # Initialize a set to hold the qualified names
       function_names = Set.new
 
@@ -57,6 +59,8 @@ module FEEL
     end
 
     def named_variables
+      return [] if text.blank?
+
       # Initialize a set to hold the qualified names
       qualified_names = Set.new
 
