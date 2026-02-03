@@ -82,7 +82,7 @@ module BPMN
     end
 
     def execute_step(step, attached_to: nil, sequence_flow: nil)
-      child_execution = children.find { |child| child.step.id == step.id }
+      child_execution = children.find { |child| child.step.id == step.id && !child.ended? }
       child_execution = Execution.new(context: context, step: step, parent: self, attached_to_id: attached_to&.id).tap { |ce| children.push ce } unless child_execution
       child_execution.tokens_in += [sequence_flow.id] if sequence_flow
       child_execution.start
