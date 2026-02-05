@@ -349,7 +349,7 @@ grammar FEEL
   end
 
   #
-  # 32. additional name symbols = "." | "/" | "-" | "’" | "+" | "\*" ;
+  # 32. additional name symbols = "." | "/" | "-" | "'" | "+" | "*" ;
   #
   rule additional_name_symbols
     "." / "/" / "-" / "'" / "+" / "*"
@@ -374,7 +374,7 @@ grammar FEEL
   end
 
   #
-  # 35. string literal = '"' , { character – ('"' | vertical space) }, '"' ;
+  # 35. string literal = '"' , { character - ('"' | vertical space) }, '"' ;
   #
   rule string_literal
     '"' chars:double_string_character* '"' <StringLiteral> /
