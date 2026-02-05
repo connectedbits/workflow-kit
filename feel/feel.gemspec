@@ -21,7 +21,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "activemodel", ENV.fetch("RAILS_VERSION", ">= 6.0")
   spec.add_dependency "activesupport", ENV.fetch("RAILS_VERSION", ">= 6.0")
   spec.add_dependency "ostruct"
-  spec.add_dependency "treetop", "=1.6.12" # locked as treetop made some class changes that cause: superclass mismatch for class Parser (TypeError)
+  spec.add_dependency "treetop", ">= 1.6.12"
 
   spec.add_development_dependency "rake"
   spec.add_development_dependency "guard"

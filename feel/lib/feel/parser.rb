@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 module FEEL
+  # Load the Treetop grammar which defines FEEL::Parser < Treetop::Runtime::CompiledParser
+  Treetop.load(File.expand_path(File.join(File.dirname(__FILE__), "feel.treetop")))
+
+  # Reopen the Treetop-generated Parser class to add convenience methods
   class Parser
-    # Load the Treetop grammar from the 'feel' file, and create a new
-    # instance of that parser as a class variable so we don't have to re-create
-    # it every time we need to parse a string
-    Treetop.load(File.expand_path(File.join(File.dirname(__FILE__), "feel.treetop")))
-    @@parser = FEELParser.new
+    @@parser = new
 
     def self.parse(expression, root: nil)
       @@parser.parse(expression, root: root).tap do |ast|
