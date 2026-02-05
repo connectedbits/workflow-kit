@@ -17,7 +17,7 @@ Gem::Specification.new do |spec|
 
   spec.required_ruby_version = ">= 3.0"
 
-  spec.add_dependency "dmn", ">= 0.2.0"
+  spec.add_dependency "dmn", ">= 0.3.0"
 
   spec.add_dependency "activemodel", ENV.fetch("RAILS_VERSION", ">= 6.0")
   spec.add_dependency "xmlhasher", "~> 1.0.7"
