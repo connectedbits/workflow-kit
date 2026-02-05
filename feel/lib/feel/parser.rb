@@ -2,7 +2,12 @@
 
 module FEEL
   # Load the Treetop grammar which defines FEEL::Parser < Treetop::Runtime::CompiledParser
+
+  # Special handling because this generated file causes lots of Ruby warnings
+  # about formatting.
+  verbose, $VERBOSE = $VERBOSE, nil
   Treetop.load(File.expand_path(File.join(File.dirname(__FILE__), "feel.treetop")))
+  $VERBOSE = verbose
 
   # Reopen the Treetop-generated Parser class to add convenience methods
   class Parser

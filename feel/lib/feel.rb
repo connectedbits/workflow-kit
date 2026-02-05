@@ -7,7 +7,11 @@ require "active_support"
 require "active_support/time"
 require "active_support/core_ext/hash"
 
+# Special handling because this gem causes lots of Ruby warnings about
+# formatting.
+verbose, $VERBOSE = $VERBOSE, nil
 require "treetop"
+$VERBOSE = verbose
 
 require "feel/configuration"
 require "feel/nodes"
