@@ -45,6 +45,16 @@ module BPMN
           _(task_executions.last.waiting?).must_equal true
         end
 
+        it "child_by_step_id should return the most recent execution" do
+          _(execution.child_by_step_id("Task")).must_equal task_executions.last
+          _(execution.child_by_step_id("Task").waiting?).must_equal true
+        end
+
+        it "children_by_step_id should return all executions" do
+          _(execution.children_by_step_id("Task")).must_equal task_executions
+          _(execution.children_by_step_id("Task").length).must_equal 2
+        end
+
         describe :second_completion do
           before { execution.waiting_tasks.first.signal(repeat: false) }
 

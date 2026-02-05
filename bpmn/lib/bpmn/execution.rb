@@ -211,7 +211,11 @@ module BPMN
     end
 
     def child_by_step_id(id)
-      children.find { |child| child.step.id == id }
+      children.reverse.find { |child| child.step.id == id }
+    end
+
+    def children_by_step_id(id)
+      children.select { |child| child.step.id == id }
     end
 
     def waiting_children
