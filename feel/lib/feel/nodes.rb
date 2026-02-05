@@ -225,12 +225,12 @@ module FEEL
   class QualifiedName < Node
     def eval(context = {})
       head_name = head.eval(context)
-      
+
       if tail.empty?
         context_get(context, head_name)
       else
         initial_value = context_get(context, head_name)
-        
+
         # Process each segment in the tail, evaluating names to handle backticks
         tail.elements.inject(initial_value) do |hash, element|
           return nil unless hash
@@ -318,7 +318,7 @@ module FEEL
       text_value.strip
     end
   end
-  
+
   class BacktickName < Node
     def eval(_context = {})
       # Extract content between backticks
@@ -358,10 +358,10 @@ module FEEL
   # 35. string literal = '"' , { character – ('"' | vertical space) }, '"' ;
   #
   class StringLiteral < Treetop::Runtime::SyntaxNode
-    def eval(context={})
+    def eval(_context={})
       # Collect all characters and process escape sequences
       string_value = chars.elements.map do |char|
-        if char.respond_to?(:text_value) && char.text_value.start_with?('\\')
+        if char.respond_to?(:text_value) && char.text_value.start_with?("\\")
           process_escape_sequence(char.text_value)
         else
           char.text_value
@@ -383,10 +383,10 @@ module FEEL
         "\t"
       when '\\"'
         '"'
-      when '\\\''
+      when "\\'"
         "'"
-      when '\\\\'
-        '\\'
+      when "\\\\"
+        "\\"
       else
         # Return the character after the backslash for unknown escape sequences
         escape_seq[1..-1]
@@ -675,7 +675,7 @@ module FEEL
   #
   class Context < Node
     def eval(context = {})
-      if entries&.present?
+      if entries.present?
         entries.eval(context)
       else
         {}

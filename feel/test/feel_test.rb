@@ -39,29 +39,29 @@ module FEEL
     it "should handle newlines in strings" do
       _(FEEL.evaluate('"Hello\nWorld!"')).must_equal "Hello\nWorld!"
     end
-    
+
     it "should handle backtick-escaped variable names" do
-      _(FEEL.evaluate('`a`', variables: { a: 10 })).must_equal 10
+      _(FEEL.evaluate("`a`", variables: { a: 10 })).must_equal 10
     end
-    
+
     it "should handle backtick-escaped variable names with spaces" do
-      _(FEEL.evaluate('`first name`', variables: { "first name": "John" })).must_equal "John"
+      _(FEEL.evaluate("`first name`", variables: { "first name": "John" })).must_equal "John"
     end
-    
+
     it "should handle backtick-escaped variable names with dashes" do
-      _(FEEL.evaluate('`tracking-id`', variables: { "tracking-id": "ABC123" })).must_equal "ABC123"
+      _(FEEL.evaluate("`tracking-id`", variables: { "tracking-id": "ABC123" })).must_equal "ABC123"
     end
-    
+
     it "should handle backtick-escaped variable names with dots" do
-      _(FEEL.evaluate('`a.b`', variables: { "a.b": 42 })).must_equal 42
+      _(FEEL.evaluate("`a.b`", variables: { "a.b": 42 })).must_equal 42
     end
-    
+
     it "should handle mixed regular and backtick names in qualified names" do
-      _(FEEL.evaluate('a.`b`', variables: { a: { b: "test" } })).must_equal "test"
+      _(FEEL.evaluate("a.`b`", variables: { a: { b: "test" } })).must_equal "test"
     end
-    
+
     it "should handle nested backticks with dots" do
-      _(FEEL.evaluate('a.`b.c`.d', variables: { a: { "b.c": { d: "test" } } })).must_equal "test"
+      _(FEEL.evaluate("a.`b.c`.d", variables: { a: { "b.c": { d: "test" } } })).must_equal "test"
     end
   end
 

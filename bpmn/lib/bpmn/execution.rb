@@ -95,7 +95,7 @@ module BPMN
     def start
       @status = "started"
       @started_at = Time.zone.now
-      map_input_variables if step&.input_mappings&.present?
+      map_input_variables if step&.input_mappings.present?
       context.notify_listener(:execution_started, execution: self)
       step.attachments.each { |attachment| parent.execute_step(attachment, attached_to: self) } if step.is_a?(BPMN::Activity)
       continue
@@ -117,7 +117,7 @@ module BPMN
 
     def end(notify_parent = false)
       @status = "completed" unless status == "terminated"
-      map_output_variables if step&.output_mappings&.present?
+      map_output_variables if step&.output_mappings.present?
       parent.variables.merge!(variables) if parent && variables.present?
       @ended_at = Time.zone.now
       context.notify_listener(:execution_ended, execution: self)
@@ -285,14 +285,14 @@ module BPMN
     private
 
     def map_input_variables
-      return unless step&.input_mappings&.present?
+      return unless step&.input_mappings.present?
       step.input_mappings.each do |parameter|
         variables[parameter.target] = evaluate_expression(parameter.source)
       end
     end
 
     def map_output_variables
-      return unless step&.output_mappings&.present?
+      return unless step&.output_mappings.present?
       step.output_mappings.each do |parameter|
         variables[parameter.target] = evaluate_expression(parameter.source)
       end
