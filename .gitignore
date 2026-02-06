@@ -12,3 +12,4 @@ Gemfile.lock
 coverage
 
 .ruby-version
+vendor/
