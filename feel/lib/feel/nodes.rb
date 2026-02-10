@@ -56,7 +56,11 @@ module FEEL
         when "seconds" then result.parts[:seconds] || 0
         end
       when Hash
-        result[property_name.to_sym] || result[property_name]
+        if result.key?(property_name.to_sym)
+          result[property_name.to_sym]
+        else
+          result[property_name]
+        end
       end
     end
 

@@ -273,6 +273,10 @@ module FEEL
         _(LiteralExpression.new(text: " person.name ").evaluate(person: { name: "John" })).must_equal("John")
       end
 
+      it "should access falsy hash values" do
+        _(LiteralExpression.new(text: "data.active").evaluate(data: { active: false })).must_equal false
+      end
+
       describe :missing_identifiers do
         it "should return nil with simple identifier" do
           _(LiteralExpression.new(text: "name").evaluate).must_be_nil
