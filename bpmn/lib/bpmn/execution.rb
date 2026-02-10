@@ -171,11 +171,15 @@ module BPMN
     end
 
     def evaluate_condition(condition)
-      evaluate_expression(condition.delete_prefix("=")) == true
+      evaluate_expression(condition) == true
     end
 
     def evaluate_expression(expression, variables: parent&.variables || {}.with_indifferent_access)
-      DMN.evaluate(expression.delete_prefix("="), variables: variables)
+      if expression.start_with?("=")
+        DMN.evaluate(expression.delete_prefix("="), variables: variables)
+      else
+        expression
+      end
     end
 
     def run_automated_tasks
