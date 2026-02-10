@@ -55,6 +55,10 @@ module BPMN
         _(catch_event.waiting?).must_equal true
       end
 
+      it "should handle nil expressions" do
+        _(execution.evaluate_expression(nil)).must_be_nil
+      end
+
       describe :catch_and_bypass do
         before { catch_event.signal }
 

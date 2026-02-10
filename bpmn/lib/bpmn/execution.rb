@@ -175,6 +175,8 @@ module BPMN
     end
 
     def evaluate_expression(expression, variables: parent&.variables || {}.with_indifferent_access)
+      return nil if expression.nil?
+
       if expression.start_with?("=")
         DMN.evaluate(expression.delete_prefix("="), variables: variables)
       else
