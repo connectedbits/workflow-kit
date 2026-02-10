@@ -60,6 +60,40 @@ grammar FEEL
     bracketed_arithmetic_expression
   end
 
+  # Precedence hierarchy used within operator rules (low to high):
+  #   additive > multiplicative > exponential > atom
+
+  rule additive_expression
+    addition /
+    subtraction /
+    multiplicative_expression
+  end
+
+  rule multiplicative_expression
+    multiplication /
+    division /
+    exponential_expression
+  end
+
+  rule exponential_expression
+    exponentiation /
+    arithmetic_atom
+  end
+
+  rule arithmetic_atom
+    arithmetic_negation /
+    bracketed_additive_expression /
+    simple_value
+  end
+
+  rule bracketed_additive_expression
+    "(" __ additive_expression __ ")" {
+      def eval(context={})
+        additive_expression.eval(context)
+      end
+    }
+  end
+
   rule bracketed_arithmetic_expression
     "(" __ arithmetic_expression __ ")" {
       def eval(context={})
@@ -223,12 +257,7 @@ grammar FEEL
   # 21. addition = expression , "+" , expression ;
   #
   rule addition
-    head:non_recursive_simple_expression_for_arithmetic_expression __ "+" __ tail:expression <Addition>
-  end
-
-  rule non_recursive_simple_expression_for_arithmetic_expression
-    bracketed_arithmetic_expression /
-    simple_value
+    head:multiplicative_expression __ "+" __ tail:additive_expression <Addition>
   end
 
   rule non_recursive_simple_expression_for_comparison
@@ -240,28 +269,28 @@ grammar FEEL
   # 22. subtraction = expression , "-" , expression ;
   #
   rule subtraction
-    head:non_recursive_simple_expression_for_arithmetic_expression __ "-" __ tail:expression <Subtraction>
+    head:multiplicative_expression __ "-" __ tail:additive_expression <Subtraction>
   end
 
   #
   # 23. multiplication = expression , "\*" , expression ;
   #
   rule multiplication
-    head:non_recursive_simple_expression_for_arithmetic_expression __ "*" __ tail:expression <Multiplication>
+    head:exponential_expression __ "*" !"*" __ tail:multiplicative_expression <Multiplication>
   end
 
   #
   # 24. division = expression , "/" , expression ;
   #
   rule division
-    head:non_recursive_simple_expression_for_arithmetic_expression __ "/" __ tail:expression <Division>
+    head:exponential_expression __ "/" __ tail:multiplicative_expression <Division>
   end
 
   #
   # 25. exponentiation = expression, "\*\*", expression ;
   #
   rule exponentiation
-    head:non_recursive_simple_expression_for_arithmetic_expression __ "**" __ tail:expression <Exponentiation>
+    head:arithmetic_atom __ "**" __ tail:exponential_expression <Exponentiation>
   end
 
   #

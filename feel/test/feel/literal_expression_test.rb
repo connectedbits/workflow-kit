@@ -193,6 +193,43 @@ module FEEL
       it "should handle null operands" do
         _(LiteralExpression.new(text: "1 + null").evaluate).must_be_nil
       end
+
+      describe "order of operations" do
+        it "should evaluate multiplication before addition" do
+          _(LiteralExpression.new(text: "2 * 3 + 4").evaluate).must_equal 10
+          _(LiteralExpression.new(text: "2 + 3 * 4").evaluate).must_equal 14
+        end
+
+        it "should evaluate multiplication before subtraction" do
+          _(LiteralExpression.new(text: "2 * 3 - 1").evaluate).must_equal 5
+          _(LiteralExpression.new(text: "10 - 2 * 3").evaluate).must_equal 4
+        end
+
+        it "should evaluate division before addition" do
+          _(LiteralExpression.new(text: "6 / 2 + 1").evaluate).must_equal 4
+          _(LiteralExpression.new(text: "2 + 6 / 2").evaluate).must_equal 5
+        end
+
+        it "should evaluate exponentiation before addition" do
+          _(LiteralExpression.new(text: "2 ** 3 + 1").evaluate).must_equal 9
+          _(LiteralExpression.new(text: "1 + 2 ** 3").evaluate).must_equal 9
+        end
+
+        it "should evaluate exponentiation before multiplication" do
+          _(LiteralExpression.new(text: "2 ** 3 * 2").evaluate).must_equal 16
+          _(LiteralExpression.new(text: "2 * 2 ** 3").evaluate).must_equal 16
+        end
+
+        it "should respect parentheses overriding precedence" do
+          _(LiteralExpression.new(text: "(2 + 3) * 4").evaluate).must_equal 20
+          _(LiteralExpression.new(text: "2 * (3 + 4)").evaluate).must_equal 14
+        end
+
+        # 1 + 2 ** 3 * 4 - 10 / 2 = 1 + (2**3) * 4 - (10/2) = 1 + 8*4 - 5 = 1 + 32 - 5 = 28
+        it "should respect all precedence levels together" do
+          _(LiteralExpression.new(text: "1 + 2 ** 3 * 4 - 10 / 2").evaluate).must_equal 28
+        end
+      end
     end
 
     describe :comparison do
