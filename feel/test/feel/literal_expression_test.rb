@@ -190,8 +190,28 @@ module FEEL
         _(LiteralExpression.new(text: "2 + (3 + 3)").evaluate).must_equal 8
       end
 
-      it "should handle null operands" do
+      it "should handle null operands in addition" do
         _(LiteralExpression.new(text: "1 + null").evaluate).must_be_nil
+      end
+
+      it "should handle null operands in subtraction" do
+        _(LiteralExpression.new(text: "1 - null").evaluate).must_be_nil
+      end
+
+      it "should handle null operands in multiplication" do
+        _(LiteralExpression.new(text: "2 * null").evaluate).must_be_nil
+      end
+
+      it "should handle null operands in division" do
+        _(LiteralExpression.new(text: "6 / null").evaluate).must_be_nil
+      end
+
+      it "should handle null operands in exponentiation" do
+        _(LiteralExpression.new(text: "2 ** null").evaluate).must_be_nil
+      end
+
+      it "should handle missing variables in arithmetic" do
+        _(LiteralExpression.new(text: "a - b").evaluate).must_be_nil
       end
     end
 

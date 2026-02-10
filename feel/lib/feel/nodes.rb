@@ -274,7 +274,10 @@ module FEEL
   #
   class Subtraction < Node
     def eval(context = {})
-      head.eval(context) - tail.eval(context)
+      head_val = head.eval(context)
+      tail_val = tail.eval(context)
+      return nil if head_val.nil? || tail_val.nil?
+      head_val - tail_val
     end
   end
 
@@ -283,7 +286,10 @@ module FEEL
   #
   class Multiplication < Node
     def eval(context = {})
-      head.eval(context) * tail.eval(context)
+      head_val = head.eval(context)
+      tail_val = tail.eval(context)
+      return nil if head_val.nil? || tail_val.nil?
+      head_val * tail_val
     end
   end
 
@@ -292,7 +298,10 @@ module FEEL
   #
   class Division < Node
     def eval(context = {})
-      head.eval(context) / tail.eval(context)
+      head_val = head.eval(context)
+      tail_val = tail.eval(context)
+      return nil if head_val.nil? || tail_val.nil?
+      head_val / tail_val
     end
   end
 
@@ -301,7 +310,10 @@ module FEEL
   #
   class Exponentiation < Node
     def eval(context = {})
-      head.eval(context) ** tail.eval(context)
+      head_val = head.eval(context)
+      tail_val = tail.eval(context)
+      return nil if head_val.nil? || tail_val.nil?
+      head_val ** tail_val
     end
   end
 
