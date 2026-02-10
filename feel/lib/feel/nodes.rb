@@ -308,54 +308,6 @@ module FEEL
   end
 
   #
-  # 21. addition = expression , "+" , expression ;
-  #
-  class Addition < Node
-    def eval(context = {})
-      head_val = head.eval(context)
-      tail_val = tail.eval(context)
-      return nil if head_val.nil? || tail_val.nil?
-      head_val + tail_val
-    end
-  end
-
-  #
-  # 22. subtraction = expression , "-" , expression ;
-  #
-  class Subtraction < Node
-    def eval(context = {})
-      head_val = head.eval(context)
-      tail_val = tail.eval(context)
-      return nil if head_val.nil? || tail_val.nil?
-      head_val - tail_val
-    end
-  end
-
-  #
-  # 23. multiplication = expression , "\*" , expression ;
-  #
-  class Multiplication < Node
-    def eval(context = {})
-      head_val = head.eval(context)
-      tail_val = tail.eval(context)
-      return nil if head_val.nil? || tail_val.nil?
-      head_val * tail_val
-    end
-  end
-
-  #
-  # 24. division = expression , "/" , expression ;
-  #
-  class Division < Node
-    def eval(context = {})
-      head_val = head.eval(context)
-      tail_val = tail.eval(context)
-      return nil if head_val.nil? || tail_val.nil?
-      head_val / tail_val
-    end
-  end
-
-  #
   # 25. exponentiation = expression, "\*\*", expression ;
   #
   class Exponentiation < Node
