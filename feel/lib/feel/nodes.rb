@@ -703,7 +703,7 @@ module FEEL
   class ContextEntryList < Node
     def eval(context = {})
       context_entries.inject({}) do |hash, entry|
-        hash.merge(entry.eval(context))
+        hash.merge(entry.eval(context.merge(hash)))
       end
     end
 

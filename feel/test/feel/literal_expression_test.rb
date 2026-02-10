@@ -165,6 +165,10 @@ module FEEL
           _(LiteralExpression.new(text: '{ "a": 1, "b": 2 }').evaluate).must_equal({ "a" => 1, "b" => 2 })
         end
 
+        it "should allow entries to reference previous entries" do
+          _(LiteralExpression.new(text: '{"a": 2, "b": a * 2}').evaluate).must_equal({ "a" => 2, "b" => 4 })
+        end
+
         it "should handle null keys" do
           _(LiteralExpression.new(text: "{ null: 1 }").evaluate).must_equal({ nil => 1 })
         end
