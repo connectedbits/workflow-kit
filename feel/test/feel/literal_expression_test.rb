@@ -121,10 +121,18 @@ module FEEL
         end
 
         it "should eval date properties" do
-          # _(FEEL.eval('date("1963-12-23").year')).must_equal 1963
-          # _(FEEL.eval('date("1963-12-23").month')).must_equal 12
-          # _(FEEL.eval('date("1963-12-23").day')).must_equal 23
-          # _(FEEL.eval('date("1963-12-23").weekday')).must_equal 1
+          _(LiteralExpression.new(text: 'date("1963-12-23").year').evaluate).must_equal 1963
+          _(LiteralExpression.new(text: 'date("1963-12-23").month').evaluate).must_equal 12
+          _(LiteralExpression.new(text: 'date("1963-12-23").day').evaluate).must_equal 23
+          _(LiteralExpression.new(text: 'date("1963-12-23").weekday').evaluate).must_equal 1
+        end
+
+        it "should eval duration properties" do
+          _(LiteralExpression.new(text: 'duration("P1Y6M").years').evaluate).must_equal 1
+          _(LiteralExpression.new(text: 'duration("P1Y6M").months').evaluate).must_equal 6
+          _(LiteralExpression.new(text: 'duration("P3DT6H30M").days').evaluate).must_equal 3
+          _(LiteralExpression.new(text: 'duration("P3DT6H30M").hours').evaluate).must_equal 6
+          _(LiteralExpression.new(text: 'duration("P3DT6H30M").minutes').evaluate).must_equal 30
         end
 
         it "should handle null values" do
