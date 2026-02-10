@@ -84,13 +84,13 @@ module FEEL
 
       case operator
       when "<"
-        ->(input) { input < endpoint }
+        ->(input) { input.nil? || endpoint.nil? ? nil : input < endpoint }
       when "<="
-        ->(input) { input <= endpoint }
+        ->(input) { input.nil? || endpoint.nil? ? nil : input <= endpoint }
       when ">"
-        ->(input) { input > endpoint }
+        ->(input) { input.nil? || endpoint.nil? ? nil : input > endpoint }
       when ">="
-        ->(input) { input >= endpoint }
+        ->(input) { input.nil? || endpoint.nil? ? nil : input >= endpoint }
       else
         ->(input) { input == endpoint }
       end
