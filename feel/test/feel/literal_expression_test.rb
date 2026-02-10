@@ -839,6 +839,10 @@ module FEEL
       it "should eval a nested mathematic operation" do
         _(LiteralExpression.new(text: "-(1 + (3 * 5))").evaluate).must_equal(-16)
       end
+
+      it "should handle null in arithmetic negation" do
+        _(LiteralExpression.new(text: "-(null)").evaluate).must_be_nil
+      end
     end
   end
 end
