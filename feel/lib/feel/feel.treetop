@@ -370,7 +370,12 @@ grammar FEEL
     numeric_literal /
     string_literal /
     boolean_literal /
+    at_literal /
     date_time_literal
+  end
+
+  rule at_literal
+    "@" string_literal <AtLiteral>
   end
 
   #

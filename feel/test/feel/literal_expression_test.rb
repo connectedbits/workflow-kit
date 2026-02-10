@@ -134,6 +134,22 @@ module FEEL
           _(LiteralExpression.new(text: "duration(null)").evaluate).must_be_nil
           _(LiteralExpression.new(text: "date(missing_var)").evaluate).must_be_nil
         end
+
+        it "should eval @ literal dates" do
+          _(LiteralExpression.new(text: '@"2020-04-06"').evaluate).must_equal Date.new(2020, 4, 6)
+        end
+
+        it "should eval @ literal times" do
+          _(LiteralExpression.new(text: '@"08:00:00"').evaluate).must_be_kind_of Time
+        end
+
+        it "should eval @ literal date-times" do
+          _(LiteralExpression.new(text: '@"2020-04-06T08:00:00"').evaluate).must_be_kind_of DateTime
+        end
+
+        it "should eval @ literal durations" do
+          _(LiteralExpression.new(text: '@"P5D"').evaluate).must_equal 5.days
+        end
       end
 
       describe :list do

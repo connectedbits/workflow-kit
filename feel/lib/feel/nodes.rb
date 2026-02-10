@@ -427,6 +427,23 @@ module FEEL
     end
   end
 
+  class AtLiteral < Node
+    def eval(_context = {})
+      value = string_literal.eval
+      return nil if value.nil?
+      case value
+      when /\AP/
+        ActiveSupport::Duration.parse(value)
+      when /\A\d{4}-\d{2}-\d{2}T/
+        DateTime.parse(value)
+      when /\A\d{4}-\d{2}-\d{2}\z/
+        Date.parse(value)
+      when /\A\d{2}:\d{2}/
+        Time.parse(value)
+      end
+    end
+  end
+
   #
   # 38. digit = [0-9] ;
   #
