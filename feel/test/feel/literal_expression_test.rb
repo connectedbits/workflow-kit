@@ -229,6 +229,31 @@ module FEEL
         it "should respect all precedence levels together" do
           _(LiteralExpression.new(text: "1 + 2 ** 3 * 4 - 10 / 2").evaluate).must_equal 28
         end
+
+        it "should evaluate subtraction left-to-right (left-associative)" do
+          _(LiteralExpression.new(text: "10 - 3 - 2").evaluate).must_equal 5
+          _(LiteralExpression.new(text: "20 - 5 - 3 - 2").evaluate).must_equal 10
+        end
+
+        it "should evaluate division left-to-right (left-associative)" do
+          _(LiteralExpression.new(text: "24 / 4 / 2").evaluate).must_equal 3
+          _(LiteralExpression.new(text: "120 / 6 / 4 / 5").evaluate).must_equal 1
+        end
+
+        it "should handle mixed addition and subtraction left-to-right" do
+          _(LiteralExpression.new(text: "10 - 3 + 2").evaluate).must_equal 9
+          _(LiteralExpression.new(text: "10 + 3 - 2").evaluate).must_equal 11
+        end
+
+        it "should handle mixed multiplication and division left-to-right" do
+          _(LiteralExpression.new(text: "24 / 4 * 2").evaluate).must_equal 12
+          _(LiteralExpression.new(text: "6 * 4 / 8").evaluate).must_equal 3
+        end
+
+        it "should evaluate exponentiation right-to-left (right-associative)" do
+          # 2 ** 3 ** 2 = 2 ** (3 ** 2) = 2 ** 9 = 512
+          _(LiteralExpression.new(text: "2 ** 3 ** 2").evaluate).must_equal 512
+        end
       end
     end
 
