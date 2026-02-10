@@ -112,16 +112,17 @@ module FEEL
       finish = end_token.text_value
       first_val = first.eval(context)
       second_val = second.eval(context)
+      return ->(_input) { nil } if first_val.nil? || second_val.nil?
 
       case [start, finish]
       when ["(", ")"]
-        ->(input) { first_val < input && input < second_val }
+        ->(input) { input.nil? ? nil : first_val < input && input < second_val }
       when ["[", "]"]
-        ->(input) { first_val <= input && input <= second_val }
+        ->(input) { input.nil? ? nil : first_val <= input && input <= second_val }
       when ["(", "]"]
-        ->(input) { first_val < input && input <= second_val }
+        ->(input) { input.nil? ? nil : first_val < input && input <= second_val }
       when ["[", ")"]
-        ->(input) { first_val <= input && input < second_val }
+        ->(input) { input.nil? ? nil : first_val <= input && input < second_val }
       end
     end
   end
@@ -561,13 +562,14 @@ module FEEL
   #
   class Comparison < Node
     def eval(context = {})
+      left_val = left.eval(context)
+      right_val = right.eval(context)
       case operator.text_value
-      when "<" then left.eval(context) < right.eval(context)
-      when "<=" then left.eval(context) <= right.eval(context)
-      when ">=" then left.eval(context) >= right.eval(context)
-      when ">" then left.eval(context) > right.eval(context)
-      when "!=" then left.eval(context) != right.eval(context)
-      when "=" then left.eval(context) == right.eval(context)
+      when "<", "<=", ">=", ">"
+        return nil if left_val.nil? || right_val.nil?
+        left_val.send(operator.text_value, right_val)
+      when "!=" then left_val != right_val
+      when "=" then left_val == right_val
       end
     end
   end
