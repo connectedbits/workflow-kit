@@ -270,7 +270,9 @@ grammar FEEL
   rule arithmetic_negation
     "-" __ "(" __ expr:expression __ ")" {
       def eval(context={})
-        -expr.eval(context)
+        val = expr.eval(context)
+        return nil if val.nil?
+        -val
       end
     }
   end

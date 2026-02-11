@@ -84,13 +84,13 @@ module FEEL
 
       case operator
       when "<"
-        ->(input) { input < endpoint }
+        ->(input) { input.nil? || endpoint.nil? ? nil : input < endpoint }
       when "<="
-        ->(input) { input <= endpoint }
+        ->(input) { input.nil? || endpoint.nil? ? nil : input <= endpoint }
       when ">"
-        ->(input) { input > endpoint }
+        ->(input) { input.nil? || endpoint.nil? ? nil : input > endpoint }
       when ">="
-        ->(input) { input >= endpoint }
+        ->(input) { input.nil? || endpoint.nil? ? nil : input >= endpoint }
       else
         ->(input) { input == endpoint }
       end
@@ -112,16 +112,17 @@ module FEEL
       finish = end_token.text_value
       first_val = first.eval(context)
       second_val = second.eval(context)
+      return ->(_input) { nil } if first_val.nil? || second_val.nil?
 
       case [start, finish]
       when ["(", ")"]
-        ->(input) { first_val < input && input < second_val }
+        ->(input) { input.nil? ? nil : first_val < input && input < second_val }
       when ["[", "]"]
-        ->(input) { first_val <= input && input <= second_val }
+        ->(input) { input.nil? ? nil : first_val <= input && input <= second_val }
       when ["(", "]"]
-        ->(input) { first_val < input && input <= second_val }
+        ->(input) { input.nil? ? nil : first_val < input && input <= second_val }
       when ["[", ")"]
-        ->(input) { first_val <= input && input < second_val }
+        ->(input) { input.nil? ? nil : first_val <= input && input < second_val }
       end
     end
   end
@@ -265,7 +266,7 @@ module FEEL
       head_val = head.eval(context)
       tail_val = tail.eval(context)
       return nil if head_val.nil? || tail_val.nil?
-      head.eval(context) + tail.eval(context)
+      head_val + tail_val
     end
   end
 
@@ -274,7 +275,10 @@ module FEEL
   #
   class Subtraction < Node
     def eval(context = {})
-      head.eval(context) - tail.eval(context)
+      head_val = head.eval(context)
+      tail_val = tail.eval(context)
+      return nil if head_val.nil? || tail_val.nil?
+      head_val - tail_val
     end
   end
 
@@ -283,7 +287,10 @@ module FEEL
   #
   class Multiplication < Node
     def eval(context = {})
-      head.eval(context) * tail.eval(context)
+      head_val = head.eval(context)
+      tail_val = tail.eval(context)
+      return nil if head_val.nil? || tail_val.nil?
+      head_val * tail_val
     end
   end
 
@@ -292,7 +299,10 @@ module FEEL
   #
   class Division < Node
     def eval(context = {})
-      head.eval(context) / tail.eval(context)
+      head_val = head.eval(context)
+      tail_val = tail.eval(context)
+      return nil if head_val.nil? || tail_val.nil?
+      head_val / tail_val
     end
   end
 
@@ -301,7 +311,10 @@ module FEEL
   #
   class Exponentiation < Node
     def eval(context = {})
-      head.eval(context) ** tail.eval(context)
+      head_val = head.eval(context)
+      tail_val = tail.eval(context)
+      return nil if head_val.nil? || tail_val.nil?
+      head_val ** tail_val
     end
   end
 
@@ -549,13 +562,14 @@ module FEEL
   #
   class Comparison < Node
     def eval(context = {})
+      left_val = left.eval(context)
+      right_val = right.eval(context)
       case operator.text_value
-      when "<" then left.eval(context) < right.eval(context)
-      when "<=" then left.eval(context) <= right.eval(context)
-      when ">=" then left.eval(context) >= right.eval(context)
-      when ">" then left.eval(context) > right.eval(context)
-      when "!=" then left.eval(context) != right.eval(context)
-      when "=" then left.eval(context) == right.eval(context)
+      when "<", "<=", ">=", ">"
+        return nil if left_val.nil? || right_val.nil?
+        left_val.send(operator.text_value, right_val)
+      when "!=" then left_val != right_val
+      when "=" then left_val == right_val
       end
     end
   end

@@ -190,8 +190,28 @@ module FEEL
         _(LiteralExpression.new(text: "2 + (3 + 3)").evaluate).must_equal 8
       end
 
-      it "should handle null operands" do
+      it "should handle null operands in addition" do
         _(LiteralExpression.new(text: "1 + null").evaluate).must_be_nil
+      end
+
+      it "should handle null operands in subtraction" do
+        _(LiteralExpression.new(text: "1 - null").evaluate).must_be_nil
+      end
+
+      it "should handle null operands in multiplication" do
+        _(LiteralExpression.new(text: "2 * null").evaluate).must_be_nil
+      end
+
+      it "should handle null operands in division" do
+        _(LiteralExpression.new(text: "6 / null").evaluate).must_be_nil
+      end
+
+      it "should handle null operands in exponentiation" do
+        _(LiteralExpression.new(text: "2 ** null").evaluate).must_be_nil
+      end
+
+      it "should handle missing variables in arithmetic" do
+        _(LiteralExpression.new(text: "a - b").evaluate).must_be_nil
       end
     end
 
@@ -229,6 +249,18 @@ module FEEL
       it "should compare against null" do
         _(LiteralExpression.new(text: "null = null").evaluate).must_equal true
         _(LiteralExpression.new(text: "1 = null").evaluate).must_equal false
+      end
+
+      it "should handle null operands in ordering comparisons" do
+        _(LiteralExpression.new(text: "1 < null").evaluate).must_be_nil
+        _(LiteralExpression.new(text: "null < 1").evaluate).must_be_nil
+        _(LiteralExpression.new(text: "1 <= null").evaluate).must_be_nil
+        _(LiteralExpression.new(text: "1 > null").evaluate).must_be_nil
+        _(LiteralExpression.new(text: "1 >= null").evaluate).must_be_nil
+      end
+
+      it "should handle missing variables in comparisons" do
+        _(LiteralExpression.new(text: "a < b").evaluate).must_be_nil
       end
     end
 
@@ -818,6 +850,10 @@ module FEEL
 
       it "should eval a nested mathematic operation" do
         _(LiteralExpression.new(text: "-(1 + (3 * 5))").evaluate).must_equal(-16)
+      end
+
+      it "should handle null in arithmetic negation" do
+        _(LiteralExpression.new(text: "-(null)").evaluate).must_be_nil
       end
     end
   end
