@@ -5,7 +5,7 @@ module BPMN
     attr_accessor :event_definitions
 
     def initialize(attributes = {})
-      super(attributes.except(:message_event_definition, :signal_event_definition, :error_event_definition, :terminate_event_definition, :timer_event_definition))
+      super(attributes.except(:message_event_definition, :signal_event_definition, :error_event_definition, :escalation_event_definition, :terminate_event_definition, :timer_event_definition))
 
       @event_definitions = []
 
@@ -20,6 +20,10 @@ module BPMN
       Array.wrap(attributes[:error_event_definition]).each do |eed|
         @event_definitions.push ErrorEventDefinition.new(eed)
       end if attributes[:error_event_definition].present?
+
+      Array.wrap(attributes[:escalation_event_definition]).each do |esed|
+        @event_definitions.push EscalationEventDefinition.new(esed)
+      end if attributes[:escalation_event_definition].present?
 
       Array.wrap(attributes[:terminate_event_definition]).each do |ted|
         @event_definitions.push TerminateEventDefinition.new(ted)
@@ -80,6 +84,10 @@ module BPMN
 
     def escalation_event_definition
       event_definitions.find { |ed| ed.is_a?(EscalationEventDefinition) }
+    end
+
+    def escalation_event_definitions
+      event_definitions.select { |ed| ed.is_a?(EscalationEventDefinition) }
     end
 
     def error_event_definitions

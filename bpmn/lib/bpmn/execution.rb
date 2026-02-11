@@ -2,7 +2,7 @@
 
 module BPMN
   class Execution
-    attr_accessor :id, :status, :started_at, :ended_at, :variables, :tokens_in, :tokens_out, :start_event_id, :timer_expires_at, :message_names, :error_names, :condition
+    attr_accessor :id, :status, :started_at, :ended_at, :variables, :tokens_in, :tokens_out, :start_event_id, :timer_expires_at, :message_names, :error_names, :escalation_names, :condition
     attr_accessor :step, :parent, :children, :context, :attached_to_id
 
     delegate :print, to: :printer
@@ -50,6 +50,7 @@ module BPMN
       @tokens_out ||= []
       @message_names ||= []
       @error_names ||= []
+      @escalation_names ||= []
       @children ||= []
     end
 
@@ -166,6 +167,28 @@ module BPMN
       context.notify_listener(:error_thrown, execution: self, error_name: error_name)
     end
 
+    def throw_escalation(escalation_name, variables: {})
+      caught = false
+      waiting_children.each do |child|
+        step = child.step
+        if step.is_a?(BPMN::Event) && step.escalation_event_definitions.any? { |eed| eed.escalation_name == escalation_name }
+          child.signal(variables)
+          caught = true
+          break
+        end
+      end
+      unless caught
+        waiting_children.each do |child|
+          step = child.step
+          if step.is_a?(BPMN::Event) && step.escalation_event_definitions.any? { |eed| eed.escalation_name.nil? }
+            child.signal(variables)
+            break
+          end
+        end
+      end
+      context.notify_listener(:escalation_thrown, execution: self, escalation_name: escalation_name)
+    end
+
     def timer_expired?
       waiting? && timer_expires_at.present? && Time.zone.now > timer_expires_at
     end
@@ -278,6 +301,7 @@ module BPMN
         tokens_out: tokens_out,
         message_names: message_names,
         error_names: error_names,
+        escalation_names: escalation_names,
         timer_expires_at: timer_expires_at,
         condition: condition,
         children: children.map { |child| child.as_json },
@@ -297,6 +321,7 @@ module BPMN
       # parts << "@tokens_out=#{tokens_out.inspect}" if tokens_out.present?
       parts << "@message_names=#{message_names.inspect}" if message_names.present?
       parts << "@error_names=#{error_names.inspect}" if error_names.present?
+      parts << "@escalation_names=#{escalation_names.inspect}" if escalation_names.present?
       parts << "@timer_expires_at=#{timer_expires_at.inspect}" if timer_expires_at
       parts << "@condition=#{condition.inspect}" if condition
       parts << "@children=#{children.inspect}" if children.present?

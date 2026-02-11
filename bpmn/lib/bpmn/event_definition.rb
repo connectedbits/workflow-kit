@@ -19,6 +19,29 @@ module BPMN
   end
 
   class EscalationEventDefinition < EventDefinition
+    attr_accessor :escalation_ref, :escalation
+
+    def initialize(attributes = {})
+      super(attributes.except(:escalation_ref))
+
+      @escalation_ref = attributes[:escalation_ref]
+    end
+
+    def execute(execution)
+      if execution.step.is_throwing?
+        execution.throw_escalation(escalation_name)
+      else
+        execution.escalation_names.push escalation_name
+      end
+    end
+
+    def escalation_id
+      escalation&.id
+    end
+
+    def escalation_name
+      escalation&.name
+    end
   end
 
   class ErrorEventDefinition < EventDefinition

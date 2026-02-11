@@ -148,6 +148,84 @@ module BPMN
     end
   end
 
+  describe EscalationEventDefinition do
+    let(:sources) { fixture_source("escalation_event_definition_test.bpmn") }
+    let(:context) { BPMN.new(sources) }
+
+    describe :definitions do
+      let(:process) { context.process_by_id("EscalationEventDefinitionTest") }
+      let(:escalation_event) { process.element_by_id("EscalationInterrupting") }
+      let(:non_interrupting_event) { process.element_by_id("EscalationNonInterrupting") }
+
+      it "should parse the escalation boundary events" do
+        _(escalation_event.escalation_event_definition.present?).must_equal true
+        _(non_interrupting_event.escalation_event_definition.present?).must_equal true
+        _(non_interrupting_event.cancel_activity).must_equal false
+      end
+    end
+
+    describe :execution do
+      before { @execution = context.start }
+
+      let(:execution) { @execution }
+      let(:service_task) { execution.child_by_step_id("ServiceTask") }
+      let(:escalation_interrupting) { execution.child_by_step_id("EscalationInterrupting") }
+      let(:escalation_non_interrupting) { execution.child_by_step_id("EscalationNonInterrupting") }
+      let(:end_event) { execution.child_by_step_id("End") }
+      let(:end_escalated_event) { execution.child_by_step_id("EndEscalated") }
+      let(:handle_warning) { execution.child_by_step_id("HandleWarning") }
+      let(:end_warning) { execution.child_by_step_id("EndWarning") }
+
+      it "should wait at the service task" do
+        _(service_task.waiting?).must_equal true
+        _(escalation_interrupting.waiting?).must_equal true
+        _(escalation_non_interrupting.waiting?).must_equal true
+      end
+
+      describe :interrupting_escalation do
+        before { execution.throw_escalation("Escalation_Priority") }
+
+        it "should catch the escalation and terminate the task" do
+          _(execution.ended?).must_equal true
+          _(service_task.terminated?).must_equal true
+          _(end_event).must_be_nil
+          _(end_escalated_event.ended?).must_equal true
+        end
+      end
+
+      describe :non_interrupting_escalation do
+        before { execution.throw_escalation("Escalation_Warning") }
+
+        it "should catch the escalation without terminating the task" do
+          _(service_task.waiting?).must_equal true
+          _(handle_warning.waiting?).must_equal true
+        end
+      end
+
+      describe :unmatched_escalation do
+        before { execution.throw_escalation("Escalation_Unknown") }
+
+        it "should silently continue without catching" do
+          _(service_task.waiting?).must_equal true
+          _(escalation_interrupting.waiting?).must_equal true
+          _(escalation_non_interrupting.waiting?).must_equal true
+        end
+      end
+
+      describe :happy_path do
+        before { service_task.signal }
+
+        it "should complete normally" do
+          _(execution.ended?).must_equal true
+          _(service_task.ended?).must_equal true
+          _(end_event.ended?).must_equal true
+          _(escalation_interrupting.terminated?).must_equal true
+          _(escalation_non_interrupting.terminated?).must_equal true
+        end
+      end
+    end
+  end
+
   describe TerminateEventDefinition do
     let(:sources) { fixture_source("terminate_event_definition_test.bpmn") }
     let(:context) { BPMN.new(sources) }

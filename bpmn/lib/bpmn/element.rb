@@ -26,6 +26,9 @@ module BPMN
   class Error < Element
   end
 
+  class Escalation < Element
+  end
+
   class Collaboration < Element
   end
 
