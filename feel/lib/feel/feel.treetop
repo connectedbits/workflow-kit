@@ -51,13 +51,86 @@ grammar FEEL
   # 4.d arithmetic negation ;
   #
   rule arithmetic_expression
-    addition /
-    subtraction /
-    multiplication /
-    division /
+    additive_operation /
+    multiplicative_operation /
     exponentiation /
     arithmetic_negation /
     bracketed_arithmetic_expression
+  end
+
+  # Precedence hierarchy used within operator rules (low to high):
+  #   additive > multiplicative > exponential > atom
+
+  rule additive_expression
+    additive_operation /
+    multiplicative_expression
+  end
+
+  rule multiplicative_expression
+    multiplicative_operation /
+    exponential_expression
+  end
+
+  #
+  # 21. addition = expression , "+" , expression ;
+  # 22. subtraction = expression , "-" , expression ;
+  #
+  rule additive_operation
+    head:multiplicative_expression tail:(__ op:("+" / "-") __ multiplicative_expression)+ {
+      def eval(context={})
+        result = head.eval(context)
+        tail.elements.each do |e|
+          operand = e.multiplicative_expression.eval(context)
+          if e.op.text_value == "+"
+            return nil if result.nil? || operand.nil?
+            result = result + operand
+          else
+            result = result - operand
+          end
+        end
+        result
+      end
+    }
+  end
+
+  #
+  # 23. multiplication = expression , "\*" , expression ;
+  # 24. division = expression , "/" , expression ;
+  #
+  rule multiplicative_operation
+    head:exponential_expression tail:(__ op:("*" !"*" / "/") __ exponential_expression)+ {
+      def eval(context={})
+        result = head.eval(context)
+        tail.elements.each do |e|
+          operand = e.exponential_expression.eval(context)
+          if e.op.text_value.start_with?("*")
+            result = result * operand
+          else
+            result = result / operand
+          end
+        end
+        result
+      end
+    }
+  end
+
+  rule exponential_expression
+    exponentiation /
+    arithmetic_atom
+  end
+
+  rule arithmetic_atom
+    arithmetic_negation /
+    bracketed_additive_expression /
+    simple_value
+  end
+
+  rule bracketed_additive_expression
+    "(" __ additive_expression __ ")" {
+      def eval(context={})
+        additive_expression.eval(context)
+      end
+    }
   end
 
   rule bracketed_arithmetic_expression
@@ -219,49 +292,16 @@ grammar FEEL
     head:name tail:(__ "." __ name)* <QualifiedName>
   end
 
-  #
-  # 21. addition = expression , "+" , expression ;
-  #
-  rule addition
-    head:non_recursive_simple_expression_for_arithmetic_expression __ "+" __ tail:expression <Addition>
-  end
-
-  rule non_recursive_simple_expression_for_arithmetic_expression
-    bracketed_arithmetic_expression /
-    simple_value
-  end
-
   rule non_recursive_simple_expression_for_comparison
     arithmetic_expression /
     simple_value
   end
 
   #
-  # 22. subtraction = expression , "-" , expression ;
-  #
-  rule subtraction
-    head:non_recursive_simple_expression_for_arithmetic_expression __ "-" __ tail:expression <Subtraction>
-  end
-
-  #
-  # 23. multiplication = expression , "\*" , expression ;
-  #
-  rule multiplication
-    head:non_recursive_simple_expression_for_arithmetic_expression __ "*" __ tail:expression <Multiplication>
-  end
-
-  #
-  # 24. division = expression , "/" , expression ;
-  #
-  rule division
-    head:non_recursive_simple_expression_for_arithmetic_expression __ "/" __ tail:expression <Division>
-  end
-
-  #
   # 25. exponentiation = expression, "\*\*", expression ;
   #
   rule exponentiation
-    head:non_recursive_simple_expression_for_arithmetic_expression __ "**" __ tail:expression <Exponentiation>
+    head:arithmetic_atom __ "**" __ tail:exponential_expression <Exponentiation>
   end
 
   #
