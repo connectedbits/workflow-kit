@@ -121,10 +121,18 @@ module FEEL
         end
 
         it "should eval date properties" do
-          # _(FEEL.eval('date("1963-12-23").year')).must_equal 1963
-          # _(FEEL.eval('date("1963-12-23").month')).must_equal 12
-          # _(FEEL.eval('date("1963-12-23").day')).must_equal 23
-          # _(FEEL.eval('date("1963-12-23").weekday')).must_equal 1
+          _(LiteralExpression.new(text: 'date("1963-12-23").year').evaluate).must_equal 1963
+          _(LiteralExpression.new(text: 'date("1963-12-23").month').evaluate).must_equal 12
+          _(LiteralExpression.new(text: 'date("1963-12-23").day').evaluate).must_equal 23
+          _(LiteralExpression.new(text: 'date("1963-12-23").weekday').evaluate).must_equal 1
+        end
+
+        it "should eval duration properties" do
+          _(LiteralExpression.new(text: 'duration("P1Y6M").years').evaluate).must_equal 1
+          _(LiteralExpression.new(text: 'duration("P1Y6M").months').evaluate).must_equal 6
+          _(LiteralExpression.new(text: 'duration("P3DT6H30M").days').evaluate).must_equal 3
+          _(LiteralExpression.new(text: 'duration("P3DT6H30M").hours').evaluate).must_equal 6
+          _(LiteralExpression.new(text: 'duration("P3DT6H30M").minutes').evaluate).must_equal 30
         end
 
         it "should handle null values" do
@@ -133,6 +141,22 @@ module FEEL
           _(LiteralExpression.new(text: "date and time(null)").evaluate).must_be_nil
           _(LiteralExpression.new(text: "duration(null)").evaluate).must_be_nil
           _(LiteralExpression.new(text: "date(missing_var)").evaluate).must_be_nil
+        end
+
+        it "should eval @ literal dates" do
+          _(LiteralExpression.new(text: '@"2020-04-06"').evaluate).must_equal Date.new(2020, 4, 6)
+        end
+
+        it "should eval @ literal times" do
+          _(LiteralExpression.new(text: '@"08:00:00"').evaluate).must_be_kind_of Time
+        end
+
+        it "should eval @ literal date-times" do
+          _(LiteralExpression.new(text: '@"2020-04-06T08:00:00"').evaluate).must_be_kind_of DateTime
+        end
+
+        it "should eval @ literal durations" do
+          _(LiteralExpression.new(text: '@"P5D"').evaluate).must_equal 5.days
         end
       end
 
@@ -147,6 +171,10 @@ module FEEL
       describe :context do
         it "should eval context literals (hashes)" do
           _(LiteralExpression.new(text: '{ "a": 1, "b": 2 }').evaluate).must_equal({ "a" => 1, "b" => 2 })
+        end
+
+        it "should allow entries to reference previous entries" do
+          _(LiteralExpression.new(text: '{"a": 2, "b": a * 2}').evaluate).must_equal({ "a" => 2, "b" => 4 })
         end
 
         it "should handle null keys" do
@@ -243,6 +271,10 @@ module FEEL
 
       it "should evaluate identifiers with extra spaces" do
         _(LiteralExpression.new(text: " person.name ").evaluate(person: { name: "John" })).must_equal("John")
+      end
+
+      it "should access falsy hash values" do
+        _(LiteralExpression.new(text: "data.active").evaluate(data: { active: false })).must_equal false
       end
 
       describe :missing_identifiers do

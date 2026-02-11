@@ -26,14 +26,14 @@
       <bpmn:outgoing>Flow_8</bpmn:outgoing>
     </bpmn:task>
     <bpmn:sequenceFlow id="Flow_4" sourceRef="Split" targetRef="CheckPrinterParts">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">include_printer_parts = true</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=include_printer_parts = true</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:task id="CheckLaptopParts" name="Check Laptop Parts">
       <bpmn:incoming>Flow_5</bpmn:incoming>
       <bpmn:outgoing>Flow_6</bpmn:outgoing>
     </bpmn:task>
     <bpmn:sequenceFlow id="Flow_5" sourceRef="Split" targetRef="CheckLaptopParts">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">include_laptop_parts = true</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=include_laptop_parts = true</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_7" sourceRef="CheckPrices" targetRef="Join" />
     <bpmn:inclusiveGateway id="Join" name="Join">

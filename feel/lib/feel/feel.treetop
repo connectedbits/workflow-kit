@@ -370,7 +370,12 @@ grammar FEEL
     numeric_literal /
     string_literal /
     boolean_literal /
+    at_literal /
     date_time_literal
+  end
+
+  rule at_literal
+    "@" string_literal <AtLiteral>
   end
 
   #
@@ -453,7 +458,7 @@ grammar FEEL
   # 40. function invocation = expression , parameters ;
   #
   rule function_invocation
-    fn_name:(!reserved_word qualified_name) __ "(" __ params:(positional_parameters)? __ ")" <FunctionInvocation>
+    fn_name:(!reserved_word qualified_name) __ "(" __ params:(positional_parameters)? __ ")" property:(__ "." __ name)? <FunctionInvocation>
   end
 
   #
@@ -623,7 +628,7 @@ grammar FEEL
   # 62. date time literal = ( "date" | "time" | "date and time" | "duration" ) , "(" , string literal , ")" ;
   #
   rule date_time_literal
-    keyword:date_time_keyword __ "(" __ head:expression __ tail:("," __ expression)* __ ")" <DateTimeLiteral>
+    keyword:date_time_keyword __ "(" __ head:expression __ tail:("," __ expression)* __ ")" property:(__ "." __ name)? <DateTimeLiteral>
   end
 
   rule date_time_keyword

@@ -19,6 +19,51 @@ module FEEL
       qualified_names.to_a
     end
 
+    def access_property(result, property_name)
+      case result
+      when DateTime
+        case property_name
+        when "year" then result.year
+        when "month" then result.month
+        when "day" then result.day
+        when "weekday" then result.cwday
+        when "hour" then result.hour
+        when "minute" then result.min
+        when "second" then result.sec
+        end
+      when Date
+        case property_name
+        when "year" then result.year
+        when "month" then result.month
+        when "day" then result.day
+        when "weekday" then result.cwday
+        end
+      when Time
+        case property_name
+        when "hour" then result.hour
+        when "minute" then result.min
+        when "second" then result.sec
+        when "time offset" then result.utc_offset
+        when "timezone" then result.zone
+        end
+      when ActiveSupport::Duration
+        case property_name
+        when "years" then result.parts[:years] || 0
+        when "months" then result.parts[:months] || 0
+        when "days" then result.parts[:days] || 0
+        when "hours" then result.parts[:hours] || 0
+        when "minutes" then result.parts[:minutes] || 0
+        when "seconds" then result.parts[:seconds] || 0
+        end
+      when Hash
+        if result.key?(property_name.to_sym)
+          result[property_name.to_sym]
+        else
+          result[property_name]
+        end
+      end
+    end
+
     def raise_evaluation_error(missing_name, ctx = {})
       names = qualified_names_in_context(ctx)
       checker = DidYouMean::SpellChecker.new(dictionary: names)
@@ -232,11 +277,15 @@ module FEEL
         initial_value = context_get(context, head_name)
 
         # Process each segment in the tail, evaluating names to handle backticks
-        tail.elements.inject(initial_value) do |hash, element|
-          return nil unless hash
+        tail.elements.inject(initial_value) do |value, element|
+          return nil unless value
 
           key = element.name.eval(context)
-          context_get(hash, key, root: context)
+          if value.respond_to?(:key?)
+            context_get(value, key, root: context)
+          else
+            access_property(value, key)
+          end
         end
       end
     end
@@ -427,6 +476,23 @@ module FEEL
     end
   end
 
+  class AtLiteral < Node
+    def eval(_context = {})
+      value = string_literal.eval
+      return nil if value.nil?
+      case value
+      when /\AP/
+        ActiveSupport::Duration.parse(value)
+      when /\A\d{4}-\d{2}-\d{2}T/
+        DateTime.parse(value)
+      when /\A\d{4}-\d{2}-\d{2}\z/
+        Date.parse(value)
+      when /\A\d{2}:\d{2}/
+        Time.parse(value)
+      end
+    end
+  end
+
   #
   # 38. digit = [0-9] ;
   #
@@ -449,7 +515,11 @@ module FEEL
 
       args = params.present? ? params.eval(context) : []
 
-      fn.call(*args)
+      result = fn.call(*args)
+      if defined?(property) && property.present?
+        result = access_property(result, property.name.eval(context))
+      end
+      result
     end
   end
 
@@ -686,7 +756,7 @@ module FEEL
   class ContextEntryList < Node
     def eval(context = {})
       context_entries.inject({}) do |hash, entry|
-        hash.merge(entry.eval(context))
+        hash.merge(entry.eval(context.merge(hash)))
       end
     end
 
@@ -717,7 +787,7 @@ module FEEL
       return nil if head_val.nil?
       return head_val if head_val.is_a?(ActiveSupport::Duration) || head_val.is_a?(DateTime) || head_val.is_a?(Date) || head_val.is_a?(Time)
 
-      case keyword.text_value
+      result = case keyword.text_value
       when "date and time"
         DateTime.parse(head_val)
       when "date"
@@ -731,6 +801,11 @@ module FEEL
           ActiveSupport::Duration.parse(head_val)
         end
       end
+
+      if defined?(property) && property.present?
+        result = access_property(result, property.name.eval(context))
+      end
+      result
     end
 
     def duration_range(start_date, end_date)
