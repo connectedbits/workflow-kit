@@ -252,5 +252,102 @@ module BPMN
         end
       end
     end
+
+    describe :boundary do
+      let(:sources) { fixture_source("timer_boundary_event_test.bpmn") }
+      let(:context) { BPMN.new(sources) }
+
+      describe :definitions do
+        let(:process) { context.process_by_id("TimerBoundaryEventTest") }
+        let(:host_task) { process.element_by_id("HostTask") }
+        let(:non_interrupting_event) { process.element_by_id("NonInterrupting") }
+        let(:interrupting_event) { process.element_by_id("Interrupting") }
+
+        it "should attach timer boundary events to host" do
+          _(host_task.attachments.present?).must_equal true
+          _(host_task.attachments).must_equal [non_interrupting_event, interrupting_event]
+        end
+
+        it "should parse timer event definitions" do
+          _(non_interrupting_event.timer_event_definition).wont_be_nil
+          _(non_interrupting_event.timer_event_definition.time_duration).must_equal "PT30M"
+          _(interrupting_event.timer_event_definition).wont_be_nil
+          _(interrupting_event.timer_event_definition.time_duration).must_equal "PT1H"
+        end
+
+        it "should parse cancel_activity" do
+          _(non_interrupting_event.cancel_activity).must_equal false
+          _(interrupting_event.cancel_activity).must_equal true
+        end
+      end
+
+      describe :execution do
+        before { @execution = context.start }
+
+        let(:execution) { @execution }
+        let(:host_task) { execution.child_by_step_id("HostTask") }
+        let(:non_interrupting_event) { execution.child_by_step_id("NonInterrupting") }
+        let(:interrupting_event) { execution.child_by_step_id("Interrupting") }
+
+        it "should wait at host task with timers set" do
+          _(execution.started?).must_equal true
+          _(host_task.waiting?).must_equal true
+          _(non_interrupting_event.waiting?).must_equal true
+          _(non_interrupting_event.timer_expires_at).wont_be_nil
+          _(interrupting_event.waiting?).must_equal true
+          _(interrupting_event.timer_expires_at).wont_be_nil
+        end
+
+        describe :happy_path do
+          before { host_task.signal }
+
+          it "should complete the process and terminate boundary events" do
+            _(execution.completed?).must_equal true
+            _(host_task.completed?).must_equal true
+            _(non_interrupting_event.terminated?).must_equal true
+            _(interrupting_event.terminated?).must_equal true
+          end
+        end
+
+        describe :before_timer_expiration do
+          before do
+            travel 15.minutes
+            execution.check_expired_timers
+          end
+
+          it "should still be waiting" do
+            _(host_task.waiting?).must_equal true
+            _(non_interrupting_event.waiting?).must_equal true
+            _(interrupting_event.waiting?).must_equal true
+          end
+        end
+
+        describe :non_interrupting_timer_expiration do
+          before do
+            travel 35.minutes
+            execution.check_expired_timers
+          end
+
+          it "should fire non-interrupting event without terminating host task" do
+            _(host_task.waiting?).must_equal true
+            _(non_interrupting_event.completed?).must_equal true
+            _(interrupting_event.waiting?).must_equal true
+          end
+        end
+
+        describe :interrupting_timer_expiration do
+          before do
+            travel 65.minutes
+            execution.check_expired_timers
+          end
+
+          it "should fire interrupting event and terminate host task" do
+            _(execution.ended?).must_equal true
+            _(host_task.terminated?).must_equal true
+            _(interrupting_event.ended?).must_equal true
+          end
+        end
+      end
+    end
   end
 end
