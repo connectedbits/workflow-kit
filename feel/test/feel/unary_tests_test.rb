@@ -56,5 +56,27 @@ module FEEL
         _(UnaryTests.new(text: "not(2,3)").test(1)).must_equal true
       end
     end
+
+    describe :null_handling do
+      it "should not match null input in comparisons" do
+        _(UnaryTests.new(text: "< 4").test(nil)).must_equal false
+        _(UnaryTests.new(text: "<= 4").test(nil)).must_equal false
+        _(UnaryTests.new(text: "> 4").test(nil)).must_equal false
+        _(UnaryTests.new(text: ">= 4").test(nil)).must_equal false
+      end
+
+      it "should not match null endpoint in comparisons" do
+        _(UnaryTests.new(text: "< null").test(3)).must_equal false
+      end
+
+      it "should not match null in intervals" do
+        _(UnaryTests.new(text: "[null..4]").test(3)).must_equal false
+        _(UnaryTests.new(text: "[2..null]").test(3)).must_equal false
+      end
+
+      it "should not match null input in intervals" do
+        _(UnaryTests.new(text: "[2..4]").test(nil)).must_equal false
+      end
+    end
   end
 end
