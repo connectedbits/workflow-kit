@@ -105,7 +105,7 @@ module BPMN
     end
 
     def run(execution)
-      DMN.evaluate(script.delete_prefix("="), variables: execution.parent.variables)
+      execution.parent.evaluate_expression(script, variables: execution.parent.variables)
     end
   end
 

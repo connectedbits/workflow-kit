@@ -63,16 +63,16 @@
     <bpmn:sequenceFlow id="Flow_29280" sourceRef="graffiti_close_ticket" targetRef="graffiti_end" />
     <bpmn:sequenceFlow id="Flow_29180" sourceRef="graffiti_closed" targetRef="graffiti_end" />
     <bpmn:sequenceFlow id="Flow_29220" sourceRef="graffiti_inspect" targetRef="graffiti_close_ticket">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">"not_found = data.graffiti_inspect_outcome"</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">="not_found" = data.graffiti_inspect_outcome</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_29240" sourceRef="graffiti_inspect" targetRef="graffiti_remove">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">"ready = data.graffiti_inspect_outcome"</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">="ready" = data.graffiti_inspect_outcome</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_29260" sourceRef="graffiti_remove" targetRef="graffiti_close_ticket">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">"removed = data.graffiti_remove_outcome"</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">="removed" = data.graffiti_remove_outcome</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_29200" sourceRef="graffiti_remove" targetRef="graffiti_inspect">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">"help_wanted = data.graffiti_remove_outcome"</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">="help_wanted" = data.graffiti_remove_outcome</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_29300" sourceRef="graffiti_close_ticket" targetRef="graffiti_end" />
     <bpmn:sequenceFlow id="Flow_29140" sourceRef="parallel_gateway" targetRef="graffiti_closed" />

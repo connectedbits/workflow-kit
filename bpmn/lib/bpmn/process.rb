@@ -162,11 +162,10 @@ module BPMN
     attr_reader :process_id
 
     def execute(execution)
-      if extension_elements&.called_element&.process_id&.start_with?("=")
-        @process_id = DMN.evaluate(extension_elements&.called_element&.process_id, variables: execution.variables)
-      else
-        @process_id = extension_elements&.called_element&.process_id
-      end
+      @process_id = execution.evaluate_expression(
+        extension_elements&.called_element&.process_id,
+        variables: execution.variables
+      )
 
       execution.wait
 
