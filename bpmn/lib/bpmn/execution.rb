@@ -166,8 +166,23 @@ module BPMN
       context.notify_listener(:error_thrown, execution: self, error_name: error_name)
     end
 
+    def timer_expired?
+      waiting? && timer_expires_at.present? && Time.zone.now > timer_expires_at
+    end
+
     def check_expired_timers
-      waiting_children.each { |child| child.signal if child.timer_expires_at.present? && Time.zone.now > child.timer_expires_at }
+      if timer_expired?
+        signal
+      else
+        children.each { |child| child.check_expired_timers }
+      end
+    end
+
+    def next_timer_expires_at
+      times = []
+      times << timer_expires_at if waiting? && timer_expires_at
+      children.each { |child| child_time = child.next_timer_expires_at; times << child_time if child_time }
+      times.min
     end
 
     def evaluate_condition(condition)

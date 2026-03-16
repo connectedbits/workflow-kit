@@ -228,6 +228,12 @@ module BPMN
         _(catch_event.timer_expires_at).wont_be_nil
       end
 
+      describe :next_timer_expires_at do
+        it "should return the timer expiration time" do
+          _(execution.next_timer_expires_at).must_equal catch_event.timer_expires_at
+        end
+      end
+
       describe :before_timer_expiration do
         before do
           travel 15.seconds
@@ -249,6 +255,10 @@ module BPMN
           _(catch_event.timer_expires_at < Time.zone.now).must_equal true
           _(execution.ended?).must_equal true
           _(catch_event.ended?).must_equal true
+        end
+
+        it "should return nil for next_timer_expires_at" do
+          _(execution.next_timer_expires_at).must_be_nil
         end
       end
     end
@@ -296,6 +306,10 @@ module BPMN
           _(non_interrupting_event.timer_expires_at).wont_be_nil
           _(interrupting_event.waiting?).must_equal true
           _(interrupting_event.timer_expires_at).wont_be_nil
+        end
+
+        it "should return earliest timer expiration" do
+          _(execution.next_timer_expires_at).must_equal non_interrupting_event.timer_expires_at
         end
 
         describe :happy_path do
