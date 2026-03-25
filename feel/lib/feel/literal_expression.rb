@@ -34,54 +34,12 @@ module FEEL
 
     def named_functions
       return [] if text.blank?
-
-      # Initialize a set to hold the qualified names
-      function_names = Set.new
-
-      # Define a lambda for the recursive function
-      walk_tree = lambda do |node|
-        # If the node is a qualified name, add it to the set
-        if node.is_a?(FEEL::FunctionInvocation)
-          function_names << node.fn_name.text_value
-        end
-
-        # Recursively walk the child nodes
-        node.elements&.each do |child|
-          walk_tree.call(child)
-        end
-      end
-
-      # Start walking the tree from the root
-      walk_tree.call(tree)
-
-      # Return the array of functions
-      function_names.to_a
+      FEEL::Node.walk_nodes(tree).select { |node| node.is_a?(FEEL::FunctionInvocation) }.map { |node| node.fn_name.text_value }.uniq
     end
 
     def named_variables
       return [] if text.blank?
-
-      # Initialize a set to hold the qualified names
-      qualified_names = Set.new
-
-      # Define a lambda for the recursive function
-      walk_tree = lambda do |node|
-        # If the node is a qualified name, add it to the set
-        if node.is_a?(FEEL::QualifiedName)
-          qualified_names << node.text_value
-        end
-
-        # Recursively walk the child nodes
-        node.elements&.each do |child|
-          walk_tree.call(child)
-        end
-      end
-
-      # Start walking the tree from the root
-      walk_tree.call(tree)
-
-      # Return the array of qualified names
-      qualified_names.to_a
+      FEEL::Node.walk_nodes(tree).select { |node| node.is_a?(FEEL::QualifiedName) }.map(&:text_value).uniq
     end
 
     def self.builtin_functions

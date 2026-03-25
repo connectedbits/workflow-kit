@@ -2,6 +2,17 @@
 
 module FEEL
   class Node < Treetop::Runtime::SyntaxNode
+    def self.walk_nodes(node, &block)
+      return enum_for(:walk_nodes, node) unless block_given?
+
+      yield node
+      node.elements&.each { |child| walk_nodes(child, &block) }
+    end
+
+    def walk_nodes(&block)
+      self.class.walk_nodes(self, &block)
+    end
+
     #
     # Takes a context hash and returns an array of qualified names
     # { "person": { "name": { "first": "Eric", "last": "Carlson" }, "age": 60 } } => ["person", "person.name.first", "person.name.last", "person.age"]
