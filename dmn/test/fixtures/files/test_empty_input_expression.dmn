@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="test_empty_input_expression" name="Test Empty Input Expression" namespace="http://camunda.org/schema/1.0/dmn">
+  <decision id="empty_input_decision" name="Empty Input Decision">
+    <decisionTable id="DecisionTable_1" hitPolicy="FIRST">
+      <input id="Input_1" label="Category">
+        <inputExpression id="InputExpression_1" typeRef="string">
+          <text></text>
+        </inputExpression>
+      </input>
+      <output id="Output_1" label="Result" name="result" typeRef="string" />
+      <rule id="DecisionRule_1">
+        <inputEntry id="UnaryTests_1">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1">
+          <text>"Always"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>

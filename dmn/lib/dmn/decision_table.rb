@@ -23,6 +23,7 @@ module DMN
       output_values = []
 
       input_values = inputs.map do |input|
+        raise SyntaxError, "Input '#{input.label || input.id}' is missing an input expression but it is required" if input.input_expression.nil? || input.input_expression.text.blank?
         input.input_expression.evaluate(variables)
       end
 
