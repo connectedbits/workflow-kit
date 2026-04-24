@@ -4,6 +4,24 @@ require "test_helper"
 
 module FEEL
   describe UnaryTests do
+    describe :valid? do
+      it "should return true for valid tests" do
+        _(UnaryTests.new(text: "< 4").valid?).must_equal true
+        _(UnaryTests.new(text: "2,3,4").valid?).must_equal true
+        _(UnaryTests.new(text: "[2..4]").valid?).must_equal true
+      end
+
+      it "should return true for nil and dash" do
+        _(UnaryTests.new(text: nil).valid?).must_equal true
+        _(UnaryTests.new(text: "-").valid?).must_equal true
+      end
+
+      it "should return false for syntax errors" do
+        _(UnaryTests.new(text: 'HH:mm"').valid?).must_equal false
+        _(UnaryTests.new(text: "[2..").valid?).must_equal false
+      end
+    end
+
     it "should always pass with '-'" do
       _(UnaryTests.new(text: "-").test(3)).must_equal true
       _(UnaryTests.new(text: "-").test(2)).must_equal true

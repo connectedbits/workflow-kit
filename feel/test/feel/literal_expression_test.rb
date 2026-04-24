@@ -4,9 +4,23 @@ require "test_helper"
 
 module FEEL
   describe LiteralExpression do
-    it "should support bracketed expressions" do
-      tree = LiteralExpression.new(text: "(3 + 4) + 2")
-      _(tree.valid?).must_equal true
+    describe :valid? do
+      it "should return true for valid expressions" do
+        _(LiteralExpression.new(text: "(3 + 4) + 2").valid?).must_equal true
+        _(LiteralExpression.new(text: '"HH:mm"').valid?).must_equal true
+        _(LiteralExpression.new(text: "1 + 1").valid?).must_equal true
+      end
+
+      it "should return false for blank text" do
+        _(LiteralExpression.new(text: "").valid?).must_equal false
+        _(LiteralExpression.new(text: "   ").valid?).must_equal false
+      end
+
+      it "should return false for syntax errors" do
+        _(LiteralExpression.new(text: 'HH:mm"').valid?).must_equal false
+        _(LiteralExpression.new(text: '"""').valid?).must_equal false
+        _(LiteralExpression.new(text: "1 +").valid?).must_equal false
+      end
     end
 
     describe :data_types do

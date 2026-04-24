@@ -20,6 +20,8 @@ module FEEL
     def valid?
       return false if text.blank?
       tree.present?
+    rescue SyntaxError
+      false
     end
 
     def evaluate(variables = {})

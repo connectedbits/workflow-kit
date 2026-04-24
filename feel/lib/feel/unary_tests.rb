@@ -15,6 +15,8 @@ module FEEL
     def valid?
       return true if text.nil? || text == "-"
       tree.present?
+    rescue SyntaxError
+      false
     end
 
     def test(input, variables = {})
