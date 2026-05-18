@@ -101,12 +101,19 @@ module BPMN
 
       let(:execution) { @execution }
       let(:script_task) { execution.child_by_step_id("ScriptTask") }
+      let(:script_task_null) { execution.child_by_step_id("NullTask") }
 
       it "should run the script task" do
-        _(execution.completed?).must_equal true
+        _(execution.completed?).must_equal false
         _(script_task.completed?).must_equal true
         _(execution.variables["greeting"]).must_equal "👋 Hello Eric from ScriptTask!"
         _(script_task.variables["greeting"]).must_equal "👋 Hello Eric from ScriptTask!"
+      end
+
+      it "should pass the script task that returns null" do
+        script_task_null.run
+        _(execution.completed?).must_equal true
+        _(script_task_null.completed?).must_equal true
       end
     end
   end

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1q4gi0o" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.17.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.3.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1q4gi0o" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.47.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.3.0">
   <bpmn:process id="ScriptTaskTest" name="ScriptTask Test" isExecutable="true">
     <bpmn:startEvent id="Start" name="Start">
       <bpmn:extensionElements>
@@ -10,9 +10,9 @@
       <bpmn:outgoing>Flow_1xkh57e</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:endEvent id="End" name="End">
-      <bpmn:incoming>Flow_1rnbtwj</bpmn:incoming>
+      <bpmn:incoming>Flow_1ewpz2c</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_1rnbtwj" sourceRef="ScriptTask" targetRef="End" />
+    <bpmn:sequenceFlow id="Flow_1rnbtwj" sourceRef="ScriptTask" targetRef="NullTask" />
     <bpmn:scriptTask id="ScriptTask" name="Script Task">
       <bpmn:extensionElements>
         <zeebe:script expression="=&#34;👋 Hello &#34; + name + &#34; from ScriptTask!&#34;" resultVariable="greeting" />
@@ -21,6 +21,14 @@
       <bpmn:outgoing>Flow_1rnbtwj</bpmn:outgoing>
     </bpmn:scriptTask>
     <bpmn:sequenceFlow id="Flow_1xkh57e" sourceRef="Start" targetRef="ScriptTask" />
+    <bpmn:sequenceFlow id="Flow_1ewpz2c" sourceRef="NullTask" targetRef="End" />
+    <bpmn:scriptTask id="NullTask" name="Null task">
+      <bpmn:extensionElements>
+        <zeebe:script expression="=null" resultVariable="var" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1rnbtwj</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ewpz2c</bpmn:outgoing>
+    </bpmn:scriptTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="ScriptTaskTest">
@@ -30,23 +38,30 @@
           <dc:Bounds x="185" y="122" width="24" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0xe52om_di" bpmnElement="End">
-        <dc:Bounds x="462" y="79" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="470" y="122" width="20" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1fqqv33_di" bpmnElement="ScriptTask">
         <dc:Bounds x="290" y="57" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0xe52om_di" bpmnElement="End">
+        <dc:Bounds x="642" y="79" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="650" y="122" width="20" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1u3qd9h_di" bpmnElement="NullTask">
+        <dc:Bounds x="460" y="57" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1rnbtwj_di" bpmnElement="Flow_1rnbtwj">
         <di:waypoint x="390" y="97" />
-        <di:waypoint x="462" y="97" />
+        <di:waypoint x="460" y="97" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1xkh57e_di" bpmnElement="Flow_1xkh57e">
         <di:waypoint x="215" y="97" />
         <di:waypoint x="290" y="97" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ewpz2c_di" bpmnElement="Flow_1ewpz2c">
+        <di:waypoint x="560" y="97" />
+        <di:waypoint x="642" y="97" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

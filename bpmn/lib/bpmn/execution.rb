@@ -230,12 +230,7 @@ module BPMN
       return unless step.is_automated?
 
       result = step.run(self)
-
-      if result.present?
-        signal(result)
-      else
-        wait
-      end
+      signal(result)
     end
 
     def call(process)
@@ -346,7 +341,7 @@ module BPMN
 
     def result_to_variables(result)
       if step.respond_to?(:result_variable) && step.result_variable
-        return { "#{step.result_variable}": result }
+        { "#{step.result_variable}": result }
       else
         if result.is_a? Hash
           result
