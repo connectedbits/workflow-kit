@@ -28,7 +28,7 @@ module Zeebe
   end
 
   class FormDefinition < BPMN::Extension
-    attr_accessor :form_key
+    attr_accessor :form_key, :external_reference
   end
 
   class IoMapping < BPMN::Extension
