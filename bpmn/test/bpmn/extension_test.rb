@@ -11,6 +11,8 @@ module BPMN
       let(:process) { context.process_by_id("ZeebeExtensionsTest") }
       let(:start_event) { process.element_by_id("Start") }
       let(:user_task) { process.element_by_id("UserTask") }
+      let(:user_task_form_id) { process.element_by_id("UserTaskFormID") }
+      let(:user_task_external) { process.element_by_id("UserTaskExternal") }
       let(:business_rule_task) { process.element_by_id("BusinessRuleTask") }
       let(:service_task) { process.element_by_id("ServiceTask") }
       let(:script_task) { process.element_by_id("ScriptTask") }
@@ -45,11 +47,21 @@ module BPMN
         end
       end
 
-      describe :form_definition do
+      describe :form_definition_job_worker do
         let(:form_definition) { user_task.extension_elements.form_definition }
 
-        it "should parse the form definition" do
+        it "should parse the job worker form definition" do
           _(form_definition.form_key).must_equal "some_form"
+        end
+      end
+
+      describe :form_definition_camunda_form do
+        let(:form_definition_form_id) { user_task_form_id.extension_elements.form_definition }
+        let(:form_definition_external) { user_task_external.extension_elements.form_definition }
+
+        it "should parse the camunda form definition" do
+          _(form_definition_form_id.form_id).must_equal "form_id"
+          _(form_definition_external.external_reference).must_equal "external_reference"
         end
       end
 

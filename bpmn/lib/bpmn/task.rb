@@ -38,6 +38,14 @@ module BPMN
       extension_elements&.form_definition&.form_key
     end
 
+    def form_id
+      extension_elements&.form_definition&.form_id
+    end
+
+    def external_reference
+      extension_elements&.form_definition&.external_reference
+    end
+
     def assignee
       extension_elements&.assignment_definition&.assignee
     end
