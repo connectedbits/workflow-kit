@@ -26,13 +26,13 @@ module FEEL
 
   def self.evaluate(expression_text, variables: {})
     literal_expression = FEEL::LiteralExpression.new(text: expression_text)
-    raise SyntaxError, "Expression is not valid" unless literal_expression.valid?
+    raise SyntaxError, "Expression is not valid: #{expression_text}" unless literal_expression.valid?
     literal_expression.evaluate(variables)
   end
 
   def self.test(input, unary_tests_text, variables: {})
     unary_tests = FEEL::UnaryTests.new(text: unary_tests_text)
-    raise SyntaxError, "Unary tests are not valid" unless unary_tests.valid?
+    raise SyntaxError, "Unary tests are not valid: #{unary_tests_text}" unless unary_tests.valid?
     unary_tests.test(input, variables)
   end
 

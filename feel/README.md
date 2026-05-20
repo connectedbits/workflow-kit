@@ -59,7 +59,7 @@ Calling a user-defined function:
 FEEL.config.functions = {
   "reverse": ->(s) { s.reverse }
 }
-DMN.evaluate('reverse("Hello World!")', functions:)
+FEEL.evaluate('reverse("Hello World!")')
 # => "!dlroW olleH"
 ```
 
@@ -137,6 +137,10 @@ UnaryTests.new(text: '> speed - speed_limit').variable_names
 - [x] List: `list contains`, `count`, `min`, `max`, `sum`, `product`, `mean`, `median`, `stddev`, `mode`, `all`, `any`, `sublist`, `append`, `concatenate`, `insert before`, `remove`, `reverse`, `index of`, `union`, `distinct values`, `duplicate values`, `flatten`, `sort`, `string join`
 - [x] Context: `get entries`, `get value`, `get keys`
 - [x] Temporal: `now`, `today`, `day of week`, `day of year`, `month of year`, `week of year`
+
+### Comments
+- [ ] Single-line
+- [ ] Multi-line
 
 ## Installation
 

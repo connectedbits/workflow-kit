@@ -2,7 +2,7 @@
 
 A light-weight DMN (Decision Model and Notation) business rule ruby gem.
 
-This gem depends on the [FEEL](https://github.com/connectedbits/bpmn/tree/main/feel) gem to evaluate DMN decision tables and expressions.
+This gem depends on the [FEEL](https://github.com/connectedbits/workflow-kit/tree/main/feel) gem to evaluate DMN decision tables and expressions.
 
 ## Usage
 

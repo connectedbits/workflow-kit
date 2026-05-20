@@ -216,7 +216,7 @@ module BPMN
       return nil if expression.nil?
 
       if expression.start_with?("=")
-        DMN.evaluate(expression.delete_prefix("="), variables: variables)
+        FEEL.evaluate(expression.delete_prefix("="), variables: variables)
       else
         expression
       end
@@ -393,10 +393,14 @@ module BPMN
     end
 
     def print_child(child, index)
-      str = "#{index} #{child.step.class.name.demodulize} #{child.step.id}: #{child.status} #{JSON.pretty_generate(child.variables, { indent: '', object_nl: ' ' }) unless child.variables.empty? }".strip
+      vars = child.variables.empty? ? '' : JSON.pretty_generate(child.variables, { indent: '', object_nl: ' ' })
+      name = child.step.name.present? ? " <#{child.step.name}>" : ""
+
+      str = "#{index} #{child.step.class.name.demodulize} #{child.step.id}#{name}: #{child.status} #{vars}".strip
       str = "#{str} * in: #{child.tokens_in.join(', ')}" if child.tokens_in.present?
       str = "#{str} * out: #{child.tokens_out.join(', ')}" if child.tokens_out.present?
       puts str
+
       child.children.each_with_index do |grandchild, grandindex|
         print_child(grandchild, "#{index}.#{grandindex}")
       end

@@ -27,18 +27,6 @@ module DMN
   class SyntaxError < StandardError; end
   class EvaluationError < StandardError; end
 
-  def self.evaluate(expression_text, variables: {})
-    literal_expression = FEEL::LiteralExpression.new(text: expression_text)
-    raise SyntaxError, "Expression is not valid" unless literal_expression.valid?
-    literal_expression.evaluate(variables)
-  end
-
-  def self.test(input, unary_tests_text, variables: {})
-    unary_tests = FEEL::UnaryTests.new(text: unary_tests_text)
-    raise SyntaxError, "Unary tests are not valid" unless unary_tests.valid?
-    unary_tests.test(input, variables)
-  end
-
   def self.decide(decision_id, definitions: nil, definitions_json: nil, definitions_xml: nil, variables: {})
     if definitions_xml.present?
       definitions = DMN::Definitions.from_xml(definitions_xml)
